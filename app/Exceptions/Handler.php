@@ -3,7 +3,10 @@
 namespace App\Exceptions;
 
 use Exception;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Handler extends ExceptionHandler
 {
@@ -29,7 +32,7 @@ class Handler extends ExceptionHandler
     /**
      * Report or log an exception.
      *
-     * @param  \Exception  $exception
+     * @param  \Exception $exception
      * @return void
      */
     public function report(Exception $exception)
@@ -40,12 +43,36 @@ class Handler extends ExceptionHandler
     /**
      * Render an exception into an HTTP response.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Exception  $exception
+     * @param  \Illuminate\Http\Request $request
+     * @param  \Exception $exception
      * @return \Illuminate\Http\Response
      */
     public function render($request, Exception $exception)
     {
-        return parent::render($request, $exception);
+        if ($exception instanceof NotFoundHttpException) {
+            return response()->json([
+                'code' => 404,
+                'message' => 'URL not found',
+            ], 404);
+        }
+        if ($exception instanceof ValidationException) {
+            return response()->json([
+                'code' => 400,
+                'message' => $exception->getMessage(),
+            ], 400);
+        }
+
+        if ($exception instanceof AuthorizationException) {
+            return response()->json([
+                'code' => 403,
+                'message' => $exception->getMessage(),
+            ], 403);
+        }
+
+
+        return response()->json([
+            'code' => 500,
+            'message' => $exception->getMessage(),
+        ], 500);
     }
 }
