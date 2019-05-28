@@ -37,22 +37,6 @@ class AuthController extends Controller
         return response()->json($response, 200);
     }
 
-    /**
-     * Get the authenticated User.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function me()
-    {
-        $user = Auth::user();
-        $response = [
-            'success' => true,
-            'code' => 200,
-            'message' => 'Get user info success',
-            'user' => $user
-        ];
-        return response()->json($response, 200);
-    }
 
     /**
      * Log the user out (Invalidate the token).

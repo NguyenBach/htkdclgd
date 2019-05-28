@@ -2,7 +2,6 @@
 
 namespace Modules\Auth\Entities;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
@@ -17,13 +16,16 @@ class User extends Authenticatable implements JWTSubject
         'user_token',
         'fullname',
         'email',
-        'created_by'
+        'created_by',
+        'role_id'
     ];
 
     protected $hidden = [
         'password',
         'university_id',
-        'user_token'
+        'user_token',
+        'created_at',
+        'updated_at'
     ];
 
     /**
@@ -46,5 +48,10 @@ class User extends Authenticatable implements JWTSubject
         return [
 
         ];
+    }
+
+    public function roles()
+    {
+        return $this->hasOne(Role::class,'id');
     }
 }
