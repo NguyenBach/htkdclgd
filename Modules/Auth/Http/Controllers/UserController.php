@@ -78,8 +78,8 @@ class UserController extends Controller
         }
 
         if ($userInfo['university_id'] != 0) {
-            if ($userInfo['roles'] < 3) {
-                $userInfo['roles'] = 0;
+            if ($userInfo['role_id'] < 3) {
+                $userInfo['role_id'] = 0;
             }
         }
 
