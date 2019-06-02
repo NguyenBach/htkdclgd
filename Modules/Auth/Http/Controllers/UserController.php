@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Modules\Auth\Entities\User;
+use Modules\Auth\Entities\UserPermission;
 use Modules\Auth\Entities\UserRole;
 use Modules\Auth\Http\Helper\AuthHelper;
 use Modules\Auth\Http\Requests\CreateUserRequest;
@@ -79,14 +80,37 @@ class UserController extends Controller
 
         if ($userInfo['university_id'] != 0) {
             if ($userInfo['role_id'] < 3) {
-                $userInfo['role_id'] = 0;
+                $userInfo['role_id'] = 4;
             }
         }
 
         $userInfo['password'] = bcrypt($userInfo['password']);
         $userInfo['created_by'] = $user->id;
 
-        $createdUser = User::create($userInfo);
+        $basePermission = $user->permissions()->get()
+            ->reject(function ($permission) use ($userInfo) {
+                return !in_array($userInfo['role_id'], json_decode($permission->role_base));
+            })
+            ->map(function ($permission) {
+                return $permission->id;
+            })->toArray();
+        $createdUser = null;
+        DB::transaction(function () use ($userInfo, &$createdUser, $basePermission) {
+            $createdUser = User::create($userInfo);
+            if (isset($userInfo['permissions'])) {
+                $userPermissions = json_decode($userInfo['permissions']);
+                foreach ($userPermissions as $permission) {
+                    if (in_array($permission, $basePermission)) {
+                        $data = [
+                            'user_id' => $createdUser->id,
+                            'permission_id' => $permission
+                        ];
+                        UserPermission::create($data);
+                    }
+                }
+            }
+
+        });
 
         if (is_null($createdUser)) {
             $result = [
@@ -126,7 +150,7 @@ class UserController extends Controller
         }
         if ($userInfo['university_id'] != 0) {
             if ($userInfo['role_id'] < 3) {
-                $userInfo['role_id'] = 0;
+                $userInfo['role_id'] = 4;
             }
         }
         $updatedUser = $user->update($userInfo);

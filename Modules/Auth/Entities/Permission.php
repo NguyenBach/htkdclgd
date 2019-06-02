@@ -4,17 +4,17 @@ namespace Modules\Auth\Entities;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Role extends Model
+class Permission extends Model
 {
     protected $fillable = [
         'name',
         'slug',
-        'permissions'
+        'permission'
     ];
+
     protected $hidden = [
         'created_at',
         'updated_at',
-        'role_base',
-        'permissions'
+        'role_base'
     ];
 }

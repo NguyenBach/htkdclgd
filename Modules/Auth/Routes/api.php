@@ -21,6 +21,22 @@ Route::group([
     Route::post('/logout', 'AuthController@logout')
         ->name('auth.logout');
 });
+
+Route::group([
+    'prefix' => 'permission',
+    'middleware' => 'jwt.auth'
+], function () {
+    Route::get('/list', 'PermissionController@list')->name('permission.list');
+});
+
+Route::group([
+    'prefix' => 'role',
+    'middleware' => 'jwt.auth'
+], function () {
+    Route::get('/list', 'RoleController@list')->name('role.list');
+});
+
+
 Route::group([
     'prefix' => 'user',
     'middleware' => 'jwt.auth',

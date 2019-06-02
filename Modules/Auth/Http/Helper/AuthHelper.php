@@ -52,8 +52,7 @@ class AuthHelper
 
     public static function can(User $user, $ability)
     {
-        $userRole = $user->roles()->first();
-        $permission = json_decode($userRole->permissions) ?? [];
-        return in_array($ability, $permission);
+        $permission = $user->permissions()->where('permission', $ability)->first();
+        return !is_null($permission);
     }
 }

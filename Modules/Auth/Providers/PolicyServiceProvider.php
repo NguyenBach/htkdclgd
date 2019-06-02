@@ -9,7 +9,9 @@
 namespace Modules\Auth\Providers;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider;
+use Modules\Auth\Entities\Permission;
 use Modules\Auth\Entities\User;
+use Modules\Auth\Policies\PermissionPolicy;
 use Modules\Auth\Policies\UserPolicy;
 
 
@@ -21,7 +23,8 @@ class PolicyServiceProvider extends AuthServiceProvider
      * @var array
      */
     protected $policies = [
-        User::class => UserPolicy::class
+        User::class => UserPolicy::class,
+        Permission::class => PermissionPolicy::class
     ];
 
     /**
