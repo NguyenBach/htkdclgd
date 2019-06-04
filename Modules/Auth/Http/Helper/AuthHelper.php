@@ -43,7 +43,7 @@ class AuthHelper
 
     public static function checkRoleIsNotAdmin($role)
     {
-        if ($role !== 1 && $role !== 2) {
+        if ($role !== 1) {
             return true;
         } else {
             return false;
