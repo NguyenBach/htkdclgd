@@ -68,6 +68,17 @@ class UniversityController extends Controller
     public function update(University $model, UniversityRequest $request)
     {
         $this->authorize('update', $model);
+        $data = $request->validated();
+        $model->update($data);
+        $model->refresh();
+        $result = [
+            'success' => true,
+            'message' => 'Tạo trường đại học thành công',
+            'data' => [
+                'university' => $model
+            ]
+        ];
+        return response()->json($result, 200);
 
     }
 }
