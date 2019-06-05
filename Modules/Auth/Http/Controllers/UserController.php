@@ -171,4 +171,26 @@ class UserController extends Controller
             return response()->json($result, 200);
         }
     }
+
+    public function list()
+    {
+        $this->authorize('list', User::class);
+        $currentUser = Auth::user();
+        if (AuthHelper::isSuperAdmin($currentUser) || AuthHelper::isAdmin($currentUser)) {
+            $listUser = User::all();
+        } else {
+            $listUser = User::where('created_by', $currentUser->id)
+                ->where('university_id', $currentUser->university_id)
+                ->get();
+        }
+        $result = [
+            'success' => true,
+            'message' => 'Lấy danh sách người dùng thành công',
+            'data' => [
+                'users' => $listUser
+            ]
+        ];
+        return response()->json($result, 200);
+
+    }
 }

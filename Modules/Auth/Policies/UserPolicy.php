@@ -51,4 +51,9 @@ class UserPolicy
         return $allow;
     }
 
+    public function list(User $user)
+    {
+        return AuthHelper::can($user, 'user:list');
+    }
+
 }

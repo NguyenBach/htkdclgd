@@ -51,4 +51,6 @@ Route::group([
         ->name('user.create');
     Route::post('/update/{user}', 'UserController@update')
         ->name('user.update');
+    Route::get('/list', 'UserController@list')
+        ->name('user.list');
 });
