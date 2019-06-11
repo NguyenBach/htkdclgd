@@ -10,6 +10,7 @@ namespace Modules\Auth\Http\Controllers;
 
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Modules\Auth\Entities\Permission;
 use Modules\Auth\Http\Helper\AuthHelper;
@@ -21,10 +22,14 @@ class PermissionController extends Controller
     {
     }
 
-    public function list()
+    public function list(Request $request)
     {
         $this->authorize('list', Permission::class);
-        $permissions = Permission::all();
+        $roleId = $request->input('role') ?? 1;
+        $permissions = Permission::all()
+            ->reject(function ($permission) use ($roleId) {
+                return !in_array($roleId, json_decode($permission->role_base));
+            });
         $user = Auth::user();
 
         $data = [];

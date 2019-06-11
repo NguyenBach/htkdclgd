@@ -14,6 +14,7 @@ use function foo\func;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Modules\Auth\Entities\Permission;
 use Modules\Auth\Entities\User;
 use Modules\Auth\Entities\UserPermission;
 use Modules\Auth\Entities\UserRole;
@@ -86,14 +87,24 @@ class UserController extends Controller
 
         $userInfo['password'] = bcrypt($userInfo['password']);
         $userInfo['created_by'] = $user->id;
+        if (AuthHelper::isSuperAdmin($user) || AuthHelper::isAdmin($user)) {
+            $basePermission = Permission::all()
+                ->reject(function ($permission) use ($userInfo) {
+                    return !in_array($userInfo['role_id'], json_decode($permission->role_base));
+                })
+                ->map(function ($permission) {
+                    return $permission->id;
+                })->toArray();
+        } else {
+            $basePermission = $user->permissions()->get()
+                ->reject(function ($permission) use ($userInfo) {
+                    return !in_array($userInfo['role_id'], json_decode($permission->role_base));
+                })
+                ->map(function ($permission) {
+                    return $permission->id;
+                })->toArray();
+        }
 
-        $basePermission = $user->permissions()->get()
-            ->reject(function ($permission) use ($userInfo) {
-                return !in_array($userInfo['role_id'], json_decode($permission->role_base));
-            })
-            ->map(function ($permission) {
-                return $permission->id;
-            })->toArray();
         $createdUser = null;
         DB::transaction(function () use ($userInfo, &$createdUser, $basePermission) {
             $createdUser = User::create($userInfo);
@@ -154,6 +165,7 @@ class UserController extends Controller
             }
         }
         $updatedUser = $user->update($userInfo);
+        $user->refresh();
         if (is_null($updatedUser)) {
             $result = [
                 'success' => false,
@@ -165,7 +177,7 @@ class UserController extends Controller
                 'success' => true,
                 'message' => 'Thêm người dùng thành công',
                 'data' => [
-                    'user' => $updatedUser
+                    'user' => $user
                 ]
             ];
             return response()->json($result, 200);
