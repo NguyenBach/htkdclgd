@@ -9,7 +9,11 @@
 namespace Modules\ThongTinChung\Providers;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider;
+use Modules\ThongTinChung\Entities\Department;
+use Modules\ThongTinChung\Entities\KeyOfficer;
 use Modules\ThongTinChung\Entities\University;
+use Modules\ThongTinChung\Policies\DepartmentPolicy;
+use Modules\ThongTinChung\Policies\KeyOfficerPolicy;
 use Modules\ThongTinChung\Policies\UniversityPolicy;
 
 
@@ -21,7 +25,9 @@ class PolicyServiceProvider extends AuthServiceProvider
      * @var array
      */
     protected $policies = [
-        University::class => UniversityPolicy::class
+        University::class => UniversityPolicy::class,
+        Department::class => DepartmentPolicy::class,
+        KeyOfficer::class => KeyOfficerPolicy::class
     ];
 
     /**

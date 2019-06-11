@@ -13,6 +13,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Modules\ThongTinChung\Entities\University;
 use Modules\ThongTinChung\Http\Requests\UniversityRequest;
+use Modules\ThongTinChung\Http\Requests\UniversityUpdateRequest;
 
 class UniversityController extends Controller
 {
@@ -65,20 +66,28 @@ class UniversityController extends Controller
         return response()->json($result, 200);
     }
 
-    public function update(University $model, UniversityRequest $request)
+    public function update(University $model, UniversityUpdateRequest $request)
     {
         $this->authorize('update', $model);
         $data = $request->validated();
-        $model->update($data);
-        $model->refresh();
-        $result = [
-            'success' => true,
-            'message' => 'Tạo trường đại học thành công',
-            'data' => [
-                'university' => $model
-            ]
-        ];
-        return response()->json($result, 200);
+        $success = $model->update($data);
+        if ($success) {
+            $model->refresh();
+            $result = [
+                'success' => true,
+                'message' => 'Cập nhật trường đại học thành công',
+                'data' => [
+                    'university' => $model
+                ]
+            ];
+            return response()->json($result, 200);
+        } else {
+            $result = [
+                'success' => false,
+                'message' => 'Cập nhật trường đại học thất bại',
+            ];
+            return response()->json($result, 500);
+        }
 
     }
 }

@@ -22,4 +22,14 @@ Route::group([
     Route::get('/list', 'UniversityController@list')->name('university.list');
     Route::get('/{model}', 'UniversityController@view')->name('university.view');
     Route::post('/create', 'UniversityController@create')->name('university.create');
+    Route::post('/update/{model}', 'UniversityController@update')->name('university.update');
+});
+
+Route::group([
+    'prefix' => 'department',
+    'middleware' => 'jwt.auth'
+], function () {
+    Route::get('/list', 'DepartmentController@list')->name('department.list');
+//    Route::get('/{model}', 'DepartmentController@view')->name('university.view');
+//    Route::post('/create', 'DepartmentController@create')->name('university.create');
 });

@@ -4,7 +4,7 @@ namespace Modules\ThongTinChung\Http\Requests;
 
 use App\Http\Requests\APIRequest;
 
-class UniversityRequest extends APIRequest
+class UniversityUpdateRequest extends APIRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -16,8 +16,8 @@ class UniversityRequest extends APIRequest
         return [
             'name_vi' => 'required',
             'name_en' => 'required',
-            'short_name_vi' => 'required|unique:universities,short_name_vi',
-            'short_name_en' => 'required|unique:universities,short_name_en',
+            'short_name_vi' => 'required',
+            'short_name_en' => 'required',
             'name_before' => 'required',
             'governing_body' => 'required',
             'address' => 'required',
