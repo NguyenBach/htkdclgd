@@ -56,4 +56,21 @@ class UserPolicy
         return AuthHelper::can($user, 'user:list');
     }
 
+    public function delete(User $user, User $deleteUser)
+    {
+        $a = AuthHelper::can($user, 'user:delete');
+        if (!$a) {
+            return false;
+        }
+        if (AuthHelper::isUniversityManager($user) || AuthHelper::isUniversityOfficer($user)) {
+            if ($user->university_id === $deleteUser->university_id) {
+                return true;
+            } else {
+                return false;
+            }
+        }else{
+            return $a;
+        }
+    }
+
 }

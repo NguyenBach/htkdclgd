@@ -42,10 +42,8 @@ Route::group([
     'middleware' => 'jwt.auth',
 ], function () {
     Route::get('/me', 'UserController@me')
-        ->middleware('jwt.auth')
         ->name('user.me');
     Route::get('/profile/{id}', 'UserController@profile')
-        ->middleware('jwt.auth')
         ->name('user.profile');
     Route::post('/create', 'UserController@create')
         ->name('user.create');
@@ -53,4 +51,6 @@ Route::group([
         ->name('user.update');
     Route::get('/list', 'UserController@list')
         ->name('user.list');
+    Route::post('/delete/{user}', 'UserController@create')
+        ->name('user.delete');
 });

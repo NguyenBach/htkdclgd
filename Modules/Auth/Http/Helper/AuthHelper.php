@@ -32,6 +32,15 @@ class AuthHelper
         }
     }
 
+    public static function isUniversityOfficer($user)
+    {
+        if ($user->role_id == 4) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public static function isAdmin($user)
     {
         if ($user->role_id == 2) {

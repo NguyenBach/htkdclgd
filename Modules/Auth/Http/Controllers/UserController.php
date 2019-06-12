@@ -205,4 +205,33 @@ class UserController extends Controller
         return response()->json($result, 200);
 
     }
+
+    public function delete(User $user)
+    {
+        $this->authorize('delete', $user);
+        $currentUser = Auth::user();
+        if($currentUser->id === $user->id){
+            $result = [
+                'success' => false,
+                'message' => 'Không thể tự xóa tài khoản của mình',
+            ];
+            return response()->json($result, 400);
+        }
+
+        $success = $user->delete();
+
+        if ($success) {
+            $result = [
+                'success' => true,
+                'message' => 'Xóa người dùng thành công',
+            ];
+            return response()->json($result, 200);
+        } else {
+            $result = [
+                'success' => false,
+                'message' => 'Xóa người dùng thất bại',
+            ];
+            return response()->json($result, 500);
+        }
+    }
 }
