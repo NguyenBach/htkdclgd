@@ -51,6 +51,6 @@ Route::group([
         ->name('user.update');
     Route::get('/list', 'UserController@list')
         ->name('user.list');
-    Route::post('/delete/{user}', 'UserController@create')
+    Route::post('/delete/{user}', 'UserController@delete')
         ->name('user.delete');
 });
