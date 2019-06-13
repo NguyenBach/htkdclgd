@@ -30,6 +30,5 @@ Route::group([
     'middleware' => 'jwt.auth'
 ], function () {
     Route::get('/list', 'DepartmentController@list')->name('department.list');
-//    Route::get('/{model}', 'DepartmentController@view')->name('university.view');
-//    Route::post('/create', 'DepartmentController@create')->name('university.create');
+    Route::post('/create', 'DepartmentController@create')->name('university.create');
 });
