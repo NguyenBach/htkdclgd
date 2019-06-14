@@ -164,18 +164,50 @@ class UserController extends Controller
                 $userInfo['role_id'] = 4;
             }
         }
+        if (AuthHelper::isSuperAdmin($authUser) || AuthHelper::isAdmin($authUser)) {
+            $basePermission = Permission::all()
+                ->reject(function ($permission) use ($userInfo) {
+                    return !in_array($userInfo['role_id'], json_decode($permission->role_base));
+                })
+                ->map(function ($permission) {
+                    return $permission->id;
+                })->toArray();
+            } else {
+            $basePermission = $authUser->permissions()->get()
+                ->reject(function ($permission) use ($userInfo) {
+                    return !in_array($userInfo['role_id'], json_decode($permission->role_base));
+                })
+                ->map(function ($permission) {
+                    return $permission->id;
+                })->toArray();
+        }
         $updatedUser = $user->update($userInfo);
+
+        if (isset($userInfo['permissions'])) {
+            $userPermissions = json_decode($userInfo['permissions']);
+            foreach ($userPermissions as $permission) {
+                if (in_array($permission, $basePermission)) {
+                    $data = [
+                        'user_id' => $user->id,
+                        'permission_id' => $permission
+                    ];
+                    echo $permission;
+                    UserPermission::create($data);
+                }
+            }
+        }
         $user->refresh();
+        $user->permissions = $user->permissions()->get();
         if (is_null($updatedUser)) {
             $result = [
                 'success' => false,
-                'message' => 'Thêm người dùng lỗi'
+                'message' => 'Sửa người dùng lỗi'
             ];
             return response()->json($result, 404);
         } else {
             $result = [
                 'success' => true,
-                'message' => 'Thêm người dùng thành công',
+                'message' => 'Sửa người dùng thành công',
                 'data' => [
                     'user' => $user
                 ]
@@ -210,7 +242,7 @@ class UserController extends Controller
     {
         $this->authorize('delete', $user);
         $currentUser = Auth::user();
-        if($currentUser->id === $user->id){
+        if ($currentUser->id === $user->id) {
             $result = [
                 'success' => false,
                 'message' => 'Không thể tự xóa tài khoản của mình',

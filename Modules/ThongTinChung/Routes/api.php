@@ -32,3 +32,11 @@ Route::group([
     Route::get('/list', 'DepartmentController@list')->name('department.list');
     Route::post('/create', 'DepartmentController@create')->name('university.create');
 });
+
+Route::group([
+    'prefix' => 'key-officer',
+    'middleware' => 'jwt.auth'
+], function () {
+    Route::get('/list', 'KeyOfficerController@list')->name('key-officer.list');
+//    Route::post('/create', 'DepartmentController@create')->name('university.create');
+});

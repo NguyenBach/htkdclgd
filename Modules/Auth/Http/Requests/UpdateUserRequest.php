@@ -21,7 +21,8 @@ class UpdateUserRequest extends APIRequest
             'fullname' => '',
             'email' => '',
             'role_id' => ['exists:roles,id', new NotAdmin()],
-            'university_id' => 'exists:universities,id'
+            'university_id' => 'exists:universities,id',
+            'permissions' => ''
         ];
     }
 

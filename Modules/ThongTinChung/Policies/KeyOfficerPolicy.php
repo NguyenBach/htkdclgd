@@ -3,6 +3,7 @@
 namespace Modules\ThongTinChung\Policies;
 
 use App\Policies\BasePolicy;
+use const http\Client\Curl\AUTH_ANY;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Modules\Auth\Entities\User;
 use Modules\Auth\Http\Helper\AuthHelper;
@@ -22,8 +23,13 @@ class KeyOfficerPolicy extends BasePolicy
         parent::__construct();
     }
 
-    public function create(User $user)
+    public function key_officer(User $user)
     {
-        return AuthHelper::can($user, 'key_officer.create') || AuthHelper::can($user, 'key_officer.update');
+        return AuthHelper::can($user, 'key_officer');
+    }
+
+    public function list(User $user)
+    {
+        return AuthHelper::can($user, 'key_officer');
     }
 }

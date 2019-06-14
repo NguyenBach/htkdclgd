@@ -10,6 +10,7 @@ namespace Modules\ThongTinChung\Http\Controllers;
 
 
 use App\Http\Controllers\Controller;
+use Cocur\Slugify\Slugify;
 use Illuminate\Support\Facades\Auth;
 use Modules\ThongTinChung\Entities\Department;
 use Modules\ThongTinChung\Http\Requests\DeparmentRequest;
@@ -43,20 +44,38 @@ class DepartmentController extends Controller
     public function create(DeparmentRequest $request)
     {
         $this->authorize('create', Department::class);
+        $slugify = new Slugify();
         $data = $request->validated();
         $user = Auth::user();
-        $data['slug'] = $this->createSlug($data['name']);
+        $data['slug'] = $slugify->slugify($data['name']);
         $data['university_id'] = $user->university_id;
         $data['created_by'] = $user->id;
+        $exist = Department::checkExist($data['slug'], $data['university_id']);
+        if (!$exist) {
+            $result = [
+                'success' => false,
+                'message' => 'Phòng ban này đã tồn tại',
+            ];
+            return response()->json($result, 400);
+        }
         $model = $this->departmentModel->create($data);
-        $result = [
-            'success' => true,
-            'message' => 'Tạo trường đại học thành công',
-            'data' => [
-                'departments' => $model
-            ]
-        ];
-        return response()->json($result, 200);
+        if ($model) {
+            $result = [
+                'success' => true,
+                'message' => 'Tạo trường đại học thành công',
+                'data' => [
+                    'departments' => $model
+                ]
+            ];
+            return response()->json($result, 200);
+        } else {
+            $result = [
+                'success' => false,
+                'message' => 'Tạo phòng ban thất bại',
+            ];
+            return response()->json($result, 500);
+        }
+
     }
 
     public function update(Department $department, DeparmentRequest $request)
