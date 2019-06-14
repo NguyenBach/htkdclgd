@@ -34,6 +34,7 @@ class UserController extends Controller
     public function me()
     {
         $user = Auth::user();
+        $user->permissions = $user->permissions()->get();
         $result = [
             'success' => true,
             'message' => 'Lấy thông tin người dùng thành công',
@@ -48,6 +49,7 @@ class UserController extends Controller
     {
         $this->authorize('view_profile', Auth::user());
         $user = $this->user->find($id);
+        $user->permissions = $user->permissions()->get();
         if (is_null($user)) {
             $result = [
                 'success' => false,
@@ -120,6 +122,7 @@ class UserController extends Controller
                     }
                 }
             }
+            $createdUser->permissions = $createdUser->permissions()->get();
 
         });
 
@@ -172,7 +175,7 @@ class UserController extends Controller
                 ->map(function ($permission) {
                     return $permission->id;
                 })->toArray();
-            } else {
+        } else {
             $basePermission = $authUser->permissions()->get()
                 ->reject(function ($permission) use ($userInfo) {
                     return !in_array($userInfo['role_id'], json_decode($permission->role_base));
