@@ -30,6 +30,6 @@ class Department extends Model
         $department = self::where('id', $id)
             ->where('university_id', $universityId)
             ->first();
-        return is_null($department);
+        return !is_null($department);
     }
 }

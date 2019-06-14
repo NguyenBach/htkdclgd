@@ -38,5 +38,7 @@ Route::group([
     'middleware' => 'jwt.auth'
 ], function () {
     Route::get('/list', 'KeyOfficerController@list')->name('key-officer.list');
-//    Route::post('/create', 'DepartmentController@create')->name('university.create');
+    Route::post('/create', 'KeyOfficerController@create')->name('key-officer.create');
+    Route::post('/update/{keyOfficer}', 'KeyOfficerController@update')->name('key-officer.update');
+    Route::post('/delete/{keyOfficer}', 'KeyOfficerController@delete')->name('key-officer.delete');
 });

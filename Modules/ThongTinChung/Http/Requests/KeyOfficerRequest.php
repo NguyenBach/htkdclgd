@@ -16,9 +16,9 @@ class KeyOfficerRequest extends FormRequest
         return [
             //
             'fullname' => 'required',
-            'department_id' => 'required|exist:departments,id',
+            'department_id' => 'required|exists:departments,id',
             'degree' => 'required',
-            'possion' => 'required',
+            'position' => 'required',
             'phone_number' => '',
             'email' => 'email'
         ];

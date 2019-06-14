@@ -58,7 +58,7 @@ class DepartmentController extends Controller
             ];
             return response()->json($result, 400);
         }
-        $model = $this->departmentModel->create($data);
+        $model = $this->departmentModel->updateOrCreate($data);
         if ($model) {
             $result = [
                 'success' => true,
