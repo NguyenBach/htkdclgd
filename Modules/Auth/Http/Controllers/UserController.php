@@ -118,7 +118,7 @@ class UserController extends Controller
                             'user_id' => $createdUser->id,
                             'permission_id' => $permission
                         ];
-                        UserPermission::create($data);
+                        UserPermission::updateOrCreate($data);
                     }
                 }
             }
@@ -195,7 +195,7 @@ class UserController extends Controller
                         'permission_id' => $permission
                     ];
                     echo $permission;
-                    UserPermission::create($data);
+                    UserPermission::updateOrCreate($data);
                 }
             }
         }
