@@ -30,7 +30,7 @@ class UniversityUpdateRequest extends APIRequest
             'k1_end_date' => '',
             'institution_type' => '',
             'institution_type_other' => '',
-            'training_type' => '',
+            'training_type' => 'json',
             'training_type_other' => ''
         ];
     }
