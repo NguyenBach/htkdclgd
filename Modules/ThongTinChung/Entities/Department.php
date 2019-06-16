@@ -8,7 +8,9 @@ class Department extends Model
 {
     protected $fillable = [
         'name',
-        'slug'
+        'slug',
+        'created_by',
+        'university_id'
     ];
 
     protected $hidden = [
