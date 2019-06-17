@@ -29,7 +29,6 @@ class DepartmentController extends Controller
         $this->authorize('list', Department::class);
         $user = Auth::user();
         $departments = $this->departmentModel->where('university_id', $user->university_id)
-            ->orWhere('university_id', 0)
             ->get();
         $result = [
             'success' => true,

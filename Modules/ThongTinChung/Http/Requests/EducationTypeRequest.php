@@ -15,6 +15,7 @@ class EducationTypeRequest extends FormRequest
     {
         return [
             //
+            'name' => 'required'
         ];
     }
 

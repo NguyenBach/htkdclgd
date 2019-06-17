@@ -55,7 +55,7 @@ class KeyOfficerController extends Controller
             return response()->json($result, 400);
         }
         $data['university_id'] = $user->university_id;
-        $keyOfficer = KeyOfficer::updateOrCreate($data);
+        $keyOfficer = KeyOfficer::create($data);
         if (!$keyOfficer) {
             $result = [
                 'success' => false,
@@ -77,7 +77,7 @@ class KeyOfficerController extends Controller
 
     public function update(KeyOfficer $keyOfficer, KeyOfficerRequest $request)
     {
-        $this->authorize('key_officer_update', KeyOfficer::class);
+        $this->authorize('key_officer_update', $keyOfficer);
         $user = Auth::user();
         $data = $request->validated();
         $departmentExist = Department::checkExistInUniversity($data['department_id'], $user->university_id);
