@@ -28,14 +28,13 @@ class EducationTypeController extends Controller
     {
         $this->authorize('list', EducationType::class);
         $user = Auth::user();
-        $departments = $this->model->where('university_id', $user->university_id)
-            ->orWhere('university_id', 0)
+        $types = $this->model->where('university_id', $user->university_id)
             ->get();
         $result = [
             'success' => true,
             'message' => 'Lấy thông tin thành công',
             'data' => [
-                'departments' => $departments
+                'education_types' => $types
             ]
         ];
         return response()->json($result, 200);
@@ -58,13 +57,13 @@ class EducationTypeController extends Controller
             ];
             return response()->json($result, 400);
         }
-        $model = $this->model->updateOrCreate($data);
+        $model = $this->model->create($data);
         if ($model) {
             $result = [
                 'success' => true,
                 'message' => 'Tạo trường đại học thành công',
                 'data' => [
-                    'departments' => $model
+                    'education_type' => $model
                 ]
             ];
             return response()->json($result, 200);

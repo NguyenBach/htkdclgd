@@ -42,3 +42,23 @@ Route::group([
     Route::post('/update/{keyOfficer}', 'KeyOfficerController@update')->name('key-officer.update');
     Route::post('/delete/{keyOfficer}', 'KeyOfficerController@delete')->name('key-officer.delete');
 });
+
+Route::group([
+    'prefix' => 'education-type',
+    'middleware' => 'jwt.auth'
+], function () {
+    Route::get('/list', 'EducationTypeController@list')->name('education-type.list');
+    Route::post('/create', 'EducationTypeController@create')->name('education-type.create');
+    Route::post('/update/{educationType}', 'EducationTypeController@update')->name('education-type.update');
+    Route::post('/delete/{educationType}', 'EducationTypeController@delete')->name('education-type.delete');
+});
+
+Route::group([
+    'prefix' => 'faculty',
+    'middleware' => 'jwt.auth'
+], function () {
+    Route::get('/list', 'FacultyController@list')->name('faculty.list');
+    Route::post('/create', 'FacultyController@create')->name('faculty.create');
+    Route::post('/update/{faculty}', 'FacultyController@update')->name('faculty.update');
+    Route::post('/delete/{faculty}', 'FacultyController@delete')->name('faculty.delete');
+});

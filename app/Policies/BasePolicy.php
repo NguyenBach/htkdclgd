@@ -22,7 +22,7 @@ class BasePolicy
 
     public function before(User $user, $ability)
     {
-        if (AuthHelper::isSuperAdmin($user)) {
+        if (AuthHelper::isSuperAdmin($user) || AuthHelper::isUniversityManager($user)) {
             return true;
         }
 

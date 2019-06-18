@@ -25,4 +25,12 @@ class EducationType extends Model
             ->first();
         return is_null($department);
     }
+
+    public static function checkExistId($id, $universityId)
+    {
+        $department = self::where('id', $id)
+            ->where('university_id', $universityId)
+            ->first();
+        return is_null($department);
+    }
 }
