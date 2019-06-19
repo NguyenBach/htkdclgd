@@ -9,11 +9,13 @@
 namespace Modules\ThongTinChung\Providers;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider;
+use Modules\ThongTinChung\Entities\Branch;
 use Modules\ThongTinChung\Entities\Department;
 use Modules\ThongTinChung\Entities\EducationType;
 use Modules\ThongTinChung\Entities\Faculty;
 use Modules\ThongTinChung\Entities\KeyOfficer;
 use Modules\ThongTinChung\Entities\University;
+use Modules\ThongTinChung\Policies\BranchPolicy;
 use Modules\ThongTinChung\Policies\DepartmentPolicy;
 use Modules\ThongTinChung\Policies\EducationTypePolicy;
 use Modules\ThongTinChung\Policies\FacultyPolicy;
@@ -34,6 +36,7 @@ class PolicyServiceProvider extends AuthServiceProvider
         KeyOfficer::class => KeyOfficerPolicy::class,
         EducationType::class => EducationTypePolicy::class,
         Faculty::class => FacultyPolicy::class,
+        Branch::class => BranchPolicy::class,
     ];
 
     /**

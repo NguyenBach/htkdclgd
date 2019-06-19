@@ -62,3 +62,13 @@ Route::group([
     Route::post('/update/{faculty}', 'FacultyController@update')->name('faculty.update');
     Route::post('/delete/{faculty}', 'FacultyController@delete')->name('faculty.delete');
 });
+
+Route::group([
+    'prefix' => 'branch',
+    'middleware' => 'jwt.auth'
+], function () {
+    Route::get('/list', 'BranchController@index')->name('faculty.list');
+    Route::post('/create', 'BranchController@store')->name('faculty.create');
+    Route::post('/update/{faculty}', 'BranchController@update')->name('faculty.update');
+    Route::post('/delete/{faculty}', 'BranchController@delete')->name('faculty.delete');
+});
