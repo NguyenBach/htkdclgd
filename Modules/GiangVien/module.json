@@ -1,0 +1,14 @@
+{
+    "name": "GiangVien",
+    "alias": "giangvien",
+    "description": "",
+    "keywords": [],
+    "active": 1,
+    "order": 0,
+    "providers": [
+        "Modules\\GiangVien\\Providers\\GiangVienServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": []
+}
