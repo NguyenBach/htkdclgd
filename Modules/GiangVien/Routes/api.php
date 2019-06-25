@@ -20,3 +20,11 @@ Route::group([
     Route::get('/{year}', 'LecturerController@index')->name('lecturer.list');
     Route::post('/{year}', 'LecturerController@store')->name('lecturer.create');
 });
+
+Route::group([
+    'prefix' => 'officer',
+    'middleware' => 'jwt.auth'
+], function () {
+    Route::get('/{year}', 'OfficerController@show')->name('officer.list');
+    Route::post('/{year}', 'OfficerController@store')->name('officer.create');
+});

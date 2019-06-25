@@ -4,7 +4,9 @@ namespace Modules\GiangVien\Providers;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider;
 use Modules\GiangVien\Entities\Lecturer;
+use Modules\GiangVien\Entities\Officer;
 use Modules\GiangVien\Policies\LecturerPolicy;
+use Modules\GiangVien\Policies\OfficerPolicy;
 
 class PolicyProvider extends AuthServiceProvider
 {
@@ -14,7 +16,8 @@ class PolicyProvider extends AuthServiceProvider
      * @return void
      */
     protected $policies = [
-        Lecturer::class => LecturerPolicy::class
+        Lecturer::class => LecturerPolicy::class,
+        Officer::class => OfficerPolicy::class
     ];
 
 
