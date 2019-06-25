@@ -15,12 +15,8 @@ class LecturerRequest extends FormRequest
     {
         return [
             //
-            'year' => 'required',
-            'lecturer_type' => 'required',
-            'total_1' => '',
-            'percent_doctor_1' => '',
-            'total_2' => '',
-            'percent_doctor_2' => ''
+            'giang_vien' => 'required|json',
+            'nghien_cuu_vien' => 'required|json'
         ];
     }
 

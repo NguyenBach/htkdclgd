@@ -1,6 +1,6 @@
 <?php
 
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +13,10 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/giangvien', function (Request $request) {
-    return $request->user();
+Route::group([
+    'prefix' => 'lecturer',
+    'middleware' => 'jwt.auth'
+], function () {
+    Route::get('/{year}', 'LecturerController@index')->name('lecturer.list');
+    Route::post('/{year}', 'LecturerController@store')->name('lecturer.create');
 });

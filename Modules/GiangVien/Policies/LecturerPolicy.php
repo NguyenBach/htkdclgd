@@ -7,6 +7,7 @@ use Illuminate\Auth\Access\HandlesAuthorization;
 use Modules\Auth\Entities\User;
 use Modules\Auth\Http\Helper\AuthHelper;
 use Modules\GiangVien\Entities\Lecturer;
+use phpDocumentor\Reflection\Types\Parent_;
 
 class LecturerPolicy extends BasePolicy
 {
@@ -19,6 +20,7 @@ class LecturerPolicy extends BasePolicy
      */
     public function __construct()
     {
+        parent::__construct();
         //
     }
 
@@ -32,6 +34,6 @@ class LecturerPolicy extends BasePolicy
         if ($user->university_id != $lecturer->university_id) {
             return false;
         }
-
+        return AuthHelper::can($user, 'lecturer');
     }
 }

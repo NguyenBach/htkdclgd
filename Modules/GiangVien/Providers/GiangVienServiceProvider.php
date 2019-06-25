@@ -29,6 +29,7 @@ class GiangVienServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->register(RouteServiceProvider::class);
+        $this->app->register(PolicyProvider::class);
     }
 
     /**
@@ -39,10 +40,10 @@ class GiangVienServiceProvider extends ServiceProvider
     protected function registerConfig()
     {
         $this->publishes([
-            __DIR__.'/../Config/config.php' => config_path('giangvien.php'),
+            __DIR__ . '/../Config/config.php' => config_path('giangvien.php'),
         ], 'config');
         $this->mergeConfigFrom(
-            __DIR__.'/../Config/config.php', 'giangvien'
+            __DIR__ . '/../Config/config.php', 'giangvien'
         );
     }
 
@@ -55,11 +56,11 @@ class GiangVienServiceProvider extends ServiceProvider
     {
         $viewPath = resource_path('views/modules/giangvien');
 
-        $sourcePath = __DIR__.'/../Resources/views';
+        $sourcePath = __DIR__ . '/../Resources/views';
 
         $this->publishes([
             $sourcePath => $viewPath
-        ],'views');
+        ], 'views');
 
         $this->loadViewsFrom(array_merge(array_map(function ($path) {
             return $path . '/modules/giangvien';
@@ -78,7 +79,7 @@ class GiangVienServiceProvider extends ServiceProvider
         if (is_dir($langPath)) {
             $this->loadTranslationsFrom($langPath, 'giangvien');
         } else {
-            $this->loadTranslationsFrom(__DIR__ .'/../Resources/lang', 'giangvien');
+            $this->loadTranslationsFrom(__DIR__ . '/../Resources/lang', 'giangvien');
         }
     }
 
@@ -89,7 +90,7 @@ class GiangVienServiceProvider extends ServiceProvider
      */
     public function registerFactories()
     {
-        if (! app()->environment('production')) {
+        if (!app()->environment('production')) {
             app(Factory::class)->load(__DIR__ . '/../Database/factories');
         }
     }
