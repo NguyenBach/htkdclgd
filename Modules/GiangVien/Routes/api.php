@@ -52,3 +52,11 @@ Route::group([
     Route::get('/{year}', 'LecturerByAgeController@index')->name('lecturer-by-age.list');
     Route::post('/{year}', 'LecturerByAgeController@store')->name('lecturer-by-age.create');
 });
+
+Route::group([
+    'prefix' => 'lecturer-by-fl',
+    'middleware' => 'jwt.auth'
+], function () {
+    Route::get('/{year}', 'LecturerByFlController@index')->name('lecturer-by-fl.list');
+    Route::post('/{year}', 'LecturerByFlController@store')->name('lecturer-by-fl.create');
+});
