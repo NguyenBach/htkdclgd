@@ -23,7 +23,6 @@ class LecturerByDegreePolicy extends BasePolicy
 
     public function lecturer_by_degree(User $user)
     {
-        dd(1);
         return AuthHelper::can($user, 'lecturer_by_degree');
     }
 }
