@@ -23,23 +23,23 @@ class LecturerByDegreeController extends Controller
         $bienChe = LecturerByDegree::where('university_id', $user->university_id)
             ->where('year', $year)
             ->where('lecturer_type', 1)
-            ->get();
+            ->first();
         $daiHan = LecturerByDegree::where('university_id', $user->university_id)
             ->where('year', $year)
             ->where('lecturer_type', 2)
-            ->get();
+            ->first();
         $quanLy = LecturerByDegree::where('university_id', $user->university_id)
             ->where('year', $year)
             ->where('lecturer_type', 3)
-            ->get();
+            ->first();
         $trongNuoc = LecturerByDegree::where('university_id', $user->university_id)
             ->where('year', $year)
             ->where('lecturer_type', 4)
-            ->get();
+            ->first();
         $quocTe = LecturerByDegree::where('university_id', $user->university_id)
             ->where('year', $year)
             ->where('lecturer_type', 5)
-            ->get();
+            ->first();
         $result = [
             'success' => true,
             'message' => 'Lấy giảng viên thành công',

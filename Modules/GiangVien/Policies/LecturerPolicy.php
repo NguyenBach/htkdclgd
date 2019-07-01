@@ -7,7 +7,6 @@ use Illuminate\Auth\Access\HandlesAuthorization;
 use Modules\Auth\Entities\User;
 use Modules\Auth\Http\Helper\AuthHelper;
 use Modules\GiangVien\Entities\Lecturer;
-use phpDocumentor\Reflection\Types\Parent_;
 
 class LecturerPolicy extends BasePolicy
 {
