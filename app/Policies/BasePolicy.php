@@ -24,9 +24,11 @@ class BasePolicy
     public function before(User $user, $ability)
     {
         $permission = Permission::where('permission', $ability)->first();
-        $roleBase = json_decode($permission->role_base);
-        if (!in_array($user->role_id, $roleBase)) {
-            return false;
+        if(!is_null($permission)){
+            $roleBase = json_decode($permission->role_base);
+            if (!in_array($user->role_id, $roleBase)) {
+                return false;
+            }
         }
 
         if (AuthHelper::isSuperAdmin($user) || AuthHelper::isUniversityManager($user)) {
