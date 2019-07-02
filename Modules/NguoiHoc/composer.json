@@ -1,0 +1,25 @@
+{
+    "name": "nwidart/nguoihoc",
+    "description": "",
+    "authors": [
+        {
+            "name": "Nicolas Widart",
+            "email": "n.widart@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Modules\\NguoiHoc\\Providers\\NguoiHocServiceProvider"
+            ],
+            "aliases": {
+                
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\NguoiHoc\\": ""
+        }
+    }
+}
