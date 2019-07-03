@@ -36,3 +36,11 @@ Route::group([
     Route::get('/{year}', 'SvThamGiaNCKHController@index')->name('sv-tham-gia-nckh.list');
     Route::post('/{year}', 'SvThamGiaNCKHController@store')->name('sv-tham-gia-nckh.create');
 });
+
+Route::group([
+    'prefix' => 'nguoi-hoc-tot-nghiep',
+    'middleware' => 'jwt.auth'
+], function () {
+    Route::get('/{year}', 'NguoiHocTotNghiepController@index')->name('nguoi-hoc-tot-nghiep.list');
+    Route::post('/{year}', 'NguoiHocTotNghiepController@store')->name('nguoi-hoc-tot-nghiep.create');
+});
