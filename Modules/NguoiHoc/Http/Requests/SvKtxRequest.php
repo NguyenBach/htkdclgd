@@ -15,10 +15,10 @@ class SvKtxRequest extends FormRequest
     {
         return [
             //
-            'tong_dien_tich',
-            'sl_sinh_vien',
-            'sl_sv_co_nhu_cau',
-            'sl_sv_duoc_o'
+            'tong_dien_tich' => 'required',
+            'sl_sinh_vien' => 'required',
+            'sl_sv_co_nhu_cau' => 'required',
+            'sl_sv_dc_o' => 'required'
         ];
     }
 
