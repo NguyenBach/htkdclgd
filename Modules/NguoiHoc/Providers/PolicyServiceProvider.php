@@ -15,8 +15,10 @@ use Modules\Auth\Policies\PermissionPolicy;
 use Modules\Auth\Policies\UserPolicy;
 use Modules\NguoiHoc\Entities\SvKtx;
 use Modules\NguoiHoc\Entities\SvNhapHoc;
+use Modules\NguoiHoc\Entities\SvThamGiaNCKH;
 use Modules\NguoiHoc\Policies\SvKtxPolicy;
 use Modules\NguoiHoc\Policies\SvNhapHocPolicy;
+use Modules\NguoiHoc\Policies\SvThamGiaNCKHPolicy;
 
 
 class PolicyServiceProvider extends AuthServiceProvider
@@ -28,7 +30,8 @@ class PolicyServiceProvider extends AuthServiceProvider
      */
     protected $policies = [
         SvNhapHoc::class => SvNhapHocPolicy::class,
-        SvKtx::class => SvKtxPolicy::class
+        SvKtx::class => SvKtxPolicy::class,
+        SvThamGiaNCKH::class => SvThamGiaNCKHPolicy::class,
     ];
 
     /**

@@ -28,3 +28,11 @@ Route::group([
     Route::get('/{year}', 'SvKtxController@index')->name('sv-ktx.list');
     Route::post('/{year}', 'SvKtxController@store')->name('sv-ktx.create');
 });
+
+Route::group([
+    'prefix' => 'sv-tham-gia-nckh',
+    'middleware' => 'jwt.auth'
+], function () {
+    Route::get('/{year}', 'SvThamGiaNCKHController@index')->name('sv-tham-gia-nckh.list');
+    Route::post('/{year}', 'SvThamGiaNCKHController@store')->name('sv-tham-gia-nckh.create');
+});
