@@ -13,7 +13,9 @@ use Modules\Auth\Entities\Permission;
 use Modules\Auth\Entities\User;
 use Modules\Auth\Policies\PermissionPolicy;
 use Modules\Auth\Policies\UserPolicy;
+use Modules\NguoiHoc\Entities\SvKtx;
 use Modules\NguoiHoc\Entities\SvNhapHoc;
+use Modules\NguoiHoc\Policies\SvKtxPolicy;
 use Modules\NguoiHoc\Policies\SvNhapHocPolicy;
 
 
@@ -25,7 +27,8 @@ class PolicyServiceProvider extends AuthServiceProvider
      * @var array
      */
     protected $policies = [
-        SvNhapHoc::class => SvNhapHocPolicy::class
+        SvNhapHoc::class => SvNhapHocPolicy::class,
+        SvKtx::class => SvKtxPolicy::class
     ];
 
     /**
