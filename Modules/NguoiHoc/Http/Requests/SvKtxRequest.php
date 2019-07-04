@@ -2,9 +2,9 @@
 
 namespace Modules\NguoiHoc\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\APIRequest;
 
-class SvKtxRequest extends FormRequest
+class SvKtxRequest extends APIRequest
 {
     /**
      * Get the validation rules that apply to the request.

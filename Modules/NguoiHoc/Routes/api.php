@@ -44,3 +44,11 @@ Route::group([
     Route::get('/{year}', 'NguoiHocTotNghiepController@index')->name('nguoi-hoc-tot-nghiep.list');
     Route::post('/{year}', 'NguoiHocTotNghiepController@store')->name('nguoi-hoc-tot-nghiep.create');
 });
+
+Route::group([
+    'prefix' => 'tinh-trang-tot-nghiep',
+    'middleware' => 'jwt.auth'
+], function () {
+    Route::get('/{heHoc}/{year}', 'TinhTrangSvTotNghiepController@index')->name('tinh-trang-tot-nghiep.list');
+    Route::post('/{heHoc}/{year}', 'TinhTrangSvTotNghiepController@store')->name('tinh-trang-tot-nghiep.create');
+});

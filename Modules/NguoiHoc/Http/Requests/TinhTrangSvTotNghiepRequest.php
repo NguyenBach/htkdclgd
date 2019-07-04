@@ -4,7 +4,7 @@ namespace Modules\NguoiHoc\Http\Requests;
 
 use App\Http\Requests\APIRequest;
 
-class SvThamGiaNCKHRequest extends APIRequest
+class TinhTrangSvTotNghiepRequest extends APIRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -15,8 +15,7 @@ class SvThamGiaNCKHRequest extends APIRequest
     {
         return [
             //
-            'sl_tham_gia' => 'required',
-            'ti_le' => 'required'
+
         ];
     }
 

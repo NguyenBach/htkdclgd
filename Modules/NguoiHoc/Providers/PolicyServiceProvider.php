@@ -17,10 +17,12 @@ use Modules\NguoiHoc\Entities\NguoiHocTotNghiep;
 use Modules\NguoiHoc\Entities\SvKtx;
 use Modules\NguoiHoc\Entities\SvNhapHoc;
 use Modules\NguoiHoc\Entities\SvThamGiaNCKH;
+use Modules\NguoiHoc\Entities\TinhTrangSvTotNghiep;
 use Modules\NguoiHoc\Policies\NguoiHocTotNghiepPolicy;
 use Modules\NguoiHoc\Policies\SvKtxPolicy;
 use Modules\NguoiHoc\Policies\SvNhapHocPolicy;
 use Modules\NguoiHoc\Policies\SvThamGiaNCKHPolicy;
+use Modules\NguoiHoc\Policies\TinhTrangSvTotNghiepPolicy;
 
 
 class PolicyServiceProvider extends AuthServiceProvider
@@ -35,6 +37,7 @@ class PolicyServiceProvider extends AuthServiceProvider
         SvKtx::class => SvKtxPolicy::class,
         SvThamGiaNCKH::class => SvThamGiaNCKHPolicy::class,
         NguoiHocTotNghiep::class => NguoiHocTotNghiepPolicy::class,
+        TinhTrangSvTotNghiep::class => TinhTrangSvTotNghiepPolicy::class,
     ];
 
     /**
