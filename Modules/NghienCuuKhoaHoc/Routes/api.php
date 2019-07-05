@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use \Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +14,10 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/nghiencuukhoahoc', function (Request $request) {
-    return $request->user();
+Route::group([
+    'prefix' => 'so-luong-nckh',
+    'middleware' => 'jwt.auth'
+], function () {
+    Route::get('/{year}', 'SoLuongNCKHController@index')->name('so-luong-nckh.list');
+    Route::post('/{year}', 'SoLuongNCKHController@store')->name('so-luong-nckh.create');
 });
