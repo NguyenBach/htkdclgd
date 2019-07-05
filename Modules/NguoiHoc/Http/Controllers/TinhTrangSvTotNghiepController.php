@@ -13,6 +13,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Modules\NguoiHoc\Entities\CauHoiTotNghiep;
 use Modules\NguoiHoc\Entities\TinhTrangSvTotNghiep;
+use Modules\NguoiHoc\Http\Requests\TinhTrangSvTotNghiepRequest;
 
 class TinhTrangSvTotNghiepController extends Controller
 {
@@ -51,7 +52,7 @@ class TinhTrangSvTotNghiepController extends Controller
     }
 
 
-    public function store($heHoc, $year, NguoiHocTotNghiepRequest $request)
+    public function store($heHoc, $year, TinhTrangSvTotNghiepRequest $request)
     {
         if ($heHoc == 'dai-hoc') {
             $heHoc = 1;
@@ -67,23 +68,45 @@ class TinhTrangSvTotNghiepController extends Controller
             }
         }
         $user = Auth::user();
-        $this->authorize('nguoi_hoc_tot_nghiep', NguoiHocTotNghiep::class);
+        $this->authorize('tinh_trang_sv_tn', TinhTrangSvTotNghiep::class);
         $data = $request->validated();
-        $data['university_id'] = $user->university_id;
-        $data['year'] = $year;
+        $tinhTrang = json_decode($data['tinh_trang'], true);
 
-        $svKtx = NguoiHocTotNghiep::updateOrCreate(
-            [
-                'year' => $year,
-                'university_id' => $user->university_id
-            ],
-            $data);
+        $insertData = [];
+        $insertData['university_id'] = $user->university_id;
+        $insertData['year'] = $year;
+        $insertData['he_hoc'] = $heHoc;
+
+        $cauHoi = CauHoiTotNghiep::all();
+
+        foreach ($cauHoi as $item) {
+            if(isset($tinhTrang[$item->id])){
+                $insertData['cau_hoi_id'] = $item->id;
+                $insertData['tra_loi'] = $tinhTrang[$item->id];
+                TinhTrangSvTotNghiep::updateOrCreate(
+                    [
+                        'year' => $year,
+                        'university_id' => $user->university_id,
+                        'he_hoc' => $heHoc,
+                        'cau_hoi_id' => $item->id
+                    ],
+                    $data);
+            }
+
+        }
+
+
+        $tinhTrang = TinhTrangSvTotNghiep::where('he_hoc', $heHoc)
+            ->where('year', $year)
+            ->where('university_id', $user->university_id)
+            ->with('cauHoi')
+            ->get();
 
         $result = [
             'success' => true,
-            'message' => 'Update sinh người học tốt nghiệp thành công',
+            'message' => 'Update người học tốt nghiệp thành công',
             'data' => [
-                'nguoi_hoc_tot_nghiep' => $svKtx
+                'tinh_trang' => $tinhTrang
             ]
         ];
         return response()->json($result, 200);

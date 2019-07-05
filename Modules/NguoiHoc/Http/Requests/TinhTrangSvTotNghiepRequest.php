@@ -15,7 +15,7 @@ class TinhTrangSvTotNghiepRequest extends APIRequest
     {
         return [
             //
-
+            'tinh_trang' => 'required|json'
         ];
     }
 
