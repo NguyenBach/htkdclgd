@@ -29,3 +29,11 @@ Route::group([
     Route::get('/{year}', 'DoanhThuNCKHController@index')->name('doanh-thu-nckh.list');
     Route::post('/{year}', 'DoanhThuNCKHController@store')->name('doanh-thu-nckh.create');
 });
+
+Route::group([
+    'prefix' => 'can-bo-nckh',
+    'middleware' => 'jwt.auth'
+], function () {
+    Route::get('/{year}', 'CanBoNCKHController@index')->name('can-bo-nckh.list');
+    Route::post('/{year}', 'CanBoNCKHController@store')->name('can-bo-nckh.create');
+});

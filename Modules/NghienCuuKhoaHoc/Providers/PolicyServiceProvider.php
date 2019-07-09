@@ -9,8 +9,10 @@
 namespace Modules\NghienCuuKhoaHoc\Providers;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider;
+use Modules\NghienCuuKhoaHoc\Entities\CanBoNCKH;
 use Modules\NghienCuuKhoaHoc\Entities\DoanhThuNCKH;
 use Modules\NghienCuuKhoaHoc\Entities\SoLuongNCKH;
+use Modules\NghienCuuKhoaHoc\Policies\CanBoNCKHPolicy;
 use Modules\NghienCuuKhoaHoc\Policies\DoanhThuNCKHPolicy;
 use Modules\NghienCuuKhoaHoc\Policies\SoLuongNCKHPolicy;
 
@@ -25,6 +27,7 @@ class PolicyServiceProvider extends AuthServiceProvider
     protected $policies = [
         SoLuongNCKH::class => SoLuongNCKHPolicy::class,
         DoanhThuNCKH::class => DoanhThuNCKHPolicy::class,
+        CanBoNCKH::class => CanBoNCKHPolicy::class,
     ];
 
     /**
