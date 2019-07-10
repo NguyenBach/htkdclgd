@@ -12,9 +12,11 @@ use Illuminate\Foundation\Support\Providers\AuthServiceProvider;
 use Modules\NghienCuuKhoaHoc\Entities\CanBoNCKH;
 use Modules\NghienCuuKhoaHoc\Entities\DoanhThuNCKH;
 use Modules\NghienCuuKhoaHoc\Entities\SoLuongNCKH;
+use Modules\NghienCuuKhoaHoc\Entities\SoLuongSach;
 use Modules\NghienCuuKhoaHoc\Policies\CanBoNCKHPolicy;
 use Modules\NghienCuuKhoaHoc\Policies\DoanhThuNCKHPolicy;
 use Modules\NghienCuuKhoaHoc\Policies\SoLuongNCKHPolicy;
+use Modules\NghienCuuKhoaHoc\Policies\SoLuongSachPolicy;
 
 
 class PolicyServiceProvider extends AuthServiceProvider
@@ -28,6 +30,7 @@ class PolicyServiceProvider extends AuthServiceProvider
         SoLuongNCKH::class => SoLuongNCKHPolicy::class,
         DoanhThuNCKH::class => DoanhThuNCKHPolicy::class,
         CanBoNCKH::class => CanBoNCKHPolicy::class,
+        SoLuongSach::class => SoLuongSachPolicy::class,
     ];
 
     /**
