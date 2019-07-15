@@ -13,10 +13,12 @@ use Modules\NghienCuuKhoaHoc\Entities\CanBoNCKH;
 use Modules\NghienCuuKhoaHoc\Entities\DoanhThuNCKH;
 use Modules\NghienCuuKhoaHoc\Entities\SoLuongNCKH;
 use Modules\NghienCuuKhoaHoc\Entities\SoLuongSach;
+use Modules\NghienCuuKhoaHoc\Entities\TapChiDuocDang;
 use Modules\NghienCuuKhoaHoc\Policies\CanBoNCKHPolicy;
 use Modules\NghienCuuKhoaHoc\Policies\DoanhThuNCKHPolicy;
 use Modules\NghienCuuKhoaHoc\Policies\SoLuongNCKHPolicy;
 use Modules\NghienCuuKhoaHoc\Policies\SoLuongSachPolicy;
+use Modules\NghienCuuKhoaHoc\Policies\TapChiDuocDangPolicy;
 
 
 class PolicyServiceProvider extends AuthServiceProvider
@@ -31,6 +33,7 @@ class PolicyServiceProvider extends AuthServiceProvider
         DoanhThuNCKH::class => DoanhThuNCKHPolicy::class,
         CanBoNCKH::class => CanBoNCKHPolicy::class,
         SoLuongSach::class => SoLuongSachPolicy::class,
+        TapChiDuocDang::class => TapChiDuocDangPolicy::class,
     ];
 
     /**

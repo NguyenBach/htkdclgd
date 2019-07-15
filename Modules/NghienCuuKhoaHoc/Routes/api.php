@@ -45,3 +45,11 @@ Route::group([
     Route::get('/{year}', 'SoLuongSachController@index')->name('so-luong-sach.list');
     Route::post('/{year}', 'SoLuongSachController@store')->name('so-luong-sach.create');
 });
+
+Route::group([
+    'prefix' => 'tap-chi-duoc-dang',
+    'middleware' => 'jwt.auth'
+], function () {
+    Route::get('/{year}', 'TapChiDuocDangController@index')->name('tap-chi-duoc-dang.list');
+    Route::post('/{year}', 'TapChiDuocDangController@store')->name('tap-chi-duoc-dang.create');
+});
