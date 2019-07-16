@@ -61,3 +61,11 @@ Route::group([
     Route::get('/{year}', 'CanBoTapChiController@index')->name('can-bo-tap-chi.list');
     Route::post('/{year}', 'CanBoTapChiController@store')->name('can-bo-tap-chi.create');
 });
+
+Route::group([
+    'prefix' => 'bao-cao-hoi-thao',
+    'middleware' => 'jwt.auth'
+], function () {
+    Route::get('/{year}', 'BaoCaoHoiThaoController@index')->name('bao-cao-hoi-thao.list');
+    Route::post('/{year}', 'BaoCaoHoiThaoController@store')->name('bao-cao-hoi-thao.create');
+});
