@@ -94,4 +94,13 @@ Route::group([
     Route::post('/{year}', 'SvNCKHController@store')->name('sv-nckh.create');
 });
 
+Route::group([
+    'prefix' => 'thanh-tich-nckh',
+    'middleware' => 'jwt.auth'
+], function () {
+    Route::get('/{year}', 'ThanhTichController@index')->name('thanh-tich-nckh.list');
+    Route::post('/{year}', 'ThanhTichController@store')->name('thanh-tich-nckh.create');
+});
+
+
 
