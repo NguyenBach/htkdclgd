@@ -9,6 +9,7 @@
 namespace Modules\NghienCuuKhoaHoc\Providers;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider;
+use Modules\NghienCuuKhoaHoc\Entities\BangSangChe;
 use Modules\NghienCuuKhoaHoc\Entities\BaoCaoHoiThao;
 use Modules\NghienCuuKhoaHoc\Entities\CanBoHoiThao;
 use Modules\NghienCuuKhoaHoc\Entities\CanBoNCKH;
@@ -17,6 +18,7 @@ use Modules\NghienCuuKhoaHoc\Entities\DoanhThuNCKH;
 use Modules\NghienCuuKhoaHoc\Entities\SoLuongNCKH;
 use Modules\NghienCuuKhoaHoc\Entities\SoLuongSach;
 use Modules\NghienCuuKhoaHoc\Entities\TapChiDuocDang;
+use Modules\NghienCuuKhoaHoc\Policies\BangSangChePolicy;
 use Modules\NghienCuuKhoaHoc\Policies\BaoCaoHoiThaoPolicy;
 use Modules\NghienCuuKhoaHoc\Policies\CanBoHoiThaoPolicy;
 use Modules\NghienCuuKhoaHoc\Policies\CanBoNCKHPolicy;
@@ -43,6 +45,7 @@ class PolicyServiceProvider extends AuthServiceProvider
         CanBoTapChi::class => CanBoTapChiPolicy::class,
         BaoCaoHoiThao::class => BaoCaoHoiThaoPolicy::class,
         CanBoHoiThao::class => CanBoHoiThaoPolicy::class,
+        BangSangChe::class => BangSangChePolicy::class,
     ];
 
     /**
