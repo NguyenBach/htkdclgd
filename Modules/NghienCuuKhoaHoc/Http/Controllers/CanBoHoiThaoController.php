@@ -46,7 +46,6 @@ class CanBoHoiThaoController extends Controller
         return response()->json($result, 200);
     }
 
-
     public function store($year, CanBoHoiThaoRequest $request)
     {
 
