@@ -67,7 +67,6 @@ class CanBoHoiThaoController extends Controller
             [
                 'year' => $year,
                 'university_id' => $user->university_id,
-                'university_id' => $user->university_id,
                 'phan_loai_hoi_thao_id' => 1
             ],
             $data);
@@ -104,7 +103,7 @@ class CanBoHoiThaoController extends Controller
 
         $result = [
             'success' => true,
-            'message' => 'Update cán bộ nghiên cứu khoa hoc thành công',
+            'message' => 'Update cán bộ hội thảo thành công',
             'data' => [
                 'quoc_te' => $quocTe,
                 'trong_nuoc' => $trongNuoc,
