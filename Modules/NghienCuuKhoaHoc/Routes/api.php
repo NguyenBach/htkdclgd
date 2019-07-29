@@ -86,3 +86,12 @@ Route::group([
     Route::post('/{year}', 'BangSangCheController@store')->name('bang-sang-che.create');
 });
 
+Route::group([
+    'prefix' => 'sv-nckh',
+    'middleware' => 'jwt.auth'
+], function () {
+    Route::get('/{year}', 'SvNCKHController@index')->name('sv-nckh.list');
+    Route::post('/{year}', 'SvNCKHController@store')->name('sv-nckh.create');
+});
+
+
