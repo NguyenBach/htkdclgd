@@ -10,7 +10,9 @@ namespace Modules\CoSoVatChat\Providers;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider;
 use Modules\CoSoVatChat\Entities\DienTich;
+use Modules\CoSoVatChat\Entities\SachThuVien;
 use Modules\CoSoVatChat\Policies\DienTichPolicy;
+use Modules\CoSoVatChat\Policies\SachThuVienPolicy;
 use Modules\NghienCuuKhoaHoc\Entities\BangSangChe;
 use Modules\NghienCuuKhoaHoc\Entities\BaoCaoHoiThao;
 use Modules\NghienCuuKhoaHoc\Entities\CanBoHoiThao;
@@ -43,7 +45,8 @@ class PolicyServiceProvider extends AuthServiceProvider
      * @var array
      */
     protected $policies = [
-        DienTich::class => DienTichPolicy::class
+        DienTich::class => DienTichPolicy::class,
+        SachThuVien::class => SachThuVienPolicy::class,
     ];
 
     /**
