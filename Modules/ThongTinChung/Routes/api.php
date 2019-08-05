@@ -31,6 +31,8 @@ Route::group([
 ], function () {
     Route::get('/list', 'DepartmentController@list')->name('department.list');
     Route::post('/create', 'DepartmentController@create')->name('university.create');
+    Route::post('/update/{department}', 'DepartmentController@update')->name('university.update');
+    Route::post('/delete/{department}', 'DepartmentController@delete')->name('university.delete');
 });
 
 Route::group([

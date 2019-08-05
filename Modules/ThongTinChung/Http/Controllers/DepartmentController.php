@@ -86,13 +86,14 @@ class DepartmentController extends Controller
         $data['university_id'] = $user->university_id;
         $data['created_by'] = $user->id;
         $model = $department->update($data);
+        $department->refresh();
         if ($model) {
             $department->refresh();
             $result = [
                 'success' => true,
                 'message' => 'Update phòng ban học thành công',
                 'data' => [
-                    'departments' => $model
+                    'departments' => $department
                 ]
             ];
             return response()->json($result, 200);

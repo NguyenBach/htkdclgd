@@ -60,7 +60,7 @@ class DepartmentPolicy extends BasePolicy
     public function delete(User $user, Department $department)
     {
         $a = AuthHelper::can($user, 'key_officer');
-        if (!AuthHelper::isSuperAdmin($user) || !AuthHelper::isAdmin($user)) {
+        if (!AuthHelper::isSuperAdmin($user) && !AuthHelper::isAdmin($user)) {
             $b = $user->university_id == $department->university_id;
         } else {
             $b = true;
