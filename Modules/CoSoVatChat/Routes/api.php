@@ -42,3 +42,13 @@ Route::group([
     Route::post('/{year}/{nhomNganh}', 'SachThuVienController@create')->name('sach-thu-vien.create');
 });
 
+Route::group([
+    'prefix' => 'trang-thiet-bi',
+    'middleware' => 'jwt.auth'
+], function () {
+    Route::get('/', 'TrangThietBiController@list')->name('trang-thiet-bi.list');
+    Route::get('/{trangThietBi}', 'TrangThietBiController@show')->name('trang-thiet-bi.list');
+    Route::post('/', 'TrangThietBiController@create')->name('trang-thiet-bi.create');
+    Route::put('/{trangThietBi}', 'TrangThietBiController@update')->name('trang-thiet-bi.update');
+    Route::delete('/{trangThietBi}', 'TrangThietBiController@delete')->name('trang-thiet-bi.delete');
+});
