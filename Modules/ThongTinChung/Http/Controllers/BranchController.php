@@ -121,17 +121,17 @@ class BranchController extends Controller
         $user = Auth::user();
         $data = $request->validated();
 
-        if (!isset($data['number_researcher'])) {
+       /** if (!isset($data['number_researcher'])) {
             $data['number_researcher'] = $branch->number_researcher;
         }
 
         if (!isset($data['number_officer'])) {
             $data['number_officer'] = $branch->number_officer;
-        }
+        }**/
 
         $slugify = new Slugify();
         $data['slug'] = $slugify->slugify($data['name']);
-        $data['university_id'] = $user->university_id;
+        //$data['university_id'] = $user->university_id;
 
        // $checkExist = $this->branch->where('university_id', $user->university_id)
        //     ->where('slug', $data['slug'])->first();
