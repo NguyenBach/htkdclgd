@@ -133,16 +133,16 @@ class BranchController extends Controller
         $data['slug'] = $slugify->slugify($data['name']);
         $data['university_id'] = $user->university_id;
 
-        $checkExist = $this->branch->where('university_id', $user->university_id)
-            ->where('slug', $data['slug'])->first();
+       // $checkExist = $this->branch->where('university_id', $user->university_id)
+       //     ->where('slug', $data['slug'])->first();
 
-        if (!is_null($checkExist) && $data['slug'] != $branch->slug) {
-            $result = [
-                'success' => false,
-                'message' => 'Đơn vị này đã tồn tại',
-            ];
-            return response()->json($result, 400);
-        }
+     //   if (!is_null($checkExist) && $data['slug'] != $branch->slug) {
+     //       $result = [
+    //            'success' => false,
+     //           'message' => 'Đơn vị này đã tồn tại',
+    //        ];
+   //         return response()->json($result, 400);
+    //    }
 
         $success = $branch->update($data);
 
