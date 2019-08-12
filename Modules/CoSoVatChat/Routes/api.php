@@ -52,3 +52,14 @@ Route::group([
     Route::put('/{trangThietBi}', 'TrangThietBiController@update')->name('trang-thiet-bi.update');
     Route::delete('/{trangThietBi}', 'TrangThietBiController@delete')->name('trang-thiet-bi.delete');
 });
+
+Route::group([
+    'prefix' => 'thiet-bi',
+    'middleware' => 'jwt.auth'
+], function () {
+    Route::get('/', 'ThietBiController@index')->name('thiet-bi.list');
+    Route::get('/{thietBi}', 'ThietBiController@show')->name('thiet-bi.list');
+    Route::post('/', 'ThietBiController@store')->name('thiet-bi.create');
+    Route::put('/{thietBi}', 'ThietBiController@update')->name('thiet-bi.update');
+    Route::delete('/{thietBi}', 'ThietBiController@destroy')->name('thiet-bi.delete');
+});

@@ -2,9 +2,9 @@
 
 namespace Modules\CoSoVatChat\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\APIRequest;
 
-class ThietBiRequest extends FormRequest
+class ThietBiRequest extends APIRequest
 {
     /**
      * Get the validation rules that apply to the request.
