@@ -63,3 +63,11 @@ Route::group([
     Route::put('/{thietBi}', 'ThietBiController@update')->name('thiet-bi.update');
     Route::delete('/{thietBi}', 'ThietBiController@destroy')->name('thiet-bi.delete');
 });
+
+Route::group([
+    'prefix' => 'thu-chi',
+    'middleware' => 'jwt.auth'
+], function () {
+    Route::get('/{year}', 'ThuChiController@list')->name('thu-chi.list');
+    Route::post('/{year}', 'ThuChiController@update')->name('thu-chi.update');
+});
