@@ -1,0 +1,25 @@
+{
+    "name": "nwidart/kiemdinhchatluong",
+    "description": "",
+    "authors": [
+        {
+            "name": "Nicolas Widart",
+            "email": "n.widart@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Modules\\KiemDinhChatLuong\\Providers\\KiemDinhChatLuongServiceProvider"
+            ],
+            "aliases": {
+                
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\KiemDinhChatLuong\\": ""
+        }
+    }
+}
