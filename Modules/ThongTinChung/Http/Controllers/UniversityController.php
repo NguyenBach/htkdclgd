@@ -55,6 +55,9 @@ class UniversityController extends Controller
     {
         $this->authorize('create', University::class);
         $universityData = $request->validated();
+        if (!empty($universityData['institution_type_other'])) {
+            $universityData['institution_type'] = 0;
+        }
         $university = $this->universityModel->create($universityData);
         $result = [
             'success' => true,
@@ -89,5 +92,23 @@ class UniversityController extends Controller
             return response()->json($result, 500);
         }
 
+    }
+
+    public function destroy(University $model)
+    {
+        $success = $model->delete();
+        if ($success) {
+            $result = [
+                'success' => true,
+                'message' => 'Xóa trường đại học thành công',
+            ];
+            return response()->json($result, 200);
+        } else {
+            $result = [
+                'success' => false,
+                'message' => 'Xóa trường đại học thất bại',
+            ];
+            return response()->json($result, 500);
+        }
     }
 }
