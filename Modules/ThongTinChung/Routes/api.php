@@ -23,6 +23,7 @@ Route::group([
     Route::get('/{model}', 'UniversityController@view')->name('university.view');
     Route::post('/create', 'UniversityController@create')->name('university.create');
     Route::post('/update/{model}', 'UniversityController@update')->name('university.update');
+    Route::delete('/delete/{model}', 'UniversityController@destroy')->name('university.destroy');
     Route::get('/training-type/list', 'UniversityController@getTrainingType')->name('university.getTrainingType');
 });
 
