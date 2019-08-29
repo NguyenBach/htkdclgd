@@ -28,7 +28,9 @@ class EducationTypeController extends Controller
     {
         $this->authorize('list', EducationType::class);
         $user = Auth::user();
-        $types = $this->model->where('university_id', $user->university_id)
+        $types = $this->model
+            ->where('university_id', $user->university_id)
+            ->orWhere('university_id', 0)
             ->get();
         $result = [
             'success' => true,

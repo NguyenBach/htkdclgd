@@ -11,6 +11,7 @@ namespace Modules\ThongTinChung\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Modules\ThongTinChung\Entities\TrainingType;
 use Modules\ThongTinChung\Entities\University;
 use Modules\ThongTinChung\Http\Requests\UniversityRequest;
 use Modules\ThongTinChung\Http\Requests\UniversityUpdateRequest;
@@ -73,6 +74,9 @@ class UniversityController extends Controller
     {
         $this->authorize('update', $model);
         $data = $request->validated();
+        if (is_array($data['training_type_other'])) {
+            $data['training_type_other'] = json_encode($data['training_type_other']);
+        }
         $success = $model->update($data);
         if ($success) {
             $model->refresh();
@@ -110,5 +114,18 @@ class UniversityController extends Controller
             ];
             return response()->json($result, 500);
         }
+    }
+
+    public function getTrainingType()
+    {
+        $traningTypes = TrainingType::all();
+        $result = [
+            'success' => true,
+            'message' => 'Lấy loại hình đào tạo thành công',
+            'data' => [
+                'training_type' => $traningTypes
+            ]
+        ];
+        return response()->json($result, 200);
     }
 }
