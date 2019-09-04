@@ -4,6 +4,7 @@ namespace Modules\Auth\Http\Controllers;
 
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Modules\Auth\Http\Requests\LoginRequest;
 
 class AuthController extends Controller
@@ -27,6 +28,9 @@ class AuthController extends Controller
             ];
             return response()->json($response, 401);
         }
+
+        Log::info('Đăng nhập thành công');
+
 
         $response = [
             'success' => true,
@@ -52,6 +56,7 @@ class AuthController extends Controller
             'code' => 200,
             'message' => 'Successfully logged out',
         ];
+        Log::info('Đăng xuất thành công');
         return response()->json($response, 200);
     }
 
@@ -63,6 +68,8 @@ class AuthController extends Controller
     public function refresh()
     {
         $token = Auth::refresh();
+        Log::info('Làm mới token thành công');
+
         $response = [
             'success' => true,
             'code' => 200,

@@ -12,6 +12,7 @@ namespace Modules\Auth\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Modules\Auth\Entities\Permission;
 use Modules\Auth\Http\Helper\AuthHelper;
 
@@ -38,6 +39,8 @@ class PermissionController extends Controller
                 $data[] = $permission;
             }
         }
+        Log::info('Lấy quyền thành công');
+
         $result = [
             'success' => true,
             'message' => 'Lấy thông tin thành công',

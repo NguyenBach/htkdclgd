@@ -7,8 +7,11 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Tymon\JWTAuth\Exceptions\JWTException;
+use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 
 class Handler extends ExceptionHandler
 {
@@ -51,6 +54,7 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        Log::error($exception->getMessage());
         if ($exception instanceof ModelNotFoundException) {
             return response()->json([
                 'code' => 404,
@@ -83,7 +87,13 @@ class Handler extends ExceptionHandler
             ], 401);
         }
 
-        if($exception instanceof AuthenticationException){
+        if ($exception instanceof AuthenticationException) {
+            return response()->json([
+                'code' => 401,
+                'message' => $exception->getMessage(),
+            ], 401);
+        }
+        if ($exception instanceof JWTException) {
             return response()->json([
                 'code' => 401,
                 'message' => $exception->getMessage(),

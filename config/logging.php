@@ -1,5 +1,6 @@
 <?php
 
+use App\Log\LogMonolog;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogUdpHandler;
 
@@ -88,6 +89,10 @@ return [
         'errorlog' => [
             'driver' => 'errorlog',
             'level' => 'debug',
+        ],
+        'custom' => [
+            'driver' => 'custom',
+            'via' => LogMonolog::class,
         ],
     ],
 

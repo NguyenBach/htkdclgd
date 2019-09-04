@@ -14,6 +14,7 @@ use function foo\func;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Modules\Auth\Entities\Permission;
 use Modules\Auth\Entities\User;
 use Modules\Auth\Entities\UserPermission;
@@ -35,6 +36,7 @@ class UserController extends Controller
     {
         $user = Auth::user();
         $user->permissions = $user->permissions()->get();
+        Log::info("Lấy thông tin cá nhân thành công");
         $result = [
             'success' => true,
             'message' => 'Lấy thông tin người dùng thành công',
@@ -51,12 +53,15 @@ class UserController extends Controller
         $user = $this->user->find($id);
         $user->permissions = $user->permissions()->get();
         if (is_null($user)) {
+            Log::info("Lấy thông tin cá nhân thất bại");
+
             $result = [
                 'success' => false,
                 'message' => 'Không tìm thấy người dùng này'
             ];
             return response()->json($result, 404);
         } else {
+            Log::info("Lấy thông tin cá nhân thành công");
             $result = [
                 'success' => true,
                 'message' => 'Lấy thông tin người dùng thành công',
@@ -127,12 +132,16 @@ class UserController extends Controller
         });
 
         if (is_null($createdUser)) {
+            Log::info("Thêm người dùng");
+
             $result = [
                 'success' => false,
                 'message' => 'Thêm người dùng lỗi'
             ];
             return response()->json($result, 404);
         } else {
+            Log::info("Thêm người dùng");
+
             $result = [
                 'success' => true,
                 'message' => 'Thêm người dùng thành công',
