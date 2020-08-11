@@ -3,15 +3,20 @@
 namespace Modules\ThongTinChung\Entities;
 
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Department extends Model
 {
+    use LogsActivity;
+
     protected $fillable = [
         'name',
         'slug',
         'created_by',
         'university_id'
     ];
+
+    protected static $logAttributes = ['name', 'slug'];
 
     protected $hidden = [
         'created_by',

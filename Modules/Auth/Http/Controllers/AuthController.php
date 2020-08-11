@@ -21,6 +21,7 @@ class AuthController extends Controller
         $credentials = $request->validated();
 
         if (!$token = Auth::attempt($credentials)) {
+            Log::info('Đăng nhập thất bại');
             $response = [
                 'success' => false,
                 'code' => 401,
@@ -30,7 +31,7 @@ class AuthController extends Controller
         }
 
         Log::info('Đăng nhập thành công');
-
+        activity()->log('heloworld');
 
         $response = [
             'success' => true,

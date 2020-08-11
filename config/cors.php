@@ -24,5 +24,6 @@ return [
     'allowedMethods' => ['*'],
     'exposedHeaders' => [],
     'maxAge' => 0,
+    'allowed_origins' => ['*'],
 
 ];
