@@ -31,7 +31,6 @@ class AuthController extends Controller
         }
 
         Log::info('Đăng nhập thành công');
-        activity()->log('heloworld');
 
         $response = [
             'success' => true,

@@ -3,11 +3,9 @@
 namespace Modules\ThongTinChung\Entities;
 
 use Illuminate\Database\Eloquent\Model;
-use Spatie\Activitylog\Traits\LogsActivity;
 
 class Department extends Model
 {
-    use LogsActivity;
 
     protected $fillable = [
         'name',
