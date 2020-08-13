@@ -31,7 +31,7 @@ class BasePolicy
             }
         }
 
-        if (AuthHelper::isSuperAdmin($user) || AuthHelper::isUniversityManager($user)) {
+        if (AuthHelper::isSuperAdmin($user)||  AuthHelper::isAdmin($user) || AuthHelper::isUniversityManager($user)) {
             return true;
         }
 
