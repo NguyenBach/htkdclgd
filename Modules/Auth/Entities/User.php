@@ -3,6 +3,7 @@
 namespace Modules\Auth\Entities;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Modules\ThongTinChung\Entities\University;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
@@ -57,5 +58,10 @@ class User extends Authenticatable implements JWTSubject
     public function permissions()
     {
         return $this->belongsToMany(Permission::class, 'user_permissions', 'user_id');
+    }
+
+    public function university()
+    {
+        return $this->belongsTo(University::class, 'university_id', 'id');
     }
 }
