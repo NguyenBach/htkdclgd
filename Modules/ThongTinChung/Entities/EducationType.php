@@ -3,13 +3,20 @@
 namespace Modules\ThongTinChung\Entities;
 
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class EducationType extends Model
 {
+    use LogsActivity;
+
     protected $fillable = [
         'university_id',
         'name',
         'slug'
+    ];
+
+    protected static $logAttributes = [
+        'name',
     ];
 
     protected $hidden = [

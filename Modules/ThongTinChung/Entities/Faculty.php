@@ -3,9 +3,12 @@
 namespace Modules\ThongTinChung\Entities;
 
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Faculty extends Model
 {
+    use LogsActivity;
+
     protected $fillable = [
         'university_id',
         'name',
@@ -13,6 +16,13 @@ class Faculty extends Model
         'number_education_program',
         'students',
         'slug'
+    ];
+
+    protected static $logAttributes = [
+        'name',
+        'education_type_id',
+        'number_education_program',
+        'students',
     ];
 
     protected $hidden = [

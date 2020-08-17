@@ -4,11 +4,25 @@ namespace Modules\Auth\Entities;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Modules\ThongTinChung\Entities\University;
+use Spatie\Activitylog\Traits\LogsActivity;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
 {
+    use LogsActivity;
+
     protected $table = 'users';
+
+    protected static $logAttributes = [
+        'university_id',
+        'username',
+        'password',
+        'user_token',
+        'fullname',
+        'email',
+        'created_by',
+        'role_id'
+    ];
 
     protected $fillable = [
         'university_id',
