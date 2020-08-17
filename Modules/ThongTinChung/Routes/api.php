@@ -76,3 +76,12 @@ Route::group([
     Route::post('/update/{faculty}', 'BranchController@update')->name('faculty.update');
     Route::post('/delete/{faculty}', 'BranchController@delete')->name('faculty.delete');
 });
+
+Route::group([
+    'prefix' => 'bieu-mau',
+    'middleware' => 'jwt.auth'
+], function () {
+    Route::get('', 'BieuMauController@index')->name('bieu-mau.index');
+    Route::post('', 'BieuMauController@store')->name('bieu-mau.store');
+    Route::delete('{model}', 'BieuMauController@destroy')->name('bieu-mau.destroy');
+});

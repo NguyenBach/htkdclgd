@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "efddc02da44833d013fa3c0d53c22439",
+    "content-hash": "7d3af3baaac257f55609509b7cdb018e",
     "packages": [
         {
             "name": "anahkiasen/underscore-php",
@@ -2630,28 +2630,27 @@
         },
         {
             "name": "spatie/laravel-activitylog",
-            "version": "1.7.1",
+            "version": "1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-activitylog.git",
-                "reference": "027fbf39fd3cda3030e4e8314c9fbf9e700c7d98"
+                "reference": "3634e56c9fea42634013faba1ea17deb58087d75"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-activitylog/zipball/027fbf39fd3cda3030e4e8314c9fbf9e700c7d98",
-                "reference": "027fbf39fd3cda3030e4e8314c9fbf9e700c7d98",
+                "url": "https://api.github.com/repos/spatie/laravel-activitylog/zipball/3634e56c9fea42634013faba1ea17deb58087d75",
+                "reference": "3634e56c9fea42634013faba1ea17deb58087d75",
                 "shasum": ""
             },
             "require": {
-                "illuminate/config": "^5.2|^5.3",
-                "illuminate/database": "^5.2.6|^5.3",
-                "illuminate/support": "^5.2|^5.3",
+                "illuminate/config": "^5.2",
+                "illuminate/database": "^5.2",
+                "illuminate/support": "^5.2.21",
                 "php": "^7.0",
                 "spatie/string": "^2.1"
             },
             "require-dev": {
-                "orchestra/database": "3.3.x-dev",
-                "orchestra/testbench": "3.3.x-dev",
+                "orchestra/testbench": "^3.2",
                 "phpunit/phpunit": "5.*"
             },
             "type": "library",
@@ -2690,7 +2689,7 @@
                 "spatie",
                 "user"
             ],
-            "time": "2016-08-23T14:01:54+00:00"
+            "time": "2016-06-28T17:15:41+00:00"
         },
         {
             "name": "spatie/string",
@@ -5553,6 +5552,7 @@
             "keywords": [
                 "tokenizer"
             ],
+            "abandoned": true,
             "time": "2018-10-30T05:52:18+00:00"
         },
         {
