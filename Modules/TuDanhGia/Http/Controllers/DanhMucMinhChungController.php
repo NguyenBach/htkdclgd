@@ -19,13 +19,11 @@ class DanhMucMinhChungController extends Controller
         $danhMuc = DanhMucMinhChung::where('university_id', $user->university_id)
             ->orderBy('created_at', 'desc')
             ->with('updatedBy')
-            ->get();
+            ->paginate(20);
         $result = [
             'success' => true,
             'message' => 'Lấy danh muc minh chứng thành công',
-            'data' => [
-                'danh_muc_minh_chung' => $danhMuc
-            ]
+            'data' => $danhMuc
         ];
         return response()->json($result, 200);
     }

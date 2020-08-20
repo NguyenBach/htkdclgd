@@ -17,7 +17,9 @@ class BaoCaoTuDanhGiaController extends Controller
 
         $baoCao = BaoCaoTuDanhGia::where('university_id', $user->university_id)
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->with('created_by')
+            ->with('commented_by')
+            ->paginate(20);
 
         $response = [
             'success' => true,

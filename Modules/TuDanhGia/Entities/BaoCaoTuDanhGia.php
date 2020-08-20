@@ -3,6 +3,7 @@
 namespace Modules\TuDanhGia\Entities;
 
 use Illuminate\Database\Eloquent\Model;
+use Modules\Auth\Entities\User;
 use Modules\ThongTinChung\Entities\University;
 use Spatie\Activitylog\Traits\LogsActivity;
 
@@ -33,5 +34,15 @@ class BaoCaoTuDanhGia extends Model
     public function university()
     {
         return $this->belongsTo(University::class, 'university_id', 'id');
+    }
+
+    public function created_by()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function commented_by()
+    {
+        return $this->belongsTo(User::class, 'commented_by');
     }
 }
