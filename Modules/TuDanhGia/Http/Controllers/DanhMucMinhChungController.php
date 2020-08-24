@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Modules\TuDanhGia\Entities\DanhMucMinhChung;
 use Modules\TuDanhGia\Http\Requests\DanhMucMinhChungRequest;
 
@@ -54,7 +55,7 @@ class DanhMucMinhChungController extends Controller
         $data['filename'] = $file->getClientOriginalName();
         $data['university_id'] = $user->university_id;
         $data['updated_by'] = $user->id;
-        $data['file_url'] = $filePath;
+        $data['file_url'] = url(Storage::url($filePath));
         $data['online_folder_url'] = $data['link'];
         $data['last_change'] = date('Y-m-d H:i:s');
         DanhMucMinhChung::create($data);

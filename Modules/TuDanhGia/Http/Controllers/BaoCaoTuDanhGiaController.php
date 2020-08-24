@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Modules\TuDanhGia\Entities\BaoCaoTuDanhGia;
 use Modules\TuDanhGia\Http\Requests\BaoCaoTuDanhGiaRequest;
 
@@ -50,7 +51,7 @@ class BaoCaoTuDanhGiaController extends Controller
         $data['filename'] = $file->getClientOriginalName();
         $data['university_id'] = $user->university_id;
         $data['created_by'] = $user->id;
-        $data['file_path'] = $filePath;
+        $data['file_path'] =  url(Storage::url($filePath));
         BaoCaoTuDanhGia::create($data);
         return \response()->json([
             'success' => true,
@@ -78,7 +79,7 @@ class BaoCaoTuDanhGiaController extends Controller
         $filePath = $file->storeAs($path, $this->clean($filename), ['disk']);
         $baoCao->file_comment_name = $file->getClientOriginalName();
         $baoCao->commented_by = $user->id;
-        $baoCao->file_comment = $filePath;
+        $baoCao->file_comment = url(Storage::url($filePath));
         $baoCao->save();
         return \response()->json([
             'success' => true,
