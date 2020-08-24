@@ -10,6 +10,7 @@ use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 
@@ -50,7 +51,6 @@ class Handler extends ExceptionHandler
      *
      * @param  \Illuminate\Http\Request $request
      * @param  \Exception $exception
-     * @return \Illuminate\Http\Response
      */
     public function render($request, Exception $exception)
     {
@@ -81,6 +81,13 @@ class Handler extends ExceptionHandler
             ], 403);
         }
         if ($exception instanceof AuthenticationException) {
+            return response()->json([
+                'code' => 401,
+                'message' => $exception->getMessage(),
+            ], 401);
+        }
+
+        if($exception instanceof UnauthorizedHttpException){
             return response()->json([
                 'code' => 401,
                 'message' => $exception->getMessage(),
