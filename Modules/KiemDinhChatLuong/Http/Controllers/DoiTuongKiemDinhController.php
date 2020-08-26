@@ -10,18 +10,27 @@ namespace Modules\KiemDinhChatLuong\Http\Controllers;
 
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Modules\KiemDinhChatLuong\Entities\DoiTuongKiemDinh;
 use Modules\KiemDinhChatLuong\Http\Requests\DoiTuongKiemDinhRequest;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class DoiTuongKiemDinhController extends Controller
 {
 
-    public function list()
+    public function list(Request $request)
     {
         $this->authorize('doi_tuong_kiem_dinh', DoiTuongKiemDinh::class);
         $user = Auth::user();
-        $doiTuong = DoiTuongKiemDinh::where('university_id', $user->university_id)->get();
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = $request->get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+        $doiTuong = DoiTuongKiemDinh::where('university_id', $universityId)->get();
         $result = [
             'success' => 'true',
             'message' => 'Lấy đối tượng kiểm định thành công',
@@ -34,10 +43,17 @@ class DoiTuongKiemDinhController extends Controller
 
     public function store(DoiTuongKiemDinhRequest $request)
     {
-        $this->authorize('doi_tuong_kiem_dinh', DoiTuongKiemDinh::class);
+        $this->authorize('store', DoiTuongKiemDinh::class);
         $user = Auth::user();
         $data = $request->validated();
-        $data['university_id'] = $user->university_id;
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = $request->get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+        $data['university_id'] = $universityId;
         $doiTuong = DoiTuongKiemDinh::create($data);
         $result = [
             'success' => 'true',
@@ -51,7 +67,7 @@ class DoiTuongKiemDinhController extends Controller
 
     public function update(DoiTuongKiemDinh $doiTuong, DoiTuongKiemDinhRequest $request)
     {
-        $this->authorize('doi_tuong_kiem_dinh', DoiTuongKiemDinh::class);
+        $this->authorize('update', DoiTuongKiemDinh::class);
         $data = $request->validated();
         $doiTuong->update($data);
         $doiTuong->refresh();
@@ -67,7 +83,7 @@ class DoiTuongKiemDinhController extends Controller
 
     public function delete(DoiTuongKiemDinh $doiTuong)
     {
-        $this->authorize('doi_tuong_kiem_dinh', DoiTuongKiemDinh::class);
+        $this->authorize('update', DoiTuongKiemDinh::class);
         $doiTuong->delete();
         $result = [
             'success' => 'true',

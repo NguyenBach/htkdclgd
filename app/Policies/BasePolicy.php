@@ -23,17 +23,33 @@ class BasePolicy
 
     public function before(User $user, $ability)
     {
-        $permission = Permission::where('permission', $ability)->first();
-        if(!is_null($permission)){
-            $roleBase = json_decode($permission->role_base);
-            if (!in_array($user->role_id, $roleBase)) {
-                return false;
-            }
-        }
-
-        if (AuthHelper::isSuperAdmin($user)||  AuthHelper::isAdmin($user) || AuthHelper::isUniversityManager($user)) {
+        if (AuthHelper::isSuperAdmin($user) || AuthHelper::isAdmin($user)) {
             return true;
         }
+    }
 
+    public function index(User $user)
+    {
+        return AuthHelper::isExpert($user)
+            || AuthHelper::isUniversityManager($user)
+            || AuthHelper::isCAE($user);
+    }
+
+    public function create(User $user)
+    {
+        return AuthHelper::isCAE($user)
+            || AuthHelper::isUniversityManager($user);
+    }
+
+    public function store(User $user)
+    {
+        return AuthHelper::isCAE($user)
+            || AuthHelper::isUniversityManager($user);
+    }
+
+    public function update(User $user)
+    {
+        return AuthHelper::isCAE($user)
+            || AuthHelper::isUniversityManager($user);
     }
 }

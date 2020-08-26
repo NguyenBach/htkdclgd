@@ -12,8 +12,10 @@ namespace Modules\ThongTinChung\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Cocur\Slugify\Slugify;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Input;
 use Modules\ThongTinChung\Entities\Department;
 use Modules\ThongTinChung\Http\Requests\DeparmentRequest;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class DepartmentController extends Controller
 {
@@ -28,7 +30,14 @@ class DepartmentController extends Controller
     {
         $this->authorize('list', Department::class);
         $user = Auth::user();
-        $departments = $this->departmentModel->where('university_id', $user->university_id)
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = Input::get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+        $departments = $this->departmentModel->where('university_id', $universityId)
             ->get();
         $result = [
             'success' => true,
@@ -46,8 +55,17 @@ class DepartmentController extends Controller
         $slugify = new Slugify();
         $data = $request->validated();
         $user = Auth::user();
+
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = Input::get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+
         $data['slug'] = $slugify->slugify($data['name']);
-        $data['university_id'] = $user->university_id;
+        $data['university_id'] = $universityId;
         $data['created_by'] = $user->id;
         $exist = Department::checkExist($data['slug'], $data['university_id']);
         if (!$exist) {
@@ -82,8 +100,16 @@ class DepartmentController extends Controller
         $this->authorize('update', $department);
         $data = $request->validated();
         $user = Auth::user();
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = Input::get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+
         $data['slug'] = $this->createSlug($data['name']);
-        $data['university_id'] = $user->university_id;
+        $data['university_id'] = $universityId;
         $data['created_by'] = $user->id;
         $model = $department->update($data);
         $department->refresh();

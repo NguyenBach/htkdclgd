@@ -10,13 +10,14 @@ use Illuminate\Support\Facades\Auth;
 use Modules\CoSoVatChat\Entities\NhomNganh;
 use Modules\CoSoVatChat\Entities\SachThuVien;
 use Modules\CoSoVatChat\Http\Requests\NhomNganhRequest;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class NhomNganhController extends Controller
 {
 
     public function list()
     {
-        $this->authorize('sach_thu_vien', SachThuVien::class);
+        $this->authorize('index', SachThuVien::class);
         $nhomNganh = NhomNganh::all();
         $result = [
             'success' => true,
@@ -31,10 +32,18 @@ class NhomNganhController extends Controller
 
     public function store(NhomNganhRequest $request)
     {
-        //
+        $this->authorize('create', NhomNganh::class);
         $data = $request->validated();
         $user = Auth::user();
-        $data['university_id'] = $user->university_id;
+
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = $request->get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+        $data['university_id'] = $universityId;
         $data['slug'] = (new Slugify())->slugify($data['name']);
 
         $nhomNganh = NhomNganh::updateOrCreate([
@@ -67,9 +76,17 @@ class NhomNganhController extends Controller
 
     public function update(NhomNganhRequest $request, NhomNganh $model)
     {
+        $this->authorize('update', NhomNganh::class);
         $data = $request->validated();
         $user = Auth::user();
-        $data['university_id'] = $user->university_id;
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = $request->get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+        $data['university_id'] = $universityId;
         $data['slug'] = (new Slugify())->slugify($data['name']);
         $nhomNganh = $model->update($data);
         $result = [

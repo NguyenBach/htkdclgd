@@ -12,9 +12,11 @@ namespace Modules\ThongTinChung\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Cocur\Slugify\Slugify;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Input;
 use Modules\ThongTinChung\Entities\EducationType;
 use Modules\ThongTinChung\Entities\Faculty;
 use Modules\ThongTinChung\Http\Requests\FacultyRequest;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class FacultyController extends Controller
 {
@@ -30,7 +32,14 @@ class FacultyController extends Controller
     {
         $this->authorize('faculty', Faculty::class);
         $user = Auth::user();
-        $faculties = $this->model->where('university_id', $user->university_id)
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = Input::get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+        $faculties = $this->model->where('university_id', $universityId)
             ->get();
         $faculties = $faculties->map(function ($item) {
             $item->education_type = $item->educationType()->first();
@@ -50,6 +59,13 @@ class FacultyController extends Controller
     {
         $this->authorize('faculty', Faculty::class);
         $user = Auth::user();
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = Input::get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
         $data = $request->validated();
         if (!isset($data['number_education_program'])) {
             $data['number_education_program'] = 0;
@@ -58,11 +74,11 @@ class FacultyController extends Controller
             $data['students'] = 0;
         }
 
-        $data['university_id'] = $user->university_id;
+        $data['university_id'] = $universityId;
         $slugify = new Slugify();
         $data['slug'] = $slugify->slugify($data['name']);
 
-        $exist = EducationType::checkExistId($data['education_type'], $user->university_id);
+        $exist = EducationType::checkExistId($data['education_type'], $universityId);
         if ($exist) {
             $result = [
                 'success' => false,
@@ -108,6 +124,13 @@ class FacultyController extends Controller
     {
         $this->authorize('faculty', Faculty::class);
         $user = Auth::user();
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = Input::get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
         $data = $request->validated();
         if (!isset($data['number_education_program'])) {
             $data['number_education_program'] = 0;
@@ -116,11 +139,11 @@ class FacultyController extends Controller
             $data['students'] = 0;
         }
 
-        $data['university_id'] = $user->university_id;
+        $data['university_id'] = $universityId;
         $slugify = new Slugify();
         $data['slug'] = $slugify->slugify($data['name']);
 
-        $exist = EducationType::checkExistId($data['education_type'], $user->university_id);
+        $exist = EducationType::checkExistId($data['education_type'], $universityId);
         if ($exist) {
             $result = [
                 'success' => false,

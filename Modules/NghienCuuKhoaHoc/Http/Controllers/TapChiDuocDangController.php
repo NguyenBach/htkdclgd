@@ -11,38 +11,48 @@ namespace Modules\NghienCuuKhoaHoc\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Input;
 use Modules\NghienCuuKhoaHoc\Entities\TapChiDuocDang;
 use Modules\NghienCuuKhoaHoc\Http\Requests\TapChiDuocDangRequest;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class TapChiDuocDangController extends Controller
 {
     public function index($year)
     {
         $user = Auth::user();
-        $this->authorize('tap_chi_duoc_dang', TapChiDuocDang::class);
+        $this->authorize('index', TapChiDuocDang::class);
 
-        $isi = TapChiDuocDang::where('university_id', $user->university_id)
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = Input::get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+
+        $isi = TapChiDuocDang::where('university_id', $universityId)
             ->where('year', $year)
             ->where('phan_loai_tap_chi_id', 1)
             ->where('danh_muc', 'isi')
             ->first();
 
-        $scopus = TapChiDuocDang::where('university_id', $user->university_id)
+        $scopus = TapChiDuocDang::where('university_id', $universityId)
             ->where('year', $year)
             ->where('phan_loai_tap_chi_id', 1)
             ->where('danh_muc', 'scopus')
             ->first();
-        $khac = TapChiDuocDang::where('university_id', $user->university_id)
+        $khac = TapChiDuocDang::where('university_id', $universityId)
             ->where('year', $year)
             ->where('phan_loai_tap_chi_id', 1)
             ->where('danh_muc', 'khac')
             ->first();
-        $trongNuoc = TapChiDuocDang::where('university_id', $user->university_id)
+        $trongNuoc = TapChiDuocDang::where('university_id', $universityId)
             ->where('year', $year)
             ->where('phan_loai_tap_chi_id', 2)
             ->first();
 
-        $capTruong = TapChiDuocDang::where('university_id', $user->university_id)
+        $capTruong = TapChiDuocDang::where('university_id', $universityId)
             ->where('year', $year)
             ->where('phan_loai_tap_chi_id', 3)
             ->first();
@@ -67,10 +77,17 @@ class TapChiDuocDangController extends Controller
     {
 
         $user = Auth::user();
-        $this->authorize('tap_chi_duoc_dang', TapChiDuocDang::class);
+        $this->authorize('store', TapChiDuocDang::class);
         $inputData = $request->validated();
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = Input::get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
         $data = [];
-        $data['university_id'] = $user->university_id;
+        $data['university_id'] = $universityId;
         $data['year'] = $year;
 
         $data['phan_loai_tap_chi_id'] = 1;
@@ -79,7 +96,7 @@ class TapChiDuocDangController extends Controller
         $isi = TapChiDuocDang::updateOrCreate(
             [
                 'year' => $year,
-                'university_id' => $user->university_id,
+                'university_id' => $universityId,
                 'phan_loai_tap_chi_id' => 1,
                 'danh_muc' => 'isi'
             ],
@@ -92,7 +109,7 @@ class TapChiDuocDangController extends Controller
         $scopus = TapChiDuocDang::updateOrCreate(
             [
                 'year' => $year,
-                'university_id' => $user->university_id,
+                'university_id' => $universityId,
                 'phan_loai_tap_chi_id' => 1,
                 'danh_muc' => 'scopus'
             ],
@@ -104,7 +121,7 @@ class TapChiDuocDangController extends Controller
         $khac = TapChiDuocDang::updateOrCreate(
             [
                 'year' => $year,
-                'university_id' => $user->university_id,
+                'university_id' => $universityId,
                 'phan_loai_tap_chi_id' => 1,
                 'danh_muc' => 'khac'
             ],
@@ -115,7 +132,7 @@ class TapChiDuocDangController extends Controller
         $trongNuoc = TapChiDuocDang::updateOrCreate(
             [
                 'year' => $year,
-                'university_id' => $user->university_id,
+                'university_id' => $universityId,
                 'phan_loai_tap_chi_id' => 2
             ],
             $data);
@@ -125,7 +142,7 @@ class TapChiDuocDangController extends Controller
         $capTruong = TapChiDuocDang::updateOrCreate(
             [
                 'year' => $year,
-                'university_id' => $user->university_id,
+                'university_id' => $universityId,
                 'phan_loai_tap_chi_id' => 3
             ],
             $data);

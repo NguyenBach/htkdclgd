@@ -11,17 +11,27 @@ namespace Modules\NguoiHoc\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Input;
 use Modules\NguoiHoc\Entities\NguoiHocTotNghiep;
 use Modules\NguoiHoc\Http\Requests\NguoiHocTotNghiepRequest;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class NguoiHocTotNghiepController extends Controller
 {
     public function index($year)
     {
         $user = Auth::user();
-        $this->authorize('nguoi_hoc_tot_nghiep', NguoiHocTotNghiep::class);
+        $this->authorize('index', NguoiHocTotNghiep::class);
 
-        $nguoiHoc = NguoiHocTotNghiep::where('university_id', $user->university_id)
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = Input::get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+
+        $nguoiHoc = NguoiHocTotNghiep::where('university_id', $universityId)
             ->where('year', $year)
             ->first();
 
@@ -40,15 +50,24 @@ class NguoiHocTotNghiepController extends Controller
     {
 
         $user = Auth::user();
-        $this->authorize('nguoi_hoc_tot_nghiep', NguoiHocTotNghiep::class);
+        $this->authorize('store', NguoiHocTotNghiep::class);
         $data = $request->validated();
-        $data['university_id'] = $user->university_id;
+
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = Input::get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+
+        $data['university_id'] = $universityId;
         $data['year'] = $year;
 
         $svKtx = NguoiHocTotNghiep::updateOrCreate(
             [
                 'year' => $year,
-                'university_id' => $user->university_id
+                'university_id' => $universityId
             ],
             $data);
 

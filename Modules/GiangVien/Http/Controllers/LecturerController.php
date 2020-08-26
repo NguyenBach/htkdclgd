@@ -3,22 +3,33 @@
 namespace Modules\GiangVien\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Modules\GiangVien\Entities\Lecturer;
 use Modules\GiangVien\Http\Requests\LecturerRequest;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class LecturerController extends Controller
 {
 
-    public function index($year)
+    public function index($year, Request $request)
     {
         $user = Auth::user();
-        $this->authorize('lecturer', Lecturer::class);
-        $lecturer = Lecturer::where('university_id', $user->university_id)
+
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = $request->get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+
+        $this->authorize('index', Lecturer::class);
+        $lecturer = Lecturer::where('university_id', $universityId)
             ->where('year', $year)
             ->where('lecturer_type', 1)
             ->get();
-        $researcher = Lecturer::where('university_id', $user->university_id)
+        $researcher = Lecturer::where('university_id', $universityId)
             ->where('year', $year)
             ->where('lecturer_type', 2)
             ->get();
@@ -36,12 +47,19 @@ class LecturerController extends Controller
 
     public function store($year, LecturerRequest $request)
     {
-        //
         $user = Auth::user();
-        $this->authorize('lecturer', Lecturer::class);
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = $request->get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+
+        $this->authorize('store', Lecturer::class);
         $data = $request->validated();
         $insertData = [];
-        $insertData['university_id'] = $user->university_id;
+        $insertData['university_id'] = $universityId;
         $insertData['year'] = $year;
         $lecturer = json_decode($data['giang_vien'], true);
         $insertData['lecturer_type'] = 1; //Giang vien
@@ -53,7 +71,7 @@ class LecturerController extends Controller
             [
                 'year' => $year,
                 'lecturer_type' => 1,
-                'university_id' => $user->university_id
+                'university_id' => $universityId
             ],
             $insertData);
 
@@ -68,7 +86,7 @@ class LecturerController extends Controller
             [
                 'year' => $year,
                 'lecturer_type' => 2,
-                'university_id' => $user->university_id
+                'university_id' => $universityId
             ],
             $insertData
         );

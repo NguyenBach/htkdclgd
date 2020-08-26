@@ -10,33 +10,42 @@ namespace Modules\GiangVien\Http\Controllers;
 
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Modules\GiangVien\Entities\LecturerByDegree;
 use Modules\GiangVien\Http\Requests\LecturerByDegreeRequest;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class LecturerByDegreeController extends Controller
 {
-    public function index($year)
+    public function index($year, Request $request)
     {
         $user = Auth::user();
-        $this->authorize('lecturer_by_degree', LecturerByDegree::class);
-        $bienChe = LecturerByDegree::where('university_id', $user->university_id)
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = $request->get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+        $this->authorize('index', LecturerByDegree::class);
+        $bienChe = LecturerByDegree::where('university_id', $universityId)
             ->where('year', $year)
             ->where('lecturer_type', 1)
             ->first();
-        $daiHan = LecturerByDegree::where('university_id', $user->university_id)
+        $daiHan = LecturerByDegree::where('university_id', $universityId)
             ->where('year', $year)
             ->where('lecturer_type', 2)
             ->first();
-        $quanLy = LecturerByDegree::where('university_id', $user->university_id)
+        $quanLy = LecturerByDegree::where('university_id', $universityId)
             ->where('year', $year)
             ->where('lecturer_type', 3)
             ->first();
-        $trongNuoc = LecturerByDegree::where('university_id', $user->university_id)
+        $trongNuoc = LecturerByDegree::where('university_id', $universityId)
             ->where('year', $year)
             ->where('lecturer_type', 4)
             ->first();
-        $quocTe = LecturerByDegree::where('university_id', $user->university_id)
+        $quocTe = LecturerByDegree::where('university_id', $universityId)
             ->where('year', $year)
             ->where('lecturer_type', 5)
             ->first();
@@ -59,10 +68,19 @@ class LecturerByDegreeController extends Controller
     {
         //
         $user = Auth::user();
-        $this->authorize('lecturer_by_degree', LecturerByDegree::class);
+
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = $request->get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+
+        $this->authorize('store', LecturerByDegree::class);
         $data = $request->validated();
         $insertData = [];
-        $insertData['university_id'] = $user->university_id;
+        $insertData['university_id'] = $universityId;
         $insertData['year'] = $year;
 
         $bienChe = json_decode($data['bien_che'], true);
@@ -81,7 +99,7 @@ class LecturerByDegreeController extends Controller
             [
                 'year' => $year,
                 'lecturer_type' => 1,
-                'university_id' => $user->university_id
+                'university_id' => $universityId
             ],
             $insertData);
 
@@ -101,7 +119,7 @@ class LecturerByDegreeController extends Controller
             [
                 'year' => $year,
                 'lecturer_type' => 2,
-                'university_id' => $user->university_id
+                'university_id' => $universityId
             ],
             $insertData);
 
@@ -121,7 +139,7 @@ class LecturerByDegreeController extends Controller
             [
                 'year' => $year,
                 'lecturer_type' => 3,
-                'university_id' => $user->university_id
+                'university_id' => $universityId
             ],
             $insertData);
 
@@ -142,7 +160,7 @@ class LecturerByDegreeController extends Controller
             [
                 'year' => $year,
                 'lecturer_type' => 4,
-                'university_id' => $user->university_id
+                'university_id' => $universityId
             ],
             $insertData);
 
@@ -162,7 +180,7 @@ class LecturerByDegreeController extends Controller
             [
                 'year' => $year,
                 'lecturer_type' => 5,
-                'university_id' => $user->university_id
+                'university_id' => $universityId
             ],
             $insertData);
 

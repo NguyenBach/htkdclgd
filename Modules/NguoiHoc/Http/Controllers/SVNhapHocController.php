@@ -11,8 +11,10 @@ namespace Modules\NguoiHoc\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Input;
 use Modules\NguoiHoc\Entities\SvNhapHoc;
 use Modules\NguoiHoc\Http\Requests\SvNhapHocRequest;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class SVNhapHocController extends Controller
 {
@@ -30,36 +32,45 @@ class SVNhapHocController extends Controller
             return response()->json($result, 404);
         }
         $user = Auth::user();
-        $this->authorize('sv_nhap_hoc', SvNhapHoc::class);
-        $ncs = SvNhapHoc::where('university_id', $user->university_id)
+        $this->authorize('index', SvNhapHoc::class);
+
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = Input::get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+
+        $ncs = SvNhapHoc::where('university_id', $universityId)
             ->where('year', $year)
             ->where('he_hoc', $heHoc)
             ->where('type', 'NCS')
             ->first();
 
-        $hvch = SvNhapHoc::where('university_id', $user->university_id)
+        $hvch = SvNhapHoc::where('university_id', $universityId)
             ->where('year', $year)
             ->where('he_hoc', $heHoc)
             ->where('type', 'HVCH')
             ->first();
 
-        $dh = SvNhapHoc::where('university_id', $user->university_id)
+        $dh = SvNhapHoc::where('university_id', $universityId)
             ->where('year', $year)
             ->where('he_hoc', $heHoc)
             ->where('type', 'DH')
             ->first();
 
-        $cd = SvNhapHoc::where('university_id', $user->university_id)
+        $cd = SvNhapHoc::where('university_id', $universityId)
             ->where('year', $year)
             ->where('he_hoc', $heHoc)
             ->where('type', 'CD')
             ->first();
-        $tc = SvNhapHoc::where('university_id', $user->university_id)
+        $tc = SvNhapHoc::where('university_id', $universityId)
             ->where('year', $year)
             ->where('he_hoc', $heHoc)
             ->where('type', 'TC')
             ->first();
-        $khac = SvNhapHoc::where('university_id', $user->university_id)
+        $khac = SvNhapHoc::where('university_id', $universityId)
             ->where('year', $year)
             ->where('he_hoc', $heHoc)
             ->where('type', 'KHAC')
@@ -95,10 +106,19 @@ class SVNhapHocController extends Controller
         }
 
         $user = Auth::user();
-        $this->authorize('sv_nhap_hoc', SvNhapHoc::class);
+        $this->authorize('store', SvNhapHoc::class);
         $data = $request->validated();
+
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = Input::get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+
         $insertData = [];
-        $insertData['university_id'] = $user->university_id;
+        $insertData['university_id'] = $universityId;
         $insertData['year'] = $year;
         $insertData['he_hoc'] = $heHoc;
 
@@ -118,7 +138,7 @@ class SVNhapHocController extends Controller
                 'year' => $year,
                 'type' => 'NCS',
                 'he_hoc' => $heHoc,
-                'university_id' => $user->university_id
+                'university_id' => $universityId
             ],
             $insertData);
 
@@ -138,7 +158,7 @@ class SVNhapHocController extends Controller
                 'year' => $year,
                 'type' => 'HVCH',
                 'he_hoc' => $heHoc,
-                'university_id' => $user->university_id
+                'university_id' => $universityId
             ],
             $insertData);
 
@@ -158,7 +178,7 @@ class SVNhapHocController extends Controller
                 'year' => $year,
                 'type' => 'DH',
                 'he_hoc' => $heHoc,
-                'university_id' => $user->university_id
+                'university_id' => $universityId
             ],
             $insertData);
 
@@ -178,7 +198,7 @@ class SVNhapHocController extends Controller
                 'year' => $year,
                 'type' => 'CD',
                 'he_hoc' => $heHoc,
-                'university_id' => $user->university_id
+                'university_id' => $universityId
             ],
             $insertData);
 
@@ -198,7 +218,7 @@ class SVNhapHocController extends Controller
                 'year' => $year,
                 'type' => 'TC',
                 'he_hoc' => $heHoc,
-                'university_id' => $user->university_id
+                'university_id' => $universityId
             ],
             $insertData);
 
@@ -218,7 +238,7 @@ class SVNhapHocController extends Controller
                 'year' => $year,
                 'type' => 'KHAC',
                 'he_hoc' => $heHoc,
-                'university_id' => $user->university_id
+                'university_id' => $universityId
             ],
             $insertData);
 

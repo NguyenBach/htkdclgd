@@ -10,18 +10,28 @@ namespace Modules\NghienCuuKhoaHoc\Http\Controllers;
 
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Input;
 use Modules\NghienCuuKhoaHoc\Entities\DoanhThuNCKH;
 use Modules\NghienCuuKhoaHoc\Http\Requests\DoanhThuNCKHRequest;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class DoanhThuNCKHController extends Controller
 {
     public function index($year)
     {
         $user = Auth::user();
-        $this->authorize('doanh_thu_nckh', DoanhThuNCKH::class);
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = Input::get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+        $this->authorize('index', DoanhThuNCKH::class);
 
-        $doanhThuNCKH = DoanhThuNCKH::where('university_id', $user->university_id)
+        $doanhThuNCKH = DoanhThuNCKH::where('university_id', $universityId)
             ->where('year', $year)
             ->first();
 
@@ -40,15 +50,22 @@ class DoanhThuNCKHController extends Controller
     {
 
         $user = Auth::user();
-        $this->authorize('doanh_thu_nckh', DoanhThuNCKH::class);
+        $this->authorize('store', DoanhThuNCKH::class);
         $data = $request->validated();
-        $data['university_id'] = $user->university_id;
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = Input::get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+        $data['university_id'] = $universityId;
         $data['year'] = $year;
 
         $doanhThuNCKH = DoanhThuNCKH::updateOrCreate(
             [
                 'year' => $year,
-                'university_id' => $user->university_id
+                'university_id' => $universityId
             ],
             $data);
 

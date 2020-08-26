@@ -7,8 +7,10 @@ use Cocur\Slugify\Slugify;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Input;
 use Modules\ThongTinChung\Entities\Branch;
 use Modules\ThongTinChung\Http\Requests\BranchRequest;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class BranchController extends Controller
 {
@@ -26,9 +28,18 @@ class BranchController extends Controller
      */
     public function index()
     {
-        $this->authorize('branch', Branch::class);
+        $this->authorize('index', Branch::class);
         $user = Auth::user();
-        $branches = $this->branch->where('university_id', $user->university_id)->get();
+
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = Input::get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+
+        $branches = $this->branch->where('university_id', $universityId)->get();
         $result = [
             'success' => true,
             'message' => 'Lấy thông tin thành công',
@@ -48,8 +59,17 @@ class BranchController extends Controller
      */
     public function store(BranchRequest $request)
     {
-        $this->authorize('branch', Branch::class);
+        $this->authorize('store', Branch::class);
         $user = Auth::user();
+
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = Input::get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+
         $data = $request->validated();
         if (!isset($data['number_researcher'])) {
             $data['number_researcher'] = 0;
@@ -58,11 +78,11 @@ class BranchController extends Controller
         if (!isset($data['number_officer'])) {
             $data['number_officer'] = 0;
         }
-        $data['university_id'] = $user->university_id;
+        $data['university_id'] = $universityId;
         $slugify = new Slugify();
         $data['slug'] = $slugify->slugify($data['name']);
 
-        $checkExist = $this->branch->where('university_id', $user->university_id)
+        $checkExist = $this->branch->where('university_id', $universityId)
             ->where('slug', $data['slug'])->first();
         if (!is_null($checkExist)) {
             $result = [
@@ -117,7 +137,7 @@ class BranchController extends Controller
      */
     public function update(Branch $branch, BranchRequest $request)
     {
-        $this->authorize('branch_update', $branch);
+        $this->authorize('update', $branch);
         $user = Auth::user();
         $data = $request->validated();
 
@@ -173,7 +193,7 @@ class BranchController extends Controller
     public function destroy(Branch $branch)
     {
         //
-        $this->authorize('branch_update', $branch);
+        $this->authorize('update', $branch);
         $success = $branch->delete();
         if ($success) {
             $result = [

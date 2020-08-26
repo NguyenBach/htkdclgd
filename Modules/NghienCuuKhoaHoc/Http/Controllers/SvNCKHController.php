@@ -11,25 +11,33 @@ namespace Modules\NghienCuuKhoaHoc\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Input;
 use Modules\NghienCuuKhoaHoc\Entities\SvNCKH;
 use Modules\NghienCuuKhoaHoc\Http\Requests\SvNCKHRequest;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class SvNCKHController extends Controller
 {
     public function index($year)
     {
         $user = Auth::user();
-        $this->authorize('sv_nckh', SvNCKH::class);
-
-        $nhaNuoc = SvNCKH::where('university_id', $user->university_id)
+        $this->authorize('index', SvNCKH::class);
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = Input::get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+        $nhaNuoc = SvNCKH::where('university_id', $universityId)
             ->where('year', $year)
             ->where('cap_de_tai_id', 1)
             ->first();
-        $capBo = SvNCKH::where('university_id', $user->university_id)
+        $capBo = SvNCKH::where('university_id', $universityId)
             ->where('year', $year)
             ->where('cap_de_tai_id', 2)
             ->first();
-        $capTruong = SvNCKH::where('university_id', $user->university_id)
+        $capTruong = SvNCKH::where('university_id', $universityId)
             ->where('year', $year)
             ->where('cap_de_tai_id', 3)
             ->first();
@@ -51,10 +59,17 @@ class SvNCKHController extends Controller
     {
 
         $user = Auth::user();
-        $this->authorize('sv_nckh', SvNCKH::class);
+        $this->authorize('store', SvNCKH::class);
         $inputData = $request->validated();
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = Input::get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
         $data = [];
-        $data['university_id'] = $user->university_id;
+        $data['university_id'] = $universityId;
         $data['year'] = $year;
 
         $dataNhaNuoc = json_decode($inputData['nha_nuoc'], true);
@@ -65,7 +80,7 @@ class SvNCKHController extends Controller
         $nhaNuoc = SvNCKH::updateOrCreate(
             [
                 'year' => $year,
-                'university_id' => $user->university_id,
+                'university_id' => $universityId,
                 'cap_de_tai_id' => 1
             ],
             $data);
@@ -79,7 +94,7 @@ class SvNCKHController extends Controller
         $capBo = SvNCKH::updateOrCreate(
             [
                 'year' => $year,
-                'university_id' => $user->university_id,
+                'university_id' => $universityId,
                 'cap_de_tai_id' => 2
             ],
             $data);
@@ -93,7 +108,7 @@ class SvNCKHController extends Controller
         $capTruong = SvNCKH::updateOrCreate(
             [
                 'year' => $year,
-                'university_id' => $user->university_id,
+                'university_id' => $universityId,
                 'cap_de_tai_id' => 3
             ],
             $data);

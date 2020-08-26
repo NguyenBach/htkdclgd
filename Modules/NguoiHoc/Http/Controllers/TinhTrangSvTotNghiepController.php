@@ -11,9 +11,11 @@ namespace Modules\NguoiHoc\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Input;
 use Modules\NguoiHoc\Entities\CauHoiTotNghiep;
 use Modules\NguoiHoc\Entities\TinhTrangSvTotNghiep;
 use Modules\NguoiHoc\Http\Requests\TinhTrangSvTotNghiepRequest;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class TinhTrangSvTotNghiepController extends Controller
 {
@@ -33,11 +35,19 @@ class TinhTrangSvTotNghiepController extends Controller
             }
         }
         $user = Auth::user();
-        $this->authorize('tinh_trang_sv_tn', TinhTrangSvTotNghiep::class);
+        $this->authorize('index', TinhTrangSvTotNghiep::class);
+
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = Input::get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
 
         $tinhTrang = TinhTrangSvTotNghiep::where('he_hoc', $heHoc)
             ->where('year', $year)
-            ->where('university_id', $user->university_id)
+            ->where('university_id', $universityId)
             ->with('cauHoi')
             ->get();
 
@@ -68,25 +78,33 @@ class TinhTrangSvTotNghiepController extends Controller
             }
         }
         $user = Auth::user();
-        $this->authorize('tinh_trang_sv_tn', TinhTrangSvTotNghiep::class);
+        $this->authorize('store', TinhTrangSvTotNghiep::class);
         $data = $request->validated();
         $tinhTrang = json_decode($data['tinh_trang'], true);
 
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = Input::get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+
         $insertData = [];
-        $insertData['university_id'] = $user->university_id;
+        $insertData['university_id'] = $universityId;
         $insertData['year'] = $year;
         $insertData['he_hoc'] = $heHoc;
 
         $cauHoi = CauHoiTotNghiep::all();
 
         foreach ($cauHoi as $item) {
-            if(isset($tinhTrang[$item->id])){
+            if (isset($tinhTrang[$item->id])) {
                 $insertData['cau_hoi_id'] = $item->id;
                 $insertData['tra_loi'] = $tinhTrang[$item->id];
                 TinhTrangSvTotNghiep::updateOrCreate(
                     [
                         'year' => $year,
-                        'university_id' => $user->university_id,
+                        'university_id' => $universityId,
                         'he_hoc' => $heHoc,
                         'cau_hoi_id' => $item->id
                     ],
@@ -98,7 +116,7 @@ class TinhTrangSvTotNghiepController extends Controller
 
         $tinhTrang = TinhTrangSvTotNghiep::where('he_hoc', $heHoc)
             ->where('year', $year)
-            ->where('university_id', $user->university_id)
+            ->where('university_id', $universityId)
             ->with('cauHoi')
             ->get();
 

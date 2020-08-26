@@ -19,7 +19,7 @@ class TrangThietBiController extends Controller
 {
     public function list()
     {
-        $this->authorize('trang_thiet_bi', TrangThietBi::class);
+        $this->authorize('index', TrangThietBi::class);
         $trangThietBi = TrangThietBi::all();
         $result = [
             'success' => true,
@@ -45,7 +45,7 @@ class TrangThietBiController extends Controller
 
     public function create(TrangThietBiRequest $request)
     {
-        $this->authorize('trang_thiet_bi', TrangThietBi::class);
+        $this->authorize('create', TrangThietBi::class);
         $user = Auth::user();
         $data = $request->validated();
         $data['created_by'] = $user->id;
@@ -63,7 +63,7 @@ class TrangThietBiController extends Controller
 
     public function update(TrangThietBi $trangThietBi, TrangThietBiRequest $request)
     {
-        $this->authorize('trang_thiet_bi_update', $trangThietBi);
+        $this->authorize('update', $trangThietBi);
         $user = Auth::user();
         $data = $request->validated();
         $data['created_by'] = $user->id;
@@ -82,7 +82,7 @@ class TrangThietBiController extends Controller
 
     public function delete(TrangThietBi $trangThietBi)
     {
-        $this->authorize('trang_thiet_bi_update', $trangThietBi);
+        $this->authorize('update', $trangThietBi);
         $trangThietBi->delete();
         $result = [
             'success' => true,

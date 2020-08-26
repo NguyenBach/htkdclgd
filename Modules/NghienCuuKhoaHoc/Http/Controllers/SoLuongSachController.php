@@ -11,29 +11,38 @@ namespace Modules\NghienCuuKhoaHoc\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Input;
 use Modules\NghienCuuKhoaHoc\Entities\SoLuongSach;
 use Modules\NghienCuuKhoaHoc\Http\Requests\SoLuongSachRequest;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class SoLuongSachController extends Controller
 {
     public function index($year)
     {
         $user = Auth::user();
-        $this->authorize('so_luong_sach', SoLuongSach::class);
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = Input::get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+        $this->authorize('index', SoLuongSach::class);
 
-        $chuyenKhao = SoLuongSach::where('university_id', $user->university_id)
+        $chuyenKhao = SoLuongSach::where('university_id', $universityId)
             ->where('year', $year)
             ->where('loai_sach_id', 1)
             ->first();
-        $giaoTrinh = SoLuongSach::where('university_id', $user->university_id)
+        $giaoTrinh = SoLuongSach::where('university_id', $universityId)
             ->where('year', $year)
             ->where('loai_sach_id', 2)
             ->first();
-        $thamKhao = SoLuongSach::where('university_id', $user->university_id)
+        $thamKhao = SoLuongSach::where('university_id', $universityId)
             ->where('year', $year)
             ->where('loai_sach_id', 3)
             ->first();
-        $huongDan = SoLuongSach::where('university_id', $user->university_id)
+        $huongDan = SoLuongSach::where('university_id', $universityId)
             ->where('year', $year)
             ->where('loai_sach_id', 4)
             ->first();
@@ -56,10 +65,17 @@ class SoLuongSachController extends Controller
     {
 
         $user = Auth::user();
-        $this->authorize('so_luong_sach', SoLuongSach::class);
+        $this->authorize('store', SoLuongSach::class);
         $inputData = $request->validated();
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = Input::get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
         $data = [];
-        $data['university_id'] = $user->university_id;
+        $data['university_id'] = $universityId;
         $data['year'] = $year;
 
         $data['loai_sach_id'] = 1;
@@ -67,7 +83,7 @@ class SoLuongSachController extends Controller
         $chuyenKhao = SoLuongSach::updateOrCreate(
             [
                 'year' => $year,
-                'university_id' => $user->university_id,
+                'university_id' => $universityId,
                 'loai_sach_id' => 1
             ],
             $data);
@@ -78,7 +94,7 @@ class SoLuongSachController extends Controller
         $giaoTrinh = SoLuongSach::updateOrCreate(
             [
                 'year' => $year,
-                'university_id' => $user->university_id,
+                'university_id' => $universityId,
                 'loai_sach_id' => 2
             ],
             $data);
@@ -88,7 +104,7 @@ class SoLuongSachController extends Controller
         $thamKhao = SoLuongSach::updateOrCreate(
             [
                 'year' => $year,
-                'university_id' => $user->university_id,
+                'university_id' => $universityId,
                 'loai_sach_id' => 3
             ],
             $data);
@@ -98,7 +114,7 @@ class SoLuongSachController extends Controller
         $huongDan = SoLuongSach::updateOrCreate(
             [
                 'year' => $year,
-                'university_id' => $user->university_id,
+                'university_id' => $universityId,
                 'loai_sach_id' => 4
             ],
             $data);

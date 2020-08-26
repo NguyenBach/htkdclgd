@@ -6,9 +6,11 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Storage;
 use Modules\TuDanhGia\Entities\BaoCaoTuDanhGia;
 use Modules\TuDanhGia\Http\Requests\BaoCaoTuDanhGiaRequest;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class BaoCaoTuDanhGiaController extends Controller
 {
@@ -16,7 +18,15 @@ class BaoCaoTuDanhGiaController extends Controller
     {
         $user = Auth::user();
 
-        $baoCao = BaoCaoTuDanhGia::where('university_id', $user->university_id)
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = Input::get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+
+        $baoCao = BaoCaoTuDanhGia::where('university_id', $universityId)
             ->orderBy('created_at', 'desc')
             ->with('created_by')
             ->with('commented_by')
@@ -33,6 +43,14 @@ class BaoCaoTuDanhGiaController extends Controller
     public function store(BaoCaoTuDanhGiaRequest $request)
     {
         $user = Auth::user();
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = Input::get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+
         $file = $request->file('bao_cao');
         $fileMimeType = $file->getClientMimeType();
         if (!in_array($fileMimeType, [
@@ -49,9 +67,9 @@ class BaoCaoTuDanhGiaController extends Controller
         $path = "bao-cao-tu-danh-gia/{$user->university->short_name_vi}";
         $filePath = $file->storeAs($path, $this->clean($filename), ['disk']);
         $data['filename'] = $file->getClientOriginalName();
-        $data['university_id'] = $user->university_id;
+        $data['university_id'] = $universityId;
         $data['created_by'] = $user->id;
-        $data['file_path'] =  url(Storage::url($filePath));
+        $data['file_path'] = url(Storage::url($filePath));
         BaoCaoTuDanhGia::create($data);
         return \response()->json([
             'success' => true,

@@ -10,26 +10,35 @@ namespace Modules\NghienCuuKhoaHoc\Http\Controllers;
 
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Modules\NghienCuuKhoaHoc\Entities\BaoCaoHoiThao;
 use Modules\NghienCuuKhoaHoc\Http\Requests\BaoCaoHoiThaoRequest;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class BaoCaoHoiThaoController extends Controller
 {
-    public function index($year)
+    public function index($year, Request $request)
     {
         $user = Auth::user();
-        $this->authorize('bao_cao_hoi_thao', BaoCaoHoiThao::class);
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = $request->get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+        $this->authorize('index', BaoCaoHoiThao::class);
 
-        $quocTe = BaoCaoHoiThao::where('university_id', $user->university_id)
+        $quocTe = BaoCaoHoiThao::where('university_id', $universityId)
             ->where('year', $year)
             ->where('phan_loai_hoi_thao_id', 1)
             ->first();
-        $trongNuoc = BaoCaoHoiThao::where('university_id', $user->university_id)
+        $trongNuoc = BaoCaoHoiThao::where('university_id', $universityId)
             ->where('year', $year)
             ->where('phan_loai_hoi_thao_id', 2)
             ->first();
-        $capTruong = BaoCaoHoiThao::where('university_id', $user->university_id)
+        $capTruong = BaoCaoHoiThao::where('university_id', $universityId)
             ->where('year', $year)
             ->where('phan_loai_hoi_thao_id', 3)
             ->first();
@@ -53,10 +62,17 @@ class BaoCaoHoiThaoController extends Controller
     {
 
         $user = Auth::user();
-        $this->authorize('bao_cao_hoi_thao', BaoCaoHoiThao::class);
+        $this->authorize('store', BaoCaoHoiThao::class);
         $inputData = $request->validated();
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = $request->get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
         $data = [];
-        $data['university_id'] = $user->university_id;
+        $data['university_id'] = $universityId;
         $data['year'] = $year;
 
         $data['phan_loai_hoi_thao_id'] = 1;
@@ -64,7 +80,7 @@ class BaoCaoHoiThaoController extends Controller
         $quocTe = BaoCaoHoiThao::updateOrCreate(
             [
                 'year' => $year,
-                'university_id' => $user->university_id,
+                'university_id' => $universityId,
                 'phan_loai_hoi_thao_id' => 1
             ],
             $data);
@@ -75,7 +91,7 @@ class BaoCaoHoiThaoController extends Controller
         $trongNuoc = BaoCaoHoiThao::updateOrCreate(
             [
                 'year' => $year,
-                'university_id' => $user->university_id,
+                'university_id' => $universityId,
                 'phan_loai_hoi_thao_id' => 2
             ],
             $data);
@@ -85,7 +101,7 @@ class BaoCaoHoiThaoController extends Controller
         $capTruong = BaoCaoHoiThao::updateOrCreate(
             [
                 'year' => $year,
-                'university_id' => $user->university_id,
+                'university_id' => $universityId,
                 'phan_loai_hoi_thao_id' => 3
             ],
             $data);

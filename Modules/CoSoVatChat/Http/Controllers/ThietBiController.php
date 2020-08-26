@@ -12,11 +12,14 @@ namespace Modules\CoSoVatChat\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Cocur\Slugify\Slugify;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Input;
 use Modules\CoSoVatChat\Entities\ThietBi;
 use Modules\CoSoVatChat\Entities\TrangThietBi;
 use Modules\CoSoVatChat\Http\Requests\ThietBiRequest;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ThietBiController extends Controller
 {
@@ -27,16 +30,18 @@ class ThietBiController extends Controller
         $this->thietBiModel = new ThietBi();
     }
 
-    /**
-     * Display a listing of the resource.
-     * @return Response
-     * @throws \Illuminate\Auth\Access\AuthorizationException
-     */
     public function index()
     {
-        $this->authorize('thiet_bi', ThietBi::class);
+        $this->authorize('index', ThietBi::class);
         $user = Auth::user();
-        $thietBi = $this->thietBiModel->where('university_id', $user->university_id)->get();
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = Input::get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+        $thietBi = $this->thietBiModel->where('university_id', $universityId)->get();
         $thietBi = $thietBi->map(function ($value) {
             $trangThietBi = json_decode($value->danh_muc_trang_thiet_bi);
             $danhMuc = TrangThietBi::whereIn('id', $trangThietBi)->get();
@@ -55,7 +60,7 @@ class ThietBiController extends Controller
 
     public function show(ThietBi $thietBi)
     {
-        $this->authorize('thiet_bi', ThietBi::class);
+        $this->authorize('index', ThietBi::class);
         $trangThietBi = json_decode($thietBi->danh_muc_trang_thiet_bi);
         $thietBi->danh_muc_trang_thiet_bi = TrangThietBi::whereIn('id', $trangThietBi)->get()->toArray();
         $result = [
@@ -69,19 +74,20 @@ class ThietBiController extends Controller
     }
 
 
-    /**
-     * Store a newly created resource in storage.
-     * @param ThietBiRequest $request
-     * @throws AuthorizationException
-     * @return Response
-     */
     public function store(ThietBiRequest $request)
     {
-        $this->authorize('thiet_bi', ThietBi::class);
+        $this->authorize('create', ThietBi::class);
         $user = Auth::user();
         $data = $request->validated();
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = $request->get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
 
-        $data['university_id'] = $user->university_id;
+        $data['university_id'] = $universityId;
 
         $thietBi = $this->thietBiModel->create($data);
         if ($thietBi) {
@@ -107,16 +113,22 @@ class ThietBiController extends Controller
      * Update the specified resource in storage.
      * @param ThietBi $thietBi
      * @param ThietBiRequest $request
-     * @return Response
-     * @throws AuthorizationException
      */
     public function update(ThietBi $thietBi, ThietBiRequest $request)
     {
-        $this->authorize('thiet_bi', $thietBi);
+        $this->authorize('update', $thietBi);
         $user = Auth::user();
         $data = $request->validated();
 
-        $data['university_id'] = $user->university_id;
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = $request->get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+
+        $data['university_id'] = $universityId;
 
         $success = $thietBi->update($data);
 
@@ -141,13 +153,11 @@ class ThietBiController extends Controller
     /**
      * Remove the specified resource from storage.
      * @param ThietBi $thietBi
-     * @return Response
-     * @throws AuthorizationException
      */
     public function destroy(ThietBi $thietBi)
     {
         //
-        $this->authorize('thiet_bi', $thietBi);
+        $this->authorize('update', $thietBi);
         $success = $thietBi->delete();
         if ($success) {
             $result = [

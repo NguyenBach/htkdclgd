@@ -26,4 +26,16 @@ class DienTichPolicy extends BasePolicy
     {
         return AuthHelper::can($user, 'dien_tich');
     }
+
+    public function update(User $user)
+    {
+        return AuthHelper::isUniversityManager($user);
+    }
+
+    public function index(User $user)
+    {
+        return AuthHelper::isCAE($user)
+            || AuthHelper::isExpert($user)
+            || AuthHelper::isUniversityManager($user);
+    }
 }

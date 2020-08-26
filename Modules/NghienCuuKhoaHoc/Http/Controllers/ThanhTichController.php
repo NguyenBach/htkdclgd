@@ -11,17 +11,27 @@ namespace Modules\NghienCuuKhoaHoc\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Input;
 use Modules\NghienCuuKhoaHoc\Entities\ThanhTich;
 use Modules\NghienCuuKhoaHoc\Http\Requests\ThanhTichRequest;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ThanhTichController extends Controller
 {
     public function index($year)
     {
         $user = Auth::user();
-        $this->authorize('thanh_tich_nckh', ThanhTich::class);
+        $this->authorize('index', ThanhTich::class);
 
-        $thanhTich = ThanhTich::where('university_id', $user->university_id)
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = Input::get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+
+        $thanhTich = ThanhTich::where('university_id', $universityId)
             ->where('year', $year)
             ->first();
 
@@ -40,15 +50,23 @@ class ThanhTichController extends Controller
     {
 
         $user = Auth::user();
-        $this->authorize('thanh_tich_nckh', ThanhTich::class);
+        $this->authorize('store', ThanhTich::class);
         $data = $request->validated();
-        $data['university_id'] = $user->university_id;
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = Input::get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+
+        $data['university_id'] = $universityId;
         $data['year'] = $year;
 
         $thanhTich = ThanhTich::updateOrCreate(
             [
                 'year' => $year,
-                'university_id' => $user->university_id
+                'university_id' => $universityId
             ],
             $data);
 

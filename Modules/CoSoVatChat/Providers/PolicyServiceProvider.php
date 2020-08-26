@@ -10,11 +10,13 @@ namespace Modules\CoSoVatChat\Providers;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider;
 use Modules\CoSoVatChat\Entities\DienTich;
+use Modules\CoSoVatChat\Entities\NhomNganh;
 use Modules\CoSoVatChat\Entities\SachThuVien;
 use Modules\CoSoVatChat\Entities\ThietBi;
 use Modules\CoSoVatChat\Entities\ThuChi;
 use Modules\CoSoVatChat\Entities\TrangThietBi;
 use Modules\CoSoVatChat\Policies\DienTichPolicy;
+use Modules\CoSoVatChat\Policies\NhomNganhPolicy;
 use Modules\CoSoVatChat\Policies\SachThuVienPolicy;
 use Modules\CoSoVatChat\Policies\ThietBiPolicy;
 use Modules\CoSoVatChat\Policies\ThuChiPolicy;
@@ -55,7 +57,8 @@ class PolicyServiceProvider extends AuthServiceProvider
         SachThuVien::class => SachThuVienPolicy::class,
         ThietBi::class => ThietBiPolicy::class,
         TrangThietBi::class => TrangThietBiPolicy::class,
-        ThuChi::class => ThuChiPolicy::class
+        ThuChi::class => ThuChiPolicy::class,
+        NhomNganh::class => NhomNganhPolicy::class
     ];
 
     /**

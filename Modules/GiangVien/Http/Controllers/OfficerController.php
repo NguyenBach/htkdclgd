@@ -3,9 +3,11 @@
 namespace Modules\GiangVien\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Modules\GiangVien\Entities\Officer;
 use Modules\GiangVien\Http\Requests\OfficerRequest;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class OfficerController extends Controller
 {
@@ -13,11 +15,19 @@ class OfficerController extends Controller
     public function store($year, OfficerRequest $request)
     {
         //
-        $this->authorize('officer', Officer::class);
+        $this->authorize('update', Officer::class);
         $data = $request->validated();
         $user = Auth::user();
+
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = $request->get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
         $primary = [
-            'university_id' => $user->university_id,
+            'university_id' => $universityId,
             'year' => $year
         ];
 
@@ -34,12 +44,19 @@ class OfficerController extends Controller
     }
 
 
-    public function show($year)
+    public function show($year, Request $request)
     {
-        $this->authorize('officer', Officer::class);
+        $this->authorize('index', Officer::class);
         $user = Auth::user();
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = $request->get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
         $officer = Officer::where('year', $year)
-            ->where('university_id', $user->university_id)
+            ->where('university_id', $universityId)
             ->first();
         $result = [
             'success' => true,

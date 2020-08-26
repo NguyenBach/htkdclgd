@@ -3,9 +3,11 @@
 namespace Modules\GiangVien\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Modules\GiangVien\Entities\OfficerByGender;
 use Modules\GiangVien\Http\Requests\OfficerByGenderRequest;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class OfficerByGenderController extends Controller
 {
@@ -13,11 +15,18 @@ class OfficerByGenderController extends Controller
     public function store($year, OfficerByGenderRequest $request)
     {
         //
-        $this->authorize('officer_by_gender', OfficerByGender::class);
+        $this->authorize('store', OfficerByGender::class);
         $data = $request->validated();
         $user = Auth::user();
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = $request->get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
         $primary = [
-            'university_id' => $user->university_id,
+            'university_id' => $universityId,
             'year' => $year
         ];
 
@@ -34,12 +43,20 @@ class OfficerByGenderController extends Controller
     }
 
 
-    public function show($year)
+    public function show($year, Request $request)
     {
-        $this->authorize('officer_by_gender', OfficerByGender::class);
+        $this->authorize('index', OfficerByGender::class);
+
         $user = Auth::user();
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = $request->get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
         $officer = OfficerByGender::where('year', $year)
-            ->where('university_id', $user->university_id)
+            ->where('university_id', $universityId)
             ->first();
         $result = [
             'success' => true,

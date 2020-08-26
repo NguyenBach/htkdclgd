@@ -11,15 +11,25 @@ namespace Modules\CoSoVatChat\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Input;
 use Modules\CoSoVatChat\Entities\DienTich;
 use Modules\CoSoVatChat\Http\Requests\DienTichRequest;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class DienTichController extends Controller
 {
     public function index($year)
     {
         $user = Auth::user();
-        $this->authorize('dien_tich', DienTich::class);
+        $this->authorize('index', DienTich::class);
+
+        if (!$user->university_id) {
+            $universityId = Input::get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+            $user->university_id = $universityId;
+        }
 
         $tong = DienTich::where('university_id', $user->university_id)
             ->where('year', $year)
@@ -53,12 +63,18 @@ class DienTichController extends Controller
 
     public function store($year, DienTichRequest $request)
     {
-
         $user = Auth::user();
-        $this->authorize('dien_tich', DienTich::class);
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = $request->get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+        $this->authorize('update', DienTich::class);
         $inputData = $request->validated();
         $data = [];
-        $data['university_id'] = $user->university_id;
+        $data['university_id'] = $universityId;
         $data['year'] = $year;
 
         $dataTong = json_decode($inputData['tong'], true);
@@ -69,7 +85,7 @@ class DienTichController extends Controller
         $tong = DienTich::updateOrCreate(
             [
                 'year' => $year,
-                'university_id' => $user->university_id,
+                'university_id' => $universityId,
                 'noi_dung' => 1
             ],
             $data);
@@ -82,7 +98,7 @@ class DienTichController extends Controller
         $giangDuong = DienTich::updateOrCreate(
             [
                 'year' => $year,
-                'university_id' => $user->university_id,
+                'university_id' => $universityId,
                 'noi_dung' => 2
             ],
             $data);
@@ -95,7 +111,7 @@ class DienTichController extends Controller
         $capTruong = DienTich::updateOrCreate(
             [
                 'year' => $year,
-                'university_id' => $user->university_id,
+                'university_id' => $universityId,
                 'noi_dung' => 3
             ],
             $data);
@@ -108,7 +124,7 @@ class DienTichController extends Controller
         $trungTam = DienTich::updateOrCreate(
             [
                 'year' => $year,
-                'university_id' => $user->university_id,
+                'university_id' => $universityId,
                 'noi_dung' => 4
             ],
             $data);

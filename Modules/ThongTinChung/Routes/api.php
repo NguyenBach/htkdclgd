@@ -85,3 +85,10 @@ Route::group([
     Route::post('', 'BieuMauController@store')->name('bieu-mau.store');
     Route::delete('{model}', 'BieuMauController@destroy')->name('bieu-mau.destroy');
 });
+Route::group([
+    'prefix' => 'tom-tat-chi-so-quan-trong',
+    'middleware' => 'jwt.auth'
+], function () {
+    Route::get('{year}', 'UniversityController@tomTat')->name('tom-tat.index');
+});
+

@@ -10,26 +10,35 @@ namespace Modules\NghienCuuKhoaHoc\Http\Controllers;
 
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Modules\NghienCuuKhoaHoc\Entities\CanBoNCKH;
 use Modules\NghienCuuKhoaHoc\Http\Requests\CanBoNCKHRequest;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class CanBoNCKHController extends Controller
 {
-    public function index($year)
+    public function index($year, Request $request)
     {
         $user = Auth::user();
-        $this->authorize('can_bo_nckh', CanBoNCKH::class);
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = $request->get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+        $this->authorize('index', CanBoNCKH::class);
 
-        $nhaNuoc = CanBoNCKH::where('university_id', $user->university_id)
+        $nhaNuoc = CanBoNCKH::where('university_id', $universityId)
             ->where('year', $year)
             ->where('cap_de_tai_id', 1)
             ->first();
-        $capBo = CanBoNCKH::where('university_id', $user->university_id)
+        $capBo = CanBoNCKH::where('university_id', $universityId)
             ->where('year', $year)
             ->where('cap_de_tai_id', 2)
             ->first();
-        $capTruong = CanBoNCKH::where('university_id', $user->university_id)
+        $capTruong = CanBoNCKH::where('university_id', $universityId)
             ->where('year', $year)
             ->where('cap_de_tai_id', 3)
             ->first();
@@ -51,10 +60,17 @@ class CanBoNCKHController extends Controller
     {
 
         $user = Auth::user();
-        $this->authorize('can_bo_nckh', CanBoNCKH::class);
+        $this->authorize('store', CanBoNCKH::class);
         $inputData = $request->validated();
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = $request->get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
         $data = [];
-        $data['university_id'] = $user->university_id;
+        $data['university_id'] = $universityId;
         $data['year'] = $year;
 
         $dataNhaNuoc = json_decode($inputData['nha_nuoc'], true);
@@ -65,7 +81,7 @@ class CanBoNCKHController extends Controller
         $nhaNuoc = CanBoNCKH::updateOrCreate(
             [
                 'year' => $year,
-                'university_id' => $user->university_id,
+                'university_id' => $universityId,
                 'cap_de_tai_id' => 1
             ],
             $data);
@@ -78,7 +94,7 @@ class CanBoNCKHController extends Controller
         $capBo = CanBoNCKH::updateOrCreate(
             [
                 'year' => $year,
-                'university_id' => $user->university_id,
+                'university_id' => $universityId,
                 'cap_de_tai_id' => 2
             ],
             $data);
@@ -91,7 +107,7 @@ class CanBoNCKHController extends Controller
         $capTruong = CanBoNCKH::updateOrCreate(
             [
                 'year' => $year,
-                'university_id' => $user->university_id,
+                'university_id' => $universityId,
                 'cap_de_tai_id' => 3
             ],
             $data);

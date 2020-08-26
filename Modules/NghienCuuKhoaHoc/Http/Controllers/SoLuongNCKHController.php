@@ -11,17 +11,25 @@ namespace Modules\NghienCuuKhoaHoc\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Input;
 use Modules\NghienCuuKhoaHoc\Entities\SoLuongNCKH;
 use Modules\NghienCuuKhoaHoc\Http\Requests\SoLuongNCKHRequest;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class SoLuongNCKHController extends Controller
 {
     public function index($year)
     {
         $user = Auth::user();
-        $this->authorize('so_luong_nckh', SoLuongNCKH::class);
-
-        $soLuongNCKH = SoLuongNCKH::where('university_id', $user->university_id)
+        $this->authorize('index', SoLuongNCKH::class);
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = Input::get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+        $soLuongNCKH = SoLuongNCKH::where('university_id', $universityId)
             ->where('year', $year)
             ->first();
 
@@ -40,15 +48,22 @@ class SoLuongNCKHController extends Controller
     {
 
         $user = Auth::user();
-        $this->authorize('so_luong_nckh', SoLuongNCKH::class);
+        $this->authorize('store', SoLuongNCKH::class);
         $data = $request->validated();
-        $data['university_id'] = $user->university_id;
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = Input::get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+        $data['university_id'] = $universityId;
         $data['year'] = $year;
 
         $soLuongNCKH = SoLuongNCKH::updateOrCreate(
             [
                 'year' => $year,
-                'university_id' => $user->university_id
+                'university_id' => $universityId
             ],
             $data);
 

@@ -13,10 +13,12 @@ use App\Http\Controllers\Controller;
 use Defuse\Crypto\Key;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Input;
 use Modules\Auth\Entities\Permission;
 use Modules\ThongTinChung\Entities\Department;
 use Modules\ThongTinChung\Entities\KeyOfficer;
 use Modules\ThongTinChung\Http\Requests\KeyOfficerRequest;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class KeyOfficerController extends Controller
 {
@@ -31,8 +33,14 @@ class KeyOfficerController extends Controller
     {
         $this->authorize('key_officer', KeyOfficer::class);
         $user = Auth::user();
-        $university_id = $user->university_id;
-        $keyOfficers = KeyOfficer::where('university_id', $university_id)->get();
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = Input::get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+        $keyOfficers = KeyOfficer::where('university_id', $universityId)->get();
         $result = [
             'success' => true,
             'message' => 'Lấy danh sách cán bộ thành công',
@@ -46,7 +54,14 @@ class KeyOfficerController extends Controller
         $this->authorize('key_officer', KeyOfficer::class);
         $user = Auth::user();
         $data = $request->validated();
-        $departmentExist = Department::checkExistInUniversity($data['department_id'], $user->university_id);
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = Input::get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+        $departmentExist = Department::checkExistInUniversity($data['department_id'], $universityId);
         if (!$departmentExist) {
             $result = [
                 'success' => false,
@@ -54,7 +69,7 @@ class KeyOfficerController extends Controller
             ];
             return response()->json($result, 400);
         }
-        $data['university_id'] = $user->university_id;
+        $data['university_id'] = $universityId;
         $keyOfficer = KeyOfficer::create($data);
         if (!$keyOfficer) {
             $result = [
@@ -80,7 +95,15 @@ class KeyOfficerController extends Controller
         $this->authorize('key_officer_update', $keyOfficer);
         $user = Auth::user();
         $data = $request->validated();
-        $departmentExist = Department::checkExistInUniversity($data['department_id'], $user->university_id);
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = Input::get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+
+        $departmentExist = Department::checkExistInUniversity($data['department_id'], $universityId);
         if (!$departmentExist) {
             $result = [
                 'success' => false,
@@ -88,7 +111,7 @@ class KeyOfficerController extends Controller
             ];
             return response()->json($result, 400);
         }
-        $data['university_id'] = $user->university_id;
+        $data['university_id'] = $universityId;
         $success = $keyOfficer->update($data);
         if (!$success) {
             $result = [

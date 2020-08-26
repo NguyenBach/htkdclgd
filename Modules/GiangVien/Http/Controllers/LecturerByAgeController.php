@@ -10,17 +10,28 @@ namespace Modules\GiangVien\Http\Controllers;
 
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Modules\GiangVien\Entities\LecturerByAge;
 use Modules\GiangVien\Http\Requests\LecturerByAgeRequest;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class LecturerByAgeController extends Controller
 {
-    public function index($year)
+    public function index($year, Request $request)
     {
         $user = Auth::user();
-        $this->authorize('lecturer_by_age', LecturerByAge::class);
-        $giaoSu = LecturerByAge::where('university_id', $user->university_id)
+        $this->authorize('index', LecturerByAge::class);
+
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = $request->get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+
+        $giaoSu = LecturerByAge::where('university_id', $$universityId)
             ->where('year', $year)
             ->where('lecturer_degree', 1)
             ->first();
@@ -29,35 +40,35 @@ class LecturerByAgeController extends Controller
         } else {
             $avgAge = 0;
         }
-        $phoGiaoSu = LecturerByAge::where('university_id', $user->university_id)
+        $phoGiaoSu = LecturerByAge::where('university_id', $universityId)
             ->where('year', $year)
             ->where('lecturer_degree', 2)
             ->first();
-        $tsKhoaHoc = LecturerByAge::where('university_id', $user->university_id)
+        $tsKhoaHoc = LecturerByAge::where('university_id', $universityId)
             ->where('year', $year)
             ->where('lecturer_degree', 3)
             ->first();
-        $tienSi = LecturerByAge::where('university_id', $user->university_id)
+        $tienSi = LecturerByAge::where('university_id', $universityId)
             ->where('year', $year)
             ->where('lecturer_degree', 4)
             ->first();
-        $thacSi = LecturerByAge::where('university_id', $user->university_id)
+        $thacSi = LecturerByAge::where('university_id', $universityId)
             ->where('year', $year)
             ->where('lecturer_degree', 5)
             ->first();
-        $daiHoc = LecturerByAge::where('university_id', $user->university_id)
+        $daiHoc = LecturerByAge::where('university_id', $universityId)
             ->where('year', $year)
             ->where('lecturer_degree', 6)
             ->first();
-        $caoDang = LecturerByAge::where('university_id', $user->university_id)
+        $caoDang = LecturerByAge::where('university_id', $universityId)
             ->where('year', $year)
             ->where('lecturer_degree', 7)
             ->first();
-        $trungCap = LecturerByAge::where('university_id', $user->university_id)
+        $trungCap = LecturerByAge::where('university_id', $universityId)
             ->where('year', $year)
             ->where('lecturer_degree', 8)
             ->first();
-        $khac = LecturerByAge::where('university_id', $user->university_id)
+        $khac = LecturerByAge::where('university_id', $universityId)
             ->where('year', $year)
             ->where('lecturer_degree', 9)
             ->first();
@@ -86,10 +97,19 @@ class LecturerByAgeController extends Controller
     {
         //
         $user = Auth::user();
-        $this->authorize('lecturer_by_age', LecturerByAge::class);
+        $this->authorize('create', LecturerByAge::class);
+
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = $request->get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+
         $data = $request->validated();
         $insertData = [];
-        $insertData['university_id'] = $user->university_id;
+        $insertData['university_id'] = $universityId;
         $insertData['year'] = $year;
 
         $giaoSu = json_decode($data['giao_su'], true);
@@ -109,7 +129,7 @@ class LecturerByAgeController extends Controller
             [
                 'year' => $year,
                 'lecturer_degree' => 1,
-                'university_id' => $user->university_id
+                'university_id' => $universityId
             ],
             $insertData);
 
@@ -129,7 +149,7 @@ class LecturerByAgeController extends Controller
             [
                 'year' => $year,
                 'lecturer_degree' => 2,
-                'university_id' => $user->university_id
+                'university_id' => $universityId
             ],
             $insertData);
 
@@ -149,7 +169,7 @@ class LecturerByAgeController extends Controller
             [
                 'year' => $year,
                 'lecturer_degree' => 3,
-                'university_id' => $user->university_id
+                'university_id' => $universityId
             ],
             $insertData);
 
@@ -169,7 +189,7 @@ class LecturerByAgeController extends Controller
             [
                 'year' => $year,
                 'lecturer_degree' => 4,
-                'university_id' => $user->university_id
+                'university_id' => $universityId
             ],
             $insertData);
 
@@ -189,7 +209,7 @@ class LecturerByAgeController extends Controller
             [
                 'year' => $year,
                 'lecturer_degree' => 5,
-                'university_id' => $user->university_id
+                'university_id' => $universityId
             ],
             $insertData);
 
@@ -209,7 +229,7 @@ class LecturerByAgeController extends Controller
             [
                 'year' => $year,
                 'lecturer_degree' => 6,
-                'university_id' => $user->university_id
+                'university_id' => $universityId
             ],
             $insertData);
 
@@ -229,7 +249,7 @@ class LecturerByAgeController extends Controller
             [
                 'year' => $year,
                 'lecturer_degree' => 7,
-                'university_id' => $user->university_id
+                'university_id' => $universityId
             ],
             $insertData);
 
@@ -249,7 +269,7 @@ class LecturerByAgeController extends Controller
             [
                 'year' => $year,
                 'lecturer_degree' => 8,
-                'university_id' => $user->university_id
+                'university_id' => $universityId
             ],
             $insertData);
 
@@ -269,7 +289,7 @@ class LecturerByAgeController extends Controller
             [
                 'year' => $year,
                 'lecturer_degree' => 9,
-                'university_id' => $user->university_id
+                'university_id' => $universityId
             ],
             $insertData);
 
