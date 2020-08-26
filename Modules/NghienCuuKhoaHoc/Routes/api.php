@@ -79,6 +79,14 @@ Route::group([
 });
 
 Route::group([
+    'prefix' => 'can-bo-sach',
+    'middleware' => 'jwt.auth'
+], function () {
+    Route::get('/{year}', 'CanBoSachController@index')->name('can-bo-sach.list');
+    Route::post('/{year}', 'CanBoSachController@store')->name('can-bo-sach.create');
+});
+
+Route::group([
     'prefix' => 'bang-sang-che',
     'middleware' => 'jwt.auth'
 ], function () {

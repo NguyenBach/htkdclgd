@@ -2,9 +2,9 @@
 
 namespace App\Policies;
 
-use Modules\Auth\Entities\Permission;
-use Modules\Auth\Entities\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Database\Eloquent\Model;
+use Modules\Auth\Entities\User;
 use Modules\Auth\Http\Helper\AuthHelper;
 
 class BasePolicy

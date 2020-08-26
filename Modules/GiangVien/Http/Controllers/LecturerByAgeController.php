@@ -31,7 +31,7 @@ class LecturerByAgeController extends Controller
             }
         }
 
-        $giaoSu = LecturerByAge::where('university_id', $$universityId)
+        $giaoSu = LecturerByAge::where('university_id', $universityId)
             ->where('year', $year)
             ->where('lecturer_degree', 1)
             ->first();

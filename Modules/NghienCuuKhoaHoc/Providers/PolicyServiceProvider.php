@@ -13,6 +13,7 @@ use Modules\NghienCuuKhoaHoc\Entities\BangSangChe;
 use Modules\NghienCuuKhoaHoc\Entities\BaoCaoHoiThao;
 use Modules\NghienCuuKhoaHoc\Entities\CanBoHoiThao;
 use Modules\NghienCuuKhoaHoc\Entities\CanBoNCKH;
+use Modules\NghienCuuKhoaHoc\Entities\CanBoSach;
 use Modules\NghienCuuKhoaHoc\Entities\CanBoTapChi;
 use Modules\NghienCuuKhoaHoc\Entities\DoanhThuNCKH;
 use Modules\NghienCuuKhoaHoc\Entities\SoLuongNCKH;
@@ -24,6 +25,7 @@ use Modules\NghienCuuKhoaHoc\Policies\BangSangChePolicy;
 use Modules\NghienCuuKhoaHoc\Policies\BaoCaoHoiThaoPolicy;
 use Modules\NghienCuuKhoaHoc\Policies\CanBoHoiThaoPolicy;
 use Modules\NghienCuuKhoaHoc\Policies\CanBoNCKHPolicy;
+use Modules\NghienCuuKhoaHoc\Policies\CanBoSachPolicy;
 use Modules\NghienCuuKhoaHoc\Policies\CanBoTapChiPolicy;
 use Modules\NghienCuuKhoaHoc\Policies\DoanhThuNCKHPolicy;
 use Modules\NghienCuuKhoaHoc\Policies\SoLuongNCKHPolicy;
@@ -52,6 +54,7 @@ class PolicyServiceProvider extends AuthServiceProvider
         BangSangChe::class => BangSangChePolicy::class,
         SvNCKH::class => SvNCKHPolicy::class,
         ThanhTich::class => ThanhTichPolicy::class,
+        CanBoSach::class => CanBoSachPolicy::class
     ];
 
     /**

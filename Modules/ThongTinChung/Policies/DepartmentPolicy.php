@@ -8,9 +8,16 @@ use Modules\Auth\Entities\User;
 use Modules\Auth\Http\Helper\AuthHelper;
 use Modules\ThongTinChung\Entities\Department;
 
-class DepartmentPolicy extends BasePolicy
+class DepartmentPolicy
 {
     use HandlesAuthorization;
+
+    public function before(User $user, $ability)
+    {
+        if (AuthHelper::isSuperAdmin($user) || AuthHelper::isAdmin($user)) {
+            return true;
+        }
+    }
 
     /**
      * Create a new policy instance.
@@ -20,7 +27,6 @@ class DepartmentPolicy extends BasePolicy
     public function __construct()
     {
         //
-        parent::__construct();
     }
 
     public function list(User $user)
