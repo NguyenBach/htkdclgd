@@ -27,4 +27,9 @@ class TrangThietBi extends Model
         'created_at',
         'updated_at'
     ];
+
+    public function trangThietBi()
+    {
+        return $this->belongsToMany(ThietBi::class, 'danh_muc_trang_thiet_bi');
+    }
 }

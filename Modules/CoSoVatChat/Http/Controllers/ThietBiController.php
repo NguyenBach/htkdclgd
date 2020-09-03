@@ -41,13 +41,9 @@ class ThietBiController extends Controller
                 throw new NotFoundHttpException('Không có trường đại học');
             }
         }
-        $thietBi = $this->thietBiModel->where('university_id', $universityId)->get();
-        $thietBi = $thietBi->map(function ($value) {
-            $trangThietBi = json_decode($value->danh_muc_trang_thiet_bi);
-            $danhMuc = TrangThietBi::whereIn('id', $trangThietBi)->get();
-            $value->danh_muc_trang_thiet_bi = $danhMuc->toArray();
-            return $value;
-        });
+        $thietBi = $this->thietBiModel->where('university_id', $universityId)
+            ->with('danh_muc_trang_thiet_bi')
+            ->get();
         $result = [
             'success' => true,
             'message' => 'Lấy thiết bị thành công',
@@ -61,13 +57,12 @@ class ThietBiController extends Controller
     public function show(ThietBi $thietBi)
     {
         $this->authorize('index', ThietBi::class);
-        $trangThietBi = json_decode($thietBi->danh_muc_trang_thiet_bi);
-        $thietBi->danh_muc_trang_thiet_bi = TrangThietBi::whereIn('id', $trangThietBi)->get()->toArray();
+        $thietBi->danh_muc_trang_thiet_bi = $thietBi->danh_muc_trang_thiet_bi()->get();
         $result = [
             'success' => true,
             'message' => "Lấy thiết bị thành công",
             'data' => [
-                'trang_thiet_bi' => $thietBi
+                'thiet_bi' => $thietBi
             ]
         ];
         return \response()->json($result);
@@ -79,6 +74,7 @@ class ThietBiController extends Controller
         $this->authorize('create', ThietBi::class);
         $user = Auth::user();
         $data = $request->validated();
+        $danhMucTrangThietBi = json_decode($data['danh_muc_trang_thiet_bi']);
         $universityId = $user->university_id;
         if (!$universityId) {
             $universityId = $request->get('university_id');
@@ -90,6 +86,7 @@ class ThietBiController extends Controller
         $data['university_id'] = $universityId;
 
         $thietBi = $this->thietBiModel->create($data);
+        $thietBi->danh_muc_trang_thiet_bi()->attach($danhMucTrangThietBi);
         if ($thietBi) {
             $result = [
                 'success' => true,

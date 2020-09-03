@@ -16,7 +16,6 @@ class ThietBi extends Model
         'year',
         'name',
         'so_luong',
-        'danh_muc_trang_thiet_bi',
         'doi_tuong',
         'dien_tich',
         'hinh_thuc',
@@ -27,7 +26,6 @@ class ThietBi extends Model
         'year',
         'name',
         'so_luong',
-        'danh_muc_trang_thiet_bi',
         'doi_tuong',
         'dien_tich',
         'hinh_thuc',
@@ -37,4 +35,8 @@ class ThietBi extends Model
         'created_at',
         'updated_at'
     ];
+
+    public function danh_muc_trang_thiet_bi(){
+        return $this->belongsToMany(TrangThietBi::class,'danh_muc_trang_thiet_bi');
+    }
 }

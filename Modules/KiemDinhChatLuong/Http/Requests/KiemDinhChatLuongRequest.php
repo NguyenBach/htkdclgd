@@ -15,11 +15,11 @@ class KiemDinhChatLuongRequest extends APIRequest
     {
         return [
             //
-            'doi_tuong' => 'required|exists:doi_tuong_kiem_dinhs,id',
-            'bo_tieu_chuan' => 'required|exists:tieu_chuan_kiem_dinhs,id',
+            'doi_tuong' => 'required',
+            'bo_tieu_chuan' => 'required',
             'nam_hoan_thanh_1' => 'required|numeric',
             'nam_cap_nhat' => 'required|numeric',
-            'to_chuc' => 'required|exists:to_chuc_kiem_dinh,id',
+            'to_chuc' => 'required',
             'nam_danh_gia' => 'required',
             'ket_qua' => 'required',
             'ngay_cap' => 'required',

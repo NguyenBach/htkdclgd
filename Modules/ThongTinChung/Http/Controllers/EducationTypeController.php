@@ -28,7 +28,7 @@ class EducationTypeController extends Controller
 
     public function list()
     {
-        $this->authorize('list', EducationType::class);
+        $this->authorize('index', EducationType::class);
         $user = Auth::user();
         $universityId = $user->university_id;
         if (!$universityId) {

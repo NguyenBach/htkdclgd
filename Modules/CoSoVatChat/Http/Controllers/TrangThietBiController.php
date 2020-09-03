@@ -83,6 +83,7 @@ class TrangThietBiController extends Controller
     public function delete(TrangThietBi $trangThietBi)
     {
         $this->authorize('update', $trangThietBi);
+        $trangThietBi->trangThietBi()->detach([$trangThietBi->id]);
         $trangThietBi->delete();
         $result = [
             'success' => true,

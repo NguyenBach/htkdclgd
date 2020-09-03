@@ -24,9 +24,6 @@ class KiemDinhChatLuongController extends Controller
             }
         }
         $kiemDinh = KiemDinhChatLuong::where('university_id', $universityId)
-            ->with('doiTuongKiemDinh')
-            ->with('toChucKiemDinh')
-            ->with('tieuChuanKiemDinh')
             ->get();
         $result = [
             'success' => true,
