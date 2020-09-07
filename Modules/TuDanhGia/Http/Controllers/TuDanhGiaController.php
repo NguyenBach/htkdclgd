@@ -5,75 +5,79 @@ namespace Modules\TuDanhGia\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Input;
+use Modules\TuDanhGia\Entities\TuDanhGiaDraft;
 
 class TuDanhGiaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     * @return Response
-     */
-    public function index()
+
+    public function index($tieuChuan)
     {
-        return view('tudanhgia::index');
+        $user = Auth::user();
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = Input::get('university_id');
+        }
+        $tuDanhGia = TuDanhGiaDraft::where('university_id', $universityId)
+            ->where('role', $user->role_id)
+            ->where('tieu_chuan', $tieuChuan)
+            ->get();
+
+        $result = [
+            'success' => true,
+            'message' => "Lấy thông tin thành công",
+            'data' => [
+                'danh_gia' => $tuDanhGia
+            ]
+        ];
+        return \response()->json($result);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     * @return Response
-     */
-    public function create()
+
+    public function create($tieuChuan, Request $request)
     {
-        return view('tudanhgia::create');
+        $data = $request->json();
+        $user = Auth::user();
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = $request->get('university_id');
+        }
+        $insertData = [
+            'university_id' => $universityId,
+            'role' => $user->role_id,
+            'tieu_chuan' => $tieuChuan
+        ];
+        foreach ($data as $tieuChi) {
+            $insertData['tieu_chi'] = $tieuChi['id'];
+            $insertData['diem_thong_nhat'] = $tieuChi['diem_thong_nhat'];
+            if (isset($tieuChi['moc_chuan'])) {
+                $insertData['moc_chuan'] = $tieuChi['moc_chuan'];
+            } else {
+                $insertData['moc_chuan'] = [];
+            }
+            if (isset($tieuChi['minh_chung'])) {
+                $insertData['minh_chung'] = $tieuChi['minh_chung'];
+            } else {
+                $insertData['minh_chung'] = [];
+            }
+            TuDanhGiaDraft::updateOrCreate([
+                'university_id' => $universityId,
+                'role' => $user->role_id,
+                'tieu_chuan' => $tieuChuan,
+                'tieu_chi' => $tieuChi['id']
+            ], $insertData);
+        }
+        $result = [
+            'success' => true,
+            'message' => "Lưu thành công"
+        ];
+        return \response()->json($result);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     * @param Request $request
-     * @return Response
-     */
-    public function store(Request $request)
+    public function nop()
     {
-        //
+
     }
 
-    /**
-     * Show the specified resource.
-     * @param int $id
-     * @return Response
-     */
-    public function show($id)
-    {
-        return view('tudanhgia::show');
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     * @param int $id
-     * @return Response
-     */
-    public function edit($id)
-    {
-        return view('tudanhgia::edit');
-    }
-
-    /**
-     * Update the specified resource in storage.
-     * @param Request $request
-     * @param int $id
-     * @return Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     * @param int $id
-     * @return Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 }

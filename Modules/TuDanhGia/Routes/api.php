@@ -31,3 +31,11 @@ Route::group([
     Route::post('/{baoCao}/comment/', 'BaoCaoTuDanhGiaController@comment')->name('bao-cao-tu-danh-gia.comment');
 });
 
+Route::group([
+    'prefix' => 'tu-danh-gia',
+    'middleware' => 'jwt.auth'
+], function () {
+    Route::post('/{tieuChuan}', "TuDanhGiaController@create")->name('tu-danh-gia.create');
+    Route::get('/{tieuChuan}', "TuDanhGiaController@index")->name('tu-danh-gia.index');
+});
+
