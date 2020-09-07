@@ -13,8 +13,8 @@ class TuDanhGia extends Model
         'tieu_chuan',
         'tieu_chi',
         'university_id',
-        'diem_moc_chuan',
-        'diem_minh_chung',
+        'moc_chuan',
+        'minh_chung',
         'diem_thong_nhat',
     ];
 
