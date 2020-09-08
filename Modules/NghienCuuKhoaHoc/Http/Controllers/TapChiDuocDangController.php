@@ -72,6 +72,67 @@ class TapChiDuocDangController extends Controller
         return response()->json($result, 200);
     }
 
+    public function list($year)
+    {
+        $user = Auth::user();
+        $this->authorize('index', TapChiDuocDang::class);
+
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = Input::get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+
+        $data = [];
+        $i = 5;
+        while ($i > 0) {
+            $isi = TapChiDuocDang::where('university_id', $universityId)
+                ->where('year', $year)
+                ->where('phan_loai_tap_chi_id', 1)
+                ->where('danh_muc', 'isi')
+                ->first();
+
+            $scopus = TapChiDuocDang::where('university_id', $universityId)
+                ->where('year', $year)
+                ->where('phan_loai_tap_chi_id', 1)
+                ->where('danh_muc', 'scopus')
+                ->first();
+            $khac = TapChiDuocDang::where('university_id', $universityId)
+                ->where('year', $year)
+                ->where('phan_loai_tap_chi_id', 1)
+                ->where('danh_muc', 'khac')
+                ->first();
+            $trongNuoc = TapChiDuocDang::where('university_id', $universityId)
+                ->where('year', $year)
+                ->where('phan_loai_tap_chi_id', 2)
+                ->first();
+
+            $capTruong = TapChiDuocDang::where('university_id', $universityId)
+                ->where('year', $year)
+                ->where('phan_loai_tap_chi_id', 3)
+                ->first();
+            $data[$year] = [
+                'isi' => $isi,
+                'scopus' => $scopus,
+                'khac' => $khac,
+                'trong_nuoc' => $trongNuoc,
+                'cap_truong' => $capTruong
+            ];
+            $year--;
+            $i--;
+        }
+
+
+        $result = [
+            'success' => true,
+            'message' => 'Lấy tap chí được đăng thành công',
+            'data' => $data
+        ];
+        return response()->json($result, 200);
+    }
+
 
     public function store($year, TapChiDuocDangRequest $request)
     {

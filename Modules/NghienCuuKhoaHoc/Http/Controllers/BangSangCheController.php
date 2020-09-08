@@ -44,6 +44,40 @@ class BangSangCheController extends Controller
         return response()->json($result, 200);
     }
 
+    public function list($year, Request $request)
+    {
+        $user = Auth::user();
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = $request->get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+        $this->authorize('index', BangSangChe::class);
+
+        $data = [];
+        $i = 5;
+        while ($i > 0) {
+            $bangSangChe = BangSangChe::where('university_id', $universityId)
+                ->where('year', $year)
+                ->first();
+            $data[$year] = [
+                'bang_sang_che' => $bangSangChe
+            ];
+            $year--;
+            $i--;
+        }
+
+
+        $result = [
+            'success' => true,
+            'message' => 'Lấy bằng sáng chế thành công',
+            'data' => $data
+        ];
+        return response()->json($result, 200);
+    }
+
 
     public function store($year, BangSangCheRequest $request)
     {

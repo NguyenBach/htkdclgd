@@ -45,6 +45,40 @@ class NguoiHocTotNghiepController extends Controller
         return response()->json($result, 200);
     }
 
+    public function list($year)
+    {
+        $user = Auth::user();
+        $this->authorize('index', NguoiHocTotNghiep::class);
+
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = Input::get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+
+        $data = [];
+        $i = 5;
+        while ($i > 0) {
+            $nguoiHoc = NguoiHocTotNghiep::where('university_id', $universityId)
+                ->where('year', $year)
+                ->first();
+            $data[$year] = [
+                'nguoi_hoc_tot_nghiep' => $nguoiHoc
+            ];
+            $year--;
+            $i--;
+        }
+
+        $result = [
+            'success' => true,
+            'message' => 'Lấy sinh người học tốt nghiệp thành công',
+            'data' => $data
+        ];
+        return response()->json($result, 200);
+    }
+
 
     public function store($year, NguoiHocTotNghiepRequest $request)
     {

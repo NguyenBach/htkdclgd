@@ -45,6 +45,41 @@ class SvKtxController extends Controller
         return response()->json($result, 200);
     }
 
+    public function list($year)
+    {
+        $user = Auth::user();
+        $this->authorize('index', SvKtx::class);
+
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = Input::get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+
+        $data = [];
+        $i = 5;
+        while ($i > 0) {
+            $svktx = SvKtx::where('university_id', $universityId)
+                ->where('year', $year)
+                ->first();
+            $data[$year] = [
+                'sv_ktx' => $svktx
+            ];
+            $year--;
+            $i--;
+        }
+
+
+        $result = [
+            'success' => true,
+            'message' => 'Lấy sinh viên kí túc xá thành công',
+            'data' => $data
+        ];
+        return response()->json($result, 200);
+    }
+
 
     public function store($year, SvKtxRequest $request)
     {

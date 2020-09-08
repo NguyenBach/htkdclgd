@@ -57,6 +57,52 @@ class BaoCaoHoiThaoController extends Controller
         return response()->json($result, 200);
     }
 
+    public function list($year, Request $request)
+    {
+        $user = Auth::user();
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = $request->get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+        $this->authorize('index', BaoCaoHoiThao::class);
+
+        $data = [];
+        $i = 5;
+        while ($i > 0) {
+            $quocTe = BaoCaoHoiThao::where('university_id', $universityId)
+                ->where('year', $year)
+                ->where('phan_loai_hoi_thao_id', 1)
+                ->first();
+            $trongNuoc = BaoCaoHoiThao::where('university_id', $universityId)
+                ->where('year', $year)
+                ->where('phan_loai_hoi_thao_id', 2)
+                ->first();
+            $capTruong = BaoCaoHoiThao::where('university_id', $universityId)
+                ->where('year', $year)
+                ->where('phan_loai_hoi_thao_id', 3)
+                ->first();
+            $data[$year] = [
+                'quoc_te' => $quocTe,
+                'trong_nuoc' => $trongNuoc,
+                'cap_truong' => $capTruong,
+
+            ];
+            $year--;
+            $i--;
+        }
+
+
+        $result = [
+            'success' => true,
+            'message' => 'Lấy báo cáo hội thảo thành công',
+            'data' => $data
+        ];
+        return response()->json($result, 200);
+    }
+
 
     public function store($year, BaoCaoHoiThaoRequest $request)
     {

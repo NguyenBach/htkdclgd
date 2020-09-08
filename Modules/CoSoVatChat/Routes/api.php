@@ -19,7 +19,8 @@ Route::group([
     'prefix' => 'dien-tich',
     'middleware' => 'jwt.auth'
 ], function () {
-    Route::get('/{year}', 'DienTichController@index')->name('dien-tich.list');
+    Route::get('/{year}', 'DienTichController@index')->name('dien-tich.index');
+    Route::get('list/{year}', 'DienTichController@list')->name('dien-tich.list');
     Route::post('/{year}', 'DienTichController@store')->name('dien-tich.create');
 });
 
@@ -39,6 +40,7 @@ Route::group([
     'middleware' => 'jwt.auth'
 ], function () {
     Route::get('/{year}', 'SachThuVienController@list')->name('sach-thu-vien.list');
+    Route::get('list/{year}', 'SachThuVienController@index')->name('sach-thu-vien.index');
     Route::post('/{year}/{nhomNganh}', 'SachThuVienController@create')->name('sach-thu-vien.create');
 });
 
@@ -69,5 +71,6 @@ Route::group([
     'middleware' => 'jwt.auth'
 ], function () {
     Route::get('/{year}', 'ThuChiController@list')->name('thu-chi.list');
+    Route::get('list/{year}', 'ThuChiController@index')->name('thu-chi.index');
     Route::post('/{year}', 'ThuChiController@update')->name('thu-chi.update');
 });

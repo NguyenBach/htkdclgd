@@ -44,6 +44,50 @@ class LecturerController extends Controller
         return response()->json($result, 200);
     }
 
+    public function list($year, Request $request)
+    {
+        $user = Auth::user();
+
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = $request->get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+
+        $this->authorize('index', Lecturer::class);
+
+        $data = [];
+        $i = 5;
+        while ($i > 0) {
+            $lecturer = Lecturer::where('university_id', $universityId)
+                ->where('year', $year)
+                ->where('lecturer_type', 1)
+                ->get();
+
+            $researcher = Lecturer::where('university_id', $universityId)
+                ->where('year', $year)
+                ->where('lecturer_type', 2)
+                ->get();
+
+            $data[$year] = [
+                'giang_vien' => $lecturer,
+                'nghien_cuu_vien' => $researcher
+            ];
+
+            $year--;
+            $i--;
+        }
+
+        $result = [
+            'success' => true,
+            'message' => 'Lấy giảng viên thành công',
+            'data' => $data
+        ];
+        return response()->json($result, 200);
+    }
+
 
     public function store($year, LecturerRequest $request)
     {

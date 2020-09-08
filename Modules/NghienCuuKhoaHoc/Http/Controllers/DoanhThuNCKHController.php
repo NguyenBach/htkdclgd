@@ -45,6 +45,39 @@ class DoanhThuNCKHController extends Controller
         return response()->json($result, 200);
     }
 
+    public function list($year)
+    {
+        $user = Auth::user();
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = Input::get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+        $this->authorize('index', DoanhThuNCKH::class);
+
+        $data = [];
+        $i = 5;
+        while ($i > 0) {
+            $doanhThuNCKH = DoanhThuNCKH::where('university_id', $universityId)
+                ->where('year', $year)
+                ->first();
+            $data[$year] = [
+                'doanh_thu_nckh' => $doanhThuNCKH
+            ];
+            $year--;
+            $i--;
+        }
+
+        $result = [
+            'success' => true,
+            'message' => 'Lấy doanh thu nghiên cứu khoa học thành công',
+            'data' => $data
+        ];
+        return response()->json($result, 200);
+    }
+
 
     public function store($year, DoanhThuNCKHRequest $request)
     {

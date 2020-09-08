@@ -68,4 +68,37 @@ class OfficerController extends Controller
         return response()->json($result, 200);
     }
 
+    public function list($year, Request $request)
+    {
+        $this->authorize('index', Officer::class);
+        $user = Auth::user();
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = $request->get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+
+        $data = [];
+        $i = 5;
+        while ($i > 0) {
+            $officer = Officer::where('year', $year)
+                ->where('university_id', $universityId)
+                ->first();
+            $data[$year] = [
+                'officer' => $officer
+            ];
+            $year--;
+            $i--;
+        }
+
+        $result = [
+            'success' => true,
+            'message' => 'Lấy cán bộ thành công',
+            'data' => $data
+        ];
+        return response()->json($result, 200);
+    }
+
 }

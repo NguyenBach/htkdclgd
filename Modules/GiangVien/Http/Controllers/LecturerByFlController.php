@@ -67,6 +67,69 @@ class LecturerByFlController extends Controller
         return response()->json($result, 200);
     }
 
+    public function list($year, Request $request)
+    {
+        $user = Auth::user();
+
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = $request->get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+
+        $this->authorize('index', LecturerByFl::class);
+
+        $data = [];
+        $i = 5;
+        while ($i > 0) {
+
+            $luonLuon = LecturerByFl::where('university_id', $universityId)
+                ->where('year', $year)
+                ->where('frequency', 1)
+                ->first();
+
+            $thuongThuong = LecturerByFl::where('university_id', $universityId)
+                ->where('year', $year)
+                ->where('frequency', 2)
+                ->first();
+
+            $doiKhi = LecturerByFl::where('university_id', $universityId)
+                ->where('year', $year)
+                ->where('frequency', 3)
+                ->first();
+
+            $itKhi = LecturerByFl::where('university_id', $universityId)
+                ->where('year', $year)
+                ->where('frequency', 4)
+                ->first();
+
+            $hiemKhi = LecturerByFl::where('university_id', $universityId)
+                ->where('year', $year)
+                ->where('frequency', 5)
+                ->first();
+
+            $data[$year] = [
+                'luon_luon' => $luonLuon,
+                'thuong_thuong' => $thuongThuong,
+                'doi_khi' => $doiKhi,
+                'it_khi' => $itKhi,
+                'hiem_khi' => $hiemKhi
+            ];
+
+            $year--;
+            $i--;
+        }
+
+        $result = [
+            'success' => true,
+            'message' => 'Lấy giảng viên thành công',
+            'data' => $data
+        ];
+        return response()->json($result, 200);
+    }
+
 
     public function store($year, LecturerByFlRequest $request)
     {

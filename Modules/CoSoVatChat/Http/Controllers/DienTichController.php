@@ -61,6 +61,57 @@ class DienTichController extends Controller
         return response()->json($result, 200);
     }
 
+    public function list($year)
+    {
+        $user = Auth::user();
+        $this->authorize('index', DienTich::class);
+
+        if (!$user->university_id) {
+            $universityId = Input::get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+            $user->university_id = $universityId;
+        }
+        $data = [];
+        $i = 5;
+        while ($i > 0) {
+            $tong = DienTich::where('university_id', $user->university_id)
+                ->where('year', $year)
+                ->where('noi_dung', 1)
+                ->first();
+            $giangDuong = DienTich::where('university_id', $user->university_id)
+                ->where('year', $year)
+                ->where('noi_dung', 2)
+                ->first();
+            $thuVien = DienTich::where('university_id', $user->university_id)
+                ->where('year', $year)
+                ->where('noi_dung', 3)
+                ->first();
+            $trungTam = DienTich::where('university_id', $user->university_id)
+                ->where('year', $year)
+                ->where('noi_dung', 4)
+                ->first();
+
+            $data[$year] = [
+                'tong' => $tong,
+                'giang_duong' => $giangDuong,
+                'thu_vien' => $thuVien,
+                'trung_tam' => $trungTam,
+            ];
+
+            $year--;
+            $i--;
+        }
+
+        $result = [
+            'success' => true,
+            'message' => 'Lấy cán bộ hoi thao thành công',
+            'data' => $data
+        ];
+        return response()->json($result, 200);
+    }
+
     public function store($year, DienTichRequest $request)
     {
         $user = Auth::user();

@@ -60,6 +60,56 @@ class SoLuongSachController extends Controller
         return response()->json($result, 200);
     }
 
+    public function list($year)
+    {
+        $user = Auth::user();
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = Input::get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+        $this->authorize('index', SoLuongSach::class);
+
+        $data = [];
+        $i = 5;
+        while ($i > 0) {
+            $chuyenKhao = SoLuongSach::where('university_id', $universityId)
+                ->where('year', $year)
+                ->where('loai_sach_id', 1)
+                ->first();
+            $giaoTrinh = SoLuongSach::where('university_id', $universityId)
+                ->where('year', $year)
+                ->where('loai_sach_id', 2)
+                ->first();
+            $thamKhao = SoLuongSach::where('university_id', $universityId)
+                ->where('year', $year)
+                ->where('loai_sach_id', 3)
+                ->first();
+            $huongDan = SoLuongSach::where('university_id', $universityId)
+                ->where('year', $year)
+                ->where('loai_sach_id', 4)
+                ->first();
+
+            $data[$year] = [
+                'chuyen_khao' => $chuyenKhao,
+                'giao_trinh' => $giaoTrinh,
+                'tham_khao' => $thamKhao,
+                'huong_dan' => $huongDan
+            ];
+            $year--;
+            $i--;
+        }
+
+        $result = [
+            'success' => true,
+            'message' => 'Lấy số lượng sách thành công',
+            'data' => $data
+        ];
+        return response()->json($result, 200);
+    }
+
 
     public function store($year, SoLuongSachRequest $request)
     {

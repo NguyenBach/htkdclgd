@@ -43,6 +43,40 @@ class ThuChiController extends Controller
         return response()->json($result);
     }
 
+    public function index($year, Request $request)
+    {
+        $this->authorize('index', ThuChi::class);
+        $user = Auth::user();
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = $request->get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+        $data = [];
+        $i = 5;
+        while ($i > 0) {
+            $thuChi = ThuChi::where('year', $year)
+                ->where('university_id', $universityId)
+                ->first();
+
+            $data[$year] = [
+                'thu_chi' => $thuChi
+            ];
+            $year--;
+            $i--;
+        }
+
+        $result = [
+            'success' => true,
+            'message' => 'Lấy thu chi thành công',
+            'data' => $data
+        ];
+        return response()->json($result);
+    }
+
+
     public function update($year, ThuChiRequest $request)
     {
         $this->authorize('update', ThuChi::class);

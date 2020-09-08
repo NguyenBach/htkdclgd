@@ -43,6 +43,40 @@ class SoLuongNCKHController extends Controller
         return response()->json($result, 200);
     }
 
+    public function list($year)
+    {
+        $user = Auth::user();
+        $this->authorize('index', SoLuongNCKH::class);
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = Input::get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+
+        $data = [];
+        $i = 5;
+        while ($i > 0) {
+            $soLuongNCKH = SoLuongNCKH::where('university_id', $universityId)
+                ->where('year', $year)
+                ->first();
+            $data[$year] = [
+                'so_luong_nckh' => $soLuongNCKH
+            ];
+            $year--;
+            $i--;
+        }
+
+
+        $result = [
+            'success' => true,
+            'message' => 'Lấy số lượng nghiên cứu khoa học thành công',
+            'data' => $data
+        ];
+        return response()->json($result, 200);
+    }
+
 
     public function store($year, SoLuongNCKHRequest $request)
     {

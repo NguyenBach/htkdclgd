@@ -45,6 +45,40 @@ class SachThuVienController extends Controller
         return response()->json($result, 200);
     }
 
+    public function index($year)
+    {
+        $this->authorize('index', SachThuVien::class);
+        $user = Auth::user();
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = Input::get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+
+        $data = [];
+        $i = 5;
+        while ($i > 0) {
+            $sachThuVien = SachThuVien::where('university_id', $universityId)
+                ->where('year', $year)
+                ->with('nhomNganh')
+                ->get();
+            $data[$year] = [
+                'sach_thu_vien' => $sachThuVien
+            ];
+            $year--;
+            $i--;
+        }
+
+        $result = [
+            'success' => true,
+            'message' => 'lấy sách thành công',
+            'data' => $data
+        ];
+        return response()->json($result, 200);
+    }
+
     public function create($year, NhomNganh $nhomNganh, SachThuVienRequest $request)
     {
         $this->authorize('create', SachThuVien::class);

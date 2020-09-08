@@ -54,6 +54,50 @@ class SvNCKHController extends Controller
         return response()->json($result, 200);
     }
 
+    public function list($year)
+    {
+        $user = Auth::user();
+        $this->authorize('index', SvNCKH::class);
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = Input::get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+
+        $data = [];
+        $i = 5;
+        while ($i > 0) {
+            $nhaNuoc = SvNCKH::where('university_id', $universityId)
+                ->where('year', $year)
+                ->where('cap_de_tai_id', 1)
+                ->first();
+            $capBo = SvNCKH::where('university_id', $universityId)
+                ->where('year', $year)
+                ->where('cap_de_tai_id', 2)
+                ->first();
+            $capTruong = SvNCKH::where('university_id', $universityId)
+                ->where('year', $year)
+                ->where('cap_de_tai_id', 3)
+                ->first();
+            $data[$year] = [
+                'nha_nuoc' => $nhaNuoc,
+                'cap_bo' => $capBo,
+                'cap_truong' => $capTruong
+            ];
+            $year--;
+            $i--;
+        }
+
+        $result = [
+            'success' => true,
+            'message' => 'Lấy sinh viên nghiên cứu khoa học thành công',
+            'data' => $data
+        ];
+        return response()->json($result, 200);
+    }
+
 
     public function store($year, SvNCKHRequest $request)
     {

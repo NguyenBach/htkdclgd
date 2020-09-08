@@ -55,6 +55,51 @@ class CanBoHoiThaoController extends Controller
         return response()->json($result, 200);
     }
 
+    public function list($year, Request $request)
+    {
+        $user = Auth::user();
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = $request->get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+        $this->authorize('index', CanBoHoiThao::class);
+
+        $data = [];
+        $i = 5;
+        while ($i > 0) {
+            $quocTe = CanBoHoiThao::where('university_id', $universityId)
+                ->where('year', $year)
+                ->where('phan_loai_hoi_thao_id', 1)
+                ->first();
+            $trongNuoc = CanBoHoiThao::where('university_id', $universityId)
+                ->where('year', $year)
+                ->where('phan_loai_hoi_thao_id', 2)
+                ->first();
+            $capTruong = CanBoHoiThao::where('university_id', $universityId)
+                ->where('year', $year)
+                ->where('phan_loai_hoi_thao_id', 3)
+                ->first();
+            $data[$year] = [
+                'quoc_te' => $quocTe,
+                'trong_nuoc' => $trongNuoc,
+                'cap_truong' => $capTruong
+            ];
+            $year--;
+            $i--;
+        }
+
+
+        $result = [
+            'success' => true,
+            'message' => 'Lấy cán bộ hoi thao thành công',
+            'data' => $data
+        ];
+        return response()->json($result, 200);
+    }
+
     public function store($year, CanBoHoiThaoRequest $request)
     {
 

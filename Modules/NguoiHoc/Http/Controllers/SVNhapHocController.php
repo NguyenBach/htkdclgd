@@ -90,6 +90,86 @@ class SVNhapHocController extends Controller
         return response()->json($result, 200);
     }
 
+    public function list($heHoc, $year)
+    {
+        if ($heHoc == 'chinh-quy') {
+            $heHoc = 1;
+        } else if ($heHoc == 'khong-chinh-quy') {
+            $heHoc = 0;
+        } else {
+            $result = [
+                'success' => false,
+                'message' => 'Hệ học không tồn tại'
+            ];
+            return response()->json($result, 404);
+        }
+        $user = Auth::user();
+        $this->authorize('index', SvNhapHoc::class);
+
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = Input::get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+
+        $data = [];
+        $i = 5;
+        while ($i > 0) {
+            $ncs = SvNhapHoc::where('university_id', $universityId)
+                ->where('year', $year)
+                ->where('he_hoc', $heHoc)
+                ->where('type', 'NCS')
+                ->first();
+
+            $hvch = SvNhapHoc::where('university_id', $universityId)
+                ->where('year', $year)
+                ->where('he_hoc', $heHoc)
+                ->where('type', 'HVCH')
+                ->first();
+
+            $dh = SvNhapHoc::where('university_id', $universityId)
+                ->where('year', $year)
+                ->where('he_hoc', $heHoc)
+                ->where('type', 'DH')
+                ->first();
+
+            $cd = SvNhapHoc::where('university_id', $universityId)
+                ->where('year', $year)
+                ->where('he_hoc', $heHoc)
+                ->where('type', 'CD')
+                ->first();
+            $tc = SvNhapHoc::where('university_id', $universityId)
+                ->where('year', $year)
+                ->where('he_hoc', $heHoc)
+                ->where('type', 'TC')
+                ->first();
+            $khac = SvNhapHoc::where('university_id', $universityId)
+                ->where('year', $year)
+                ->where('he_hoc', $heHoc)
+                ->where('type', 'KHAC')
+                ->first();
+            $data[$year] = [
+                'ncs' => $ncs,
+                'hvch' => $hvch,
+                'dh' => $dh,
+                'cd' => $cd,
+                'tc' => $tc,
+                'khac' => $khac,
+            ];
+            $year--;
+            $i--;
+        }
+
+        $result = [
+            'success' => true,
+            'message' => 'Lấy người học thành công',
+            'data' => $data
+        ];
+        return response()->json($result, 200);
+    }
+
 
     public function store($heHoc, $year, SvNhapHocRequest $request)
     {

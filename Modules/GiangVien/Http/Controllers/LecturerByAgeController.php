@@ -12,6 +12,7 @@ namespace Modules\GiangVien\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Input;
 use Modules\GiangVien\Entities\LecturerByAge;
 use Modules\GiangVien\Http\Requests\LecturerByAgeRequest;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -88,6 +89,86 @@ class LecturerByAgeController extends Controller
                 'avg_age' => $avgAge
 
             ]
+        ];
+        return response()->json($result, 200);
+    }
+
+    public function list($year)
+    {
+        $user = Auth::user();
+        $this->authorize('index', LecturerByAge::class);
+
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = Input::get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+        $data = [];
+        $i = 0;
+        while ($i < 5) {
+            $giaoSu = LecturerByAge::where('university_id', $universityId)
+                ->where('year', $year)
+                ->where('lecturer_degree', 1)
+                ->first();
+            if (!is_null($giaoSu)) {
+                $avgAge = $giaoSu->avg_age;
+            } else {
+                $avgAge = 0;
+            }
+            $phoGiaoSu = LecturerByAge::where('university_id', $universityId)
+                ->where('year', $year)
+                ->where('lecturer_degree', 2)
+                ->first();
+            $tsKhoaHoc = LecturerByAge::where('university_id', $universityId)
+                ->where('year', $year)
+                ->where('lecturer_degree', 3)
+                ->first();
+            $tienSi = LecturerByAge::where('university_id', $universityId)
+                ->where('year', $year)
+                ->where('lecturer_degree', 4)
+                ->first();
+            $thacSi = LecturerByAge::where('university_id', $universityId)
+                ->where('year', $year)
+                ->where('lecturer_degree', 5)
+                ->first();
+            $daiHoc = LecturerByAge::where('university_id', $universityId)
+                ->where('year', $year)
+                ->where('lecturer_degree', 6)
+                ->first();
+            $caoDang = LecturerByAge::where('university_id', $universityId)
+                ->where('year', $year)
+                ->where('lecturer_degree', 7)
+                ->first();
+            $trungCap = LecturerByAge::where('university_id', $universityId)
+                ->where('year', $year)
+                ->where('lecturer_degree', 8)
+                ->first();
+            $khac = LecturerByAge::where('university_id', $universityId)
+                ->where('year', $year)
+                ->where('lecturer_degree', 9)
+                ->first();
+            $data[$year] = [
+                'giao_su' => $giaoSu,
+                'pho_giao_su' => $phoGiaoSu,
+                'ts_khoa_hoc' => $tsKhoaHoc,
+                'tien_si' => $tienSi,
+                'thac_si' => $thacSi,
+                'dai_hoc' => $daiHoc,
+                'cao_dang' => $caoDang,
+                'trung_cap' => $trungCap,
+                'khac' => $khac,
+                'avg_age' => $avgAge
+            ];
+            $year--;
+            $i++;
+        }
+
+        $result = [
+            'success' => true,
+            'message' => 'Lấy giảng viên thành công',
+            'data' => $data
         ];
         return response()->json($result, 200);
     }

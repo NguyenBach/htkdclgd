@@ -63,6 +63,59 @@ class LecturerByDegreeController extends Controller
         return response()->json($result, 200);
     }
 
+    public function list($year, Request $request)
+    {
+        $user = Auth::user();
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = $request->get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+        $this->authorize('index', LecturerByDegree::class);
+        $data = [];
+        $i = 5;
+        while ($i > 0) {
+            $bienChe = LecturerByDegree::where('university_id', $universityId)
+                ->where('year', $year)
+                ->where('lecturer_type', 1)
+                ->first();
+            $daiHan = LecturerByDegree::where('university_id', $universityId)
+                ->where('year', $year)
+                ->where('lecturer_type', 2)
+                ->first();
+            $quanLy = LecturerByDegree::where('university_id', $universityId)
+                ->where('year', $year)
+                ->where('lecturer_type', 3)
+                ->first();
+            $trongNuoc = LecturerByDegree::where('university_id', $universityId)
+                ->where('year', $year)
+                ->where('lecturer_type', 4)
+                ->first();
+            $quocTe = LecturerByDegree::where('university_id', $universityId)
+                ->where('year', $year)
+                ->where('lecturer_type', 5)
+                ->first();
+            $data[$year] = [
+                'bien_che' => $bienChe,
+                'dai_han' => $daiHan,
+                'quan_ly' => $quanLy,
+                'trong_nuoc' => $trongNuoc,
+                'quoc_te' => $quocTe
+            ];
+            $year--;
+            $i--;
+        }
+
+        $result = [
+            'success' => true,
+            'message' => 'Lấy giảng viên thành công',
+            'data' => $data
+        ];
+        return response()->json($result, 200);
+    }
+
 
     public function store($year, LecturerByDegreeRequest $request)
     {
