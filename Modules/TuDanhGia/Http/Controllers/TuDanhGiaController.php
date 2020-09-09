@@ -27,9 +27,7 @@ class TuDanhGiaController extends Controller
         $result = [
             'success' => true,
             'message' => "Lấy thông tin thành công",
-            'data' => [
-                'danh_gia' => $tuDanhGia
-            ]
+            'data' => $tuDanhGia
         ];
         return \response()->json($result);
     }
