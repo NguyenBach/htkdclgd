@@ -16,9 +16,7 @@ class FacultyRequest extends FormRequest
         return [
             //
             'name' => 'required',
-            'education_type' => 'required|exists:education_types,id',
-            'number_education_program' => '',
-            'students' => ''
+            'number' => 'array|required'
         ];
     }
 

@@ -41,10 +41,6 @@ class FacultyController extends Controller
         }
         $faculties = $this->model->where('university_id', $universityId)
             ->get();
-        $faculties = $faculties->map(function ($item) {
-            $item->education_type = $item->educationType()->first();
-            return $item;
-        });
         $result = [
             'success' => true,
             'message' => 'Lấy thông tin thành công',
@@ -67,27 +63,11 @@ class FacultyController extends Controller
             }
         }
         $data = $request->validated();
-        if (!isset($data['number_education_program'])) {
-            $data['number_education_program'] = 0;
-        }
-        if (!isset($data['students'])) {
-            $data['students'] = 0;
-        }
-
         $data['university_id'] = $universityId;
         $slugify = new Slugify();
         $data['slug'] = $slugify->slugify($data['name']);
 
-        $exist = EducationType::checkExistId($data['education_type'], $universityId);
-        if ($exist) {
-            $result = [
-                'success' => false,
-                'message' => 'Loại hình giáo dục không tồn tại',
-            ];
-            return response()->json($result, 400);
-        }
-
-        $facultyExist = Faculty::checkExist($data['slug'], $data['university_id'], $data['education_type']);
+        $facultyExist = Faculty::checkExist($data['slug'], $data['university_id']);
         if ($facultyExist) {
             $result = [
                 'success' => false,
@@ -96,12 +76,7 @@ class FacultyController extends Controller
             return response()->json($result, 400);
         }
 
-        $data['education_type_id'] = $data['education_type'];
-
-
         $faculty = $this->model->create($data);
-        $faculty->education_type = $faculty->educationType()->first();
-
         if ($faculty) {
             $result = [
                 'success' => true,
@@ -132,40 +107,23 @@ class FacultyController extends Controller
             }
         }
         $data = $request->validated();
-        if (!isset($data['number_education_program'])) {
-            $data['number_education_program'] = 0;
-        }
-        if (!isset($data['students'])) {
-            $data['students'] = 0;
-        }
 
         $data['university_id'] = $universityId;
         $slugify = new Slugify();
         $data['slug'] = $slugify->slugify($data['name']);
 
-        $exist = EducationType::checkExistId($data['education_type'], $universityId);
-        if ($exist) {
-            $result = [
-                'success' => false,
-                'message' => 'Loại hình giáo dục không tồn tại',
-            ];
-            return response()->json($result, 400);
+        if ($faculty->slug != $data['slug']) {
+            $facultyExist = Faculty::checkExist($data['slug'], $data['university_id']);
+            if ($facultyExist) {
+                $result = [
+                    'success' => false,
+                    'message' => 'Khoa đã tồn tại',
+                ];
+                return response()->json($result, 400);
+            }
         }
 
-        $facultyExist = Faculty::checkExist($data['slug'], $data['university_id'], $data['education_type']);
-        if ($facultyExist) {
-            $result = [
-                'success' => false,
-                'message' => 'Khoa đã tồn tại',
-            ];
-            return response()->json($result, 400);
-        }
-
-        $data['education_type_id'] = $data['education_type'];
-
-
-        $faculty = $this->model->create($data);
-        $faculty->education_type = $faculty->educationType()->first();
+        $faculty->update($data);
 
         if ($faculty) {
             $result = [
@@ -183,5 +141,30 @@ class FacultyController extends Controller
             ];
             return response()->json($result, 500);
         }
+    }
+
+    public function delete(Faculty $faculty)
+    {
+        $this->authorize('faculty', Faculty::class);
+        $user = Auth::user();
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = Input::get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+        if ($faculty->university_id != $universityId) {
+            return response()->json( [
+                'success' => false,
+                'message' => 'Không được phép',
+            ],403);
+        }
+
+        $faculty->delete();
+        return response()->json( [
+            'success' => true,
+            'message' => 'Xóa thành công',
+        ],200);
     }
 }

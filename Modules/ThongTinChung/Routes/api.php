@@ -64,7 +64,7 @@ Route::group([
     Route::get('/list', 'FacultyController@list')->name('faculty.list');
     Route::post('/create', 'FacultyController@create')->name('faculty.create');
     Route::post('/update/{faculty}', 'FacultyController@update')->name('faculty.update');
-    Route::post('/delete/{faculty}', 'FacultyController@delete')->name('faculty.delete');
+    Route::delete('/delete/{faculty}', 'FacultyController@delete')->name('faculty.delete');
 });
 
 Route::group([

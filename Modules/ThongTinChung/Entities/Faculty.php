@@ -12,17 +12,13 @@ class Faculty extends Model
     protected $fillable = [
         'university_id',
         'name',
-        'education_type_id',
-        'number_education_program',
-        'students',
-        'slug'
+        'slug',
+        'number'
     ];
 
     protected static $logAttributes = [
         'name',
-        'education_type_id',
-        'number_education_program',
-        'students',
+        'number'
     ];
 
     protected $hidden = [
@@ -31,16 +27,15 @@ class Faculty extends Model
         'slug'
     ];
 
-    public function educationType()
-    {
-        return $this->belongsTo(EducationType::class, 'education_type_id');
-    }
+    protected $casts = [
+        'number' => "array"
+    ];
 
-    public static function checkExist($slug, $universityId, $educationType)
+
+    public static function checkExist($slug, $universityId)
     {
         $faculty = self::where('slug', $slug)
             ->where('university_id', $universityId)
-            ->where('education_type_id', $educationType)
             ->first();
         return !is_null($faculty);
     }

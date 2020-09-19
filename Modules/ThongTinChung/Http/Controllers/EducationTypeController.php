@@ -40,7 +40,6 @@ class EducationTypeController extends Controller
 
         $types = $this->model
             ->where('university_id', $universityId)
-            ->orWhere('university_id', 0)
             ->get();
         $result = [
             'success' => true,

@@ -25,7 +25,7 @@ class FacultyPolicy extends BasePolicy
 
     public function faculty(User $user)
     {
-        return AuthHelper::can($user, 'faculty');
+        return true;
     }
 
     public function faculty_update(User $user, Faculty $faculty)

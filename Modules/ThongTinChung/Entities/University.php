@@ -54,4 +54,6 @@ class University extends Model
         "training_type",
         "training_type_other"
     ];
+
+
 }
