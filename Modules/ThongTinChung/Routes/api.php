@@ -92,3 +92,12 @@ Route::group([
     Route::get('{year}', 'UniversityController@tomTat')->name('tom-tat.index');
 });
 
+Route::group([
+    'prefix' => 'bao-cao-ba-cong-khai',
+    'middleware' => 'jwt.auth'
+], function () {
+    Route::post('{year}', 'BaCongKhaiController@submit')->name('ba-cong-khai.submit');
+    Route::get('history', 'BaCongKhaiController@submitHistory')->name('ba-cong-khai.submit-history');
+});
+
+

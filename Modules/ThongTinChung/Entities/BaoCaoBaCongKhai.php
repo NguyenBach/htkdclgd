@@ -3,6 +3,8 @@
 namespace Modules\ThongTinChung\Entities;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
+use Modules\Auth\Entities\User;
 
 class BaoCaoBaCongKhai extends Model
 {
@@ -14,4 +16,18 @@ class BaoCaoBaCongKhai extends Model
         'filename',
         'submitted_at'
     ];
+
+    protected $appends = [
+        'file_url'
+    ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
+    public function getFileUrlAttribute()
+    {
+        return Storage::disk('public')->url($this->filename);
+    }
 }

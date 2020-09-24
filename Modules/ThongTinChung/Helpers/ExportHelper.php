@@ -278,7 +278,7 @@ class ExportHelper
         }
         $objWriter = IOFactory::createWriter($this->phpWord, 'Word2007');
         $objWriter->save($filePath . DIRECTORY_SEPARATOR . $filename);
-        return $filename;
+        return $path . DIRECTORY_SEPARATOR . $filename;
     }
 
     public function header($reportDate = '')
@@ -2451,6 +2451,7 @@ class ExportHelper
         $cellRowSpan = array('vMerge' => 'restart', 'valign' => 'center');
         $cellRowContinue = array('vMerge' => 'continue');
         $cellColSpan = array('gridSpan' => 2, 'valign' => 'center');
+        $cellColSpan3 = array('gridSpan' => 3, 'valign' => 'center');
         $table = $this->section->addTable('defaultTable');
 
         $table->addRow(500);
@@ -2459,29 +2460,45 @@ class ExportHelper
         $table->addCell(1000, $cellRowSpan)->addText('Bộ tiêu chuẩn đánh giá', $bold);
         $table->addCell(2000, $cellColSpan)->addText('Tự đánh giá', $bold);
         $table->addCell(2000, $cellColSpan)->addText('Đánh giá ngoài', $bold);
-        $table->addCell(2000, $cellColSpan)->addText('Thẩm định và công nhận', $bold);
+        $table->addCell(2000, $cellColSpan3)->addText('Thẩm định và công nhận', $bold);
 
         $table->addRow(500);
         $table->addCell(500, $cellRowContinue);
         $table->addCell(1000, $cellRowContinue);
         $table->addCell(1000, $cellRowContinue);
-        $table->addCell(1000, $cellRowSpan);
-        $table->addCell(1000, $cellRowSpan);
-        $table->addCell(1000, $cellRowSpan);
-        $table->addCell(1000, $cellRowSpan);
-        $table->addCell(1000)->addText('Giấy chứng nhận', $bold);
+        $table->addCell(1000, $cellRowSpan)->addText('Năm hoàn thành báo cáo TĐG lần 1', $bold);
+        $table->addCell(1000, $cellRowSpan)->addText('Năm cập nhật báo cáo TĐG', $bold);
+        $table->addCell(1000, $cellRowSpan)->addText('Tên tổ chức đánh giá', $bold);
+        $table->addCell(1000, $cellRowSpan)->addText('Tháng/năm đánh giá ngoài', $bold);
+        $table->addCell(1000, $cellRowSpan)->addText('Kết quả đánh giá của Hội đồng KĐCLGD', $bold);
+        $table->addCell(1000, $cellColSpan)->addText('Giấy chứng nhận', $bold);
 
         $table->addRow(500);
         $table->addCell(500, $cellRowContinue);
         $table->addCell(1000, $cellRowContinue);
         $table->addCell(1000, $cellRowContinue);
-        $table->addCell(1000)->addText('Năm hoàn thành báo cáo TĐG lần 1Năm hoàn thành báo cáo TĐG lần 1', $bold);
-        $table->addCell(1000)->addText('Năm cập nhật báo cáo TĐG', $bold);
-        $table->addCell(1000)->addText('Tên tổ chức đánh giá', $bold);
-        $table->addCell(1000)->addText('Đánh giá ngoài', $bold);
-        $table->addCell(1000)->addText('Tháng/năm đánh giá ngoài', $bold);
-        $table->addCell(1000)->addText('Kết quả đánh giá của Hội đồng KĐCLGD', $bold);
+        $table->addCell(1000, $cellRowContinue);
+        $table->addCell(1000, $cellRowContinue);
+        $table->addCell(1000, $cellRowContinue);
+        $table->addCell(1000, $cellRowContinue);
+        $table->addCell(1000, $cellRowContinue);
         $table->addCell(500)->addText('Ngày cấp ', $bold);
         $table->addCell(500)->addText('Giá trị đến ', $bold);
+
+        $index = 1;
+        foreach ($kiemDinh as $item) {
+            $table->addRow(500);
+            $table->addCell(500)->addText($index);
+            $table->addCell(1000)->addText($item->doi_tuong);
+            $table->addCell(1000)->addText($item->bo_tieu_chuan);
+            $table->addCell(1000)->addText($item->nam_hoan_thanh_1);
+            $table->addCell(1000)->addText($item->nam_cap_nhat);
+            $table->addCell(1000)->addText($item->to_chuc);
+            $table->addCell(1000)->addText($item->nam_danh_gia);
+            $table->addCell(1000)->addText($item->ket_qua);
+            $table->addCell(500)->addText($item->ngay_cap);
+            $table->addCell(500)->addText($item->gia_tri_den);
+            $index++;
+        }
     }
 }
