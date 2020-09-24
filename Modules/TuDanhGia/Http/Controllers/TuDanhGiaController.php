@@ -7,7 +7,10 @@ use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
+use Modules\TuDanhGia\Entities\SubmitHistory;
+use Modules\TuDanhGia\Entities\TuDanhGia;
 use Modules\TuDanhGia\Entities\TuDanhGiaDraft;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class TuDanhGiaController extends Controller
 {
@@ -18,6 +21,9 @@ class TuDanhGiaController extends Controller
         $universityId = $user->university_id;
         if (!$universityId) {
             $universityId = Input::get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
         }
         $tuDanhGia = TuDanhGiaDraft::where('university_id', $universityId)
             ->where('role', $user->role_id)
@@ -40,6 +46,9 @@ class TuDanhGiaController extends Controller
         $universityId = $user->university_id;
         if (!$universityId) {
             $universityId = $request->get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
         }
         $insertData = [
             'university_id' => $universityId,
@@ -73,9 +82,82 @@ class TuDanhGiaController extends Controller
         return \response()->json($result);
     }
 
-    public function nop()
+    public function submit(Request $request)
     {
+        $user = Auth::user();
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = $request->get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+        $draft = TuDanhGiaDraft::where('university_id', $universityId)
+            ->where('role', $user->role_id)->get();
+        foreach ($draft as $item) {
+            TuDanhGia::updateOrCreate([
+                'university_id' => $universityId,
+                'role' => $user->role_id,
+                'tieu_chuan' => $item->tieu_chuan,
+                'tieu_chi' => $item->tieu_chi
+            ], [
+                'diem' => $item->diem_thong_nhat,
+                'submit_at' => date('Y-m-d H:i:s')
+            ]);
+        }
+        SubmitHistory::create([
+            'university_id' => $universityId,
+            'user_id' => $user->id,
+            'submit_at' => date('Y-m-d H:i:s'),
+            'data' => []
+        ]);
+        $result = [
+            'success' => true,
+            'message' => "Lưu thành công"
+        ];
+        return \response()->json($result);
+    }
 
+    public function submitHistory()
+    {
+        $user = Auth::user();
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = Input::get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+        $history = SubmitHistory::where('university_id', $universityId)->orderBy('submit_at', 'desc')->with('user')->get();
+        $result = [
+            'success' => true,
+            'message' => "Lấy dữ liệu thành công",
+            'data' => [
+                'history' => $history
+            ]
+        ];
+        return \response()->json($result);
+    }
+
+    public function lastSubmit()
+    {
+        $user = Auth::user();
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = Input::get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+        $history = SubmitHistory::where('university_id', $universityId)->orderBy('submit_at', 'desc')->with('user')->first();
+        $result = [
+            'success' => true,
+            'message' => "Lấy dữ liệu thành công",
+            'data' => [
+                'history' => $history
+            ]
+        ];
+        return \response()->json($result);
     }
 
 }

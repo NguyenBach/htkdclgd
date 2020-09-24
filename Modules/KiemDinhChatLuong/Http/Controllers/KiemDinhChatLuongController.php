@@ -84,7 +84,7 @@ class KiemDinhChatLuongController extends Controller
     public function destroy(KiemDinhChatLuong $model)
     {
         //
-        $this->authorize('kiem_dinh_chat_luong', $model);
+        $this->authorize('update', KiemDinhChatLuong::class);
         $model->delete();
         $result = [
             'success' => true,

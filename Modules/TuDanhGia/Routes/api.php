@@ -35,7 +35,11 @@ Route::group([
     'prefix' => 'tu-danh-gia',
     'middleware' => 'jwt.auth'
 ], function () {
+    Route::post('/submit', "TuDanhGiaController@submit")->name('tu-danh-gia.submit');
+    Route::get('/submit-history', "TuDanhGiaController@submitHistory")->name('tu-danh-gia.submit-history');
+    Route::get('/submit-history/last', "TuDanhGiaController@lastSubmit")->name('tu-danh-gia.submit-history-last');
     Route::post('/{tieuChuan}', "TuDanhGiaController@create")->name('tu-danh-gia.create');
     Route::get('/{tieuChuan}', "TuDanhGiaController@index")->name('tu-danh-gia.index');
+
 });
 

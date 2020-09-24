@@ -13,20 +13,12 @@ class TuDanhGia extends Model
         'tieu_chuan',
         'tieu_chi',
         'university_id',
-        'moc_chuan',
-        'minh_chung',
-        'diem_thong_nhat',
+        'diem',
     ];
 
     protected $hidden = [
         'role',
-//        'diem_minh_chung',
-//        'diem_moc_chuan'
     ];
 
-    protected $casts = [
-        'moc_chuan' => 'array',
-        'minh_chung' => 'array'
-    ];
 
 }
