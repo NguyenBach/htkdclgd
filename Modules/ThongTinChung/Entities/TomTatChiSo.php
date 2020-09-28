@@ -35,4 +35,5 @@ class TomTatChiSo extends Model
         'cap_co_so',
         'cap_ctdt'
     ];
+
 }

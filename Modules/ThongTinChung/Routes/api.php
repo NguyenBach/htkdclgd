@@ -86,7 +86,7 @@ Route::group([
     Route::delete('{model}', 'BieuMauController@destroy')->name('bieu-mau.destroy');
 });
 Route::group([
-    'prefix' => 'tom-tat-chi-so-quan-trong',
+    'prefix' => 'tom-tat-chi-so',
     'middleware' => 'jwt.auth'
 ], function () {
     Route::get('{year}', 'TomTatController@show')->name('tom-tat.index');

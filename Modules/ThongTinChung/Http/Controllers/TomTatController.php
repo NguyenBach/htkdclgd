@@ -59,7 +59,9 @@ class TomTatController extends Controller
         }
 
         foreach ($data as $key => $value) {
-            $tomTat->$key = $value;
+            if(in_array($key,$tomTat->getFillable())){
+                $tomTat->$key = $value;
+            }
         }
 
         $tomTat->save();
