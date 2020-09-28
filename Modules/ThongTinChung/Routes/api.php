@@ -89,7 +89,9 @@ Route::group([
     'prefix' => 'tom-tat-chi-so-quan-trong',
     'middleware' => 'jwt.auth'
 ], function () {
-    Route::get('{year}', 'UniversityController@tomTat')->name('tom-tat.index');
+    Route::get('{year}', 'TomTatController@show')->name('tom-tat.index');
+    Route::post('{year}', 'TomTatController@update')->name('tom-tat.update');
+    Route::post('{year}/tinh-toan', 'TomTatController@tinhToan')->name('tom-tat.tinhtoan');
 });
 
 Route::group([
