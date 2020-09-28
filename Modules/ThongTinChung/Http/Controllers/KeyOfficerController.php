@@ -31,7 +31,7 @@ class KeyOfficerController extends Controller
 
     public function list()
     {
-        $this->authorize('key_officer', KeyOfficer::class);
+        $this->authorize('list', KeyOfficer::class);
         $user = Auth::user();
         $universityId = $user->university_id;
         if (!$universityId) {
@@ -51,7 +51,7 @@ class KeyOfficerController extends Controller
 
     public function create(KeyOfficerRequest $request)
     {
-        $this->authorize('key_officer', KeyOfficer::class);
+        $this->authorize('create', KeyOfficer::class);
         $user = Auth::user();
         $data = $request->validated();
         $universityId = $user->university_id;
@@ -92,7 +92,7 @@ class KeyOfficerController extends Controller
 
     public function update(KeyOfficer $keyOfficer, KeyOfficerRequest $request)
     {
-        $this->authorize('key_officer_update', $keyOfficer);
+        $this->authorize('update', $keyOfficer);
         $user = Auth::user();
         $data = $request->validated();
         $universityId = $user->university_id;
@@ -134,7 +134,7 @@ class KeyOfficerController extends Controller
 
     public function delete(KeyOfficer $keyOfficer, Request $request)
     {
-        $this->authorize('key_officer_update', $keyOfficer);
+        $this->authorize('delete', $keyOfficer);
         $success = $keyOfficer->delete();
         if ($success) {
             $result = [
