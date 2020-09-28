@@ -3,10 +3,10 @@
 namespace Modules\TuDanhGia\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
+use Modules\ThongTinChung\Entities\University;
 use Modules\TuDanhGia\Entities\SubmitHistory;
 use Modules\TuDanhGia\Entities\TuDanhGia;
 use Modules\TuDanhGia\Entities\TuDanhGiaDraft;
@@ -14,6 +14,22 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class TuDanhGiaController extends Controller
 {
+    public function thongKe()
+    {
+        $user = Auth::user();
+        $perPage = Input::get('per-page');
+        if (!$perPage || !is_numeric($perPage)) {
+            $perPage = 5;
+        }
+        $universities = University::select(['id', 'name_vi', 'short_name_vi'])->with('tuDanhGia')->paginate($perPage);
+
+        $result = [
+            'success' => true,
+            'message' => "Lấy thông tin thành công",
+            'data' => $universities
+        ];
+        return \response()->json($result);
+    }
 
     public function index($tieuChuan)
     {

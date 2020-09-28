@@ -3,6 +3,7 @@
 namespace Modules\ThongTinChung\Entities;
 
 use Illuminate\Database\Eloquent\Model;
+use Modules\TuDanhGia\Entities\TuDanhGia;
 use Spatie\Activitylog\Traits\LogsActivity;
 
 class University extends Model
@@ -54,6 +55,11 @@ class University extends Model
         "training_type",
         "training_type_other"
     ];
+
+    public function tuDanhgia()
+    {
+        return $this->hasMany(TuDanhGia::class, 'university_id');
+    }
 
 
 }

@@ -36,6 +36,7 @@ Route::group([
     'middleware' => 'jwt.auth'
 ], function () {
     Route::post('/submit', "TuDanhGiaController@submit")->name('tu-danh-gia.submit');
+    Route::get('/thong-ke', "TuDanhGiaController@thongKe")->name('tu-danh-gia.thong-ke');
     Route::get('/submit-history', "TuDanhGiaController@submitHistory")->name('tu-danh-gia.submit-history');
     Route::get('/submit-history/last', "TuDanhGiaController@lastSubmit")->name('tu-danh-gia.submit-history-last');
     Route::post('/{tieuChuan}', "TuDanhGiaController@create")->name('tu-danh-gia.create');
