@@ -8,7 +8,7 @@ use Modules\Auth\Entities\User;
 use Modules\Auth\Http\Helper\AuthHelper;
 use Modules\ThongTinChung\Entities\University;
 
-class UniversityPolicy
+class UniversityPolicy extends BasePolicy
 {
     use HandlesAuthorization;
 
@@ -58,7 +58,8 @@ class UniversityPolicy
 
     public function view(User $user, University $university)
     {
-        $can = AuthHelper::can($user, 'university:view');
+//        $can = AuthHelper::can($user, 'university:view');
+        $can = true;
         if ($can) {
             if ($user->university_id == 0) {
                 return true;

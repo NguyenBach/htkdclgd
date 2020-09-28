@@ -8,7 +8,7 @@ use Modules\Auth\Entities\User;
 use Modules\Auth\Http\Helper\AuthHelper;
 use Modules\ThongTinChung\Entities\Department;
 
-class DepartmentPolicy
+class DepartmentPolicy extends BasePolicy
 {
     use HandlesAuthorization;
 
