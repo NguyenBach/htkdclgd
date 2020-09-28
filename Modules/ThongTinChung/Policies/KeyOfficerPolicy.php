@@ -34,8 +34,4 @@ class KeyOfficerPolicy extends BasePolicy
         return AuthHelper::can($user, 'key_officer') && $keyOfficer->university_id == $user->university_id;
     }
 
-    public function list(User $user)
-    {
-        return AuthHelper::can($user, 'key_officer');
-    }
 }

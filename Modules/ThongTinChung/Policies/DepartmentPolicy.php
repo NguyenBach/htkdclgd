@@ -41,7 +41,7 @@ class DepartmentPolicy extends BasePolicy
 
     }
 
-    public function update(User $user, Department $model)
+    public function update(User $user, Department $model = null)
     {
         $a = AuthHelper::can($user, 'key_officer');
         if (!AuthHelper::isSuperAdmin($user) || !AuthHelper::isAdmin($user)) {
