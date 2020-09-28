@@ -28,7 +28,7 @@ class DepartmentController extends Controller
 
     public function list()
     {
-        $this->authorize('list', Department::class);
+        $this->authorize('index', Department::class);
         $user = Auth::user();
         $universityId = $user->university_id;
         if (!$universityId) {
