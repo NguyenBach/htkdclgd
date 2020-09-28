@@ -31,7 +31,7 @@ class KeyOfficerController extends Controller
 
     public function list()
     {
-        $this->authorize('list', KeyOfficer::class);
+        $this->authorize('index', KeyOfficer::class);
         $user = Auth::user();
         $universityId = $user->university_id;
         if (!$universityId) {
