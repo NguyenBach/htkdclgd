@@ -38,7 +38,7 @@ class UniversityPolicy extends BasePolicy
         return AuthHelper::can($user, 'university:create');
     }
 
-    public function update(User $user, University $university)
+    public function update(User $user, University $university = null)
     {
         $can = AuthHelper::can($user, 'university:update');
         if ($can) {
