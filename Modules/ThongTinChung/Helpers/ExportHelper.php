@@ -15,6 +15,7 @@ use Modules\GiangVien\Entities\LecturerByDegree;
 use Modules\GiangVien\Entities\LecturerByFl;
 use Modules\GiangVien\Entities\Officer;
 use Modules\GiangVien\Entities\OfficerByGender;
+use Modules\KiemDinhChatLuong\Entities\KiemDinhChatLuong;
 use Modules\NghienCuuKhoaHoc\Entities\BangSangChe;
 use Modules\NghienCuuKhoaHoc\Entities\BaoCaoHoiThao;
 use Modules\NghienCuuKhoaHoc\Entities\CanBoHoiThao;
@@ -268,7 +269,8 @@ class ExportHelper
 
         $this->paragraphTitle('VI', 'Kết quả kiểm định chất lượng giáo dục');
 
-        $this->report48(null);
+        $kiemDinh = KiemDinhChatLuong::where('university_id', $universityId)->get();
+        $this->report48($kiemDinh);
 
         $filename = 'csdl_' . $university->short_name_vi . '_' . date('Y_m_d') . "_" . time() . '.docx';
         $path = 'export_csdl';
@@ -2311,10 +2313,15 @@ class ExportHelper
             $table->addCell(500)->addText($index);
             $table->addCell(2250)->addText($item->name);
             $table->addCell(500)->addText($item->so_luong);
-            $text = array_reduce($item->danh_muc_trang_thiet_bi->toArray(), function ($carry, $value) {
-                $carry .= $value['name'] . ',';
-                return $carry;
-            });
+            if ($item->danh_muc_trang_thiet_bi) {
+                $text = array_reduce($item->danh_muc_trang_thiet_bi->toArray(), function ($carry, $value) {
+                    $carry .= $value['name'] . ',';
+                    return $carry;
+                });
+            } else {
+                $text = '';
+            }
+
             $table->addCell(2250)->addText($text);
             $table->addCell(1500)->addText($item->doi_tuong);
             $table->addCell(1500)->addText($item->dien_tich);

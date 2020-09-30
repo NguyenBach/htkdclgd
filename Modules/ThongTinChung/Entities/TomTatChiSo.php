@@ -26,6 +26,7 @@ class TomTatChiSo extends Model
         'thu_nhap_binh_quan',
         'ti_le_dap_ung_ngay',
         'ti_le_dao_tao_them',
+        'ti_so_doanh_thu',
         'ti_le_de_tai_cb',
         'ti_so_sach_cb',
         'ti_so_tap_chi_cb',
