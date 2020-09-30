@@ -198,7 +198,7 @@ class TomTat
     public static function tiLeDeTaiCanBo($universityId, $year)
     {
         $tongCanBo = self::tongCanBoCoHuu($universityId, $year);
-        $nckh = SoLuongNCKH::where('universityId', $universityId)
+        $nckh = SoLuongNCKH::where('university_id', $universityId)
             ->where('year', $year)->get();
         $tong = $nckh->reduce(function ($carry, $item) {
             return $carry + $item->dt_cap_nha_nuoc + $item->dt_cap_bo + $item->dt_cap_truong;
@@ -214,7 +214,7 @@ class TomTat
     public static function tiSoSachCanBo($universityId, $year)
     {
         $tongCanBo = self::tongCanBoCoHuu($universityId, $year);
-        $sach = SoLuongSach::where('universityId', $universityId)
+        $sach = SoLuongSach::where('university_id', $universityId)
             ->where('year', $year)->get();
         $tong = $sach->reduce(function ($carry, $item) {
             return $carry + $item->so_luong;
@@ -230,7 +230,7 @@ class TomTat
     public static function tiSoBaiDangTapChi($universityId, $year)
     {
         $tongCanBo = self::tongCanBoCoHuu($universityId, $year);
-        $sach = TapChiDuocDang::where('universityId', $universityId)
+        $sach = TapChiDuocDang::where('university_id', $universityId)
             ->where('year', $year)->get();
         $tong = $sach->reduce(function ($carry, $item) {
             return $carry + $item->so_luong;
@@ -246,7 +246,7 @@ class TomTat
     public static function tiSoBaoCaoHoiThao($universityId, $year)
     {
         $tongCanBo = self::tongCanBoCoHuu($universityId, $year);
-        $sach = BaoCaoHoiThao::where('universityId', $universityId)
+        $sach = BaoCaoHoiThao::where('university_id', $universityId)
             ->where('year', $year)->get();
         $tong = $sach->reduce(function ($carry, $item) {
             return $carry + $item->so_luong;
