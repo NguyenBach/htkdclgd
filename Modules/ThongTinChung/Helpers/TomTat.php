@@ -46,9 +46,9 @@ class TomTat
         $giangVienCoHuu = self::tongGiangVienCoHuu($universityId, $year);
         $tongCanBo = $giangVienCoHuu + $quanLyCoHuu + $nhanhVienCoHuu;
         if (!$tongCanBo) {
-            return -1;
+            return 0;
         }
-        return round(($giangVienCoHuu / $tongCanBo), 2);
+        return round(($giangVienCoHuu / $tongCanBo), 3) * 100;
     }
 
     public static function tongCanBoCoHuu($universityId, $year)
@@ -76,7 +76,7 @@ class TomTat
         if ($giangVien) {
             return $giangVien->percent_doctor_1;
         }
-        return -1;
+        return 0;
     }
 
     public static function tiLeGiangVienThacSi($universityId, $year)
@@ -87,7 +87,7 @@ class TomTat
             ->where('lecturer_type', 1)
             ->first();
         $soLuongThacSi = $giangVienTheoTrinhDo ? $giangVienTheoTrinhDo->master : 0;
-        return $giangVienCoHuu > 0 ? round($soLuongThacSi / $giangVienCoHuu, 3) * 100 : -1;
+        return $giangVienCoHuu > 0 ? round($soLuongThacSi / $giangVienCoHuu, 3) * 100 : 0;
     }
 
     public static function tongSoSinhVienChinhQuy($universityId, $year)
@@ -111,7 +111,7 @@ class TomTat
         if ($tongGV) {
             return round($tongSv / $tongGV, 3) * 100;
         }
-        return -1;
+        return 0;
     }
 
     public static function tiLeTotNghiep($universityId, $year)
@@ -208,7 +208,7 @@ class TomTat
             return round($tong / $tongCanBo, 2);
         }
 
-        return -1;
+        return 0;
     }
 
     public static function tiSoSachCanBo($universityId, $year)
@@ -224,7 +224,7 @@ class TomTat
             return round($tong / $tongCanBo, 2);
         }
 
-        return -1;
+        return 0;
     }
 
     public static function tiSoBaiDangTapChi($universityId, $year)
@@ -240,7 +240,7 @@ class TomTat
             return round($tong / $tongCanBo, 2);
         }
 
-        return -1;
+        return 0;
     }
 
     public static function tiSoBaoCaoHoiThao($universityId, $year)
@@ -256,14 +256,14 @@ class TomTat
             return round($tong / $tongCanBo, 2);
         }
 
-        return -1;
+        return 0;
     }
 
     public static function tiSoDoanhThu($universityId, $year)
     {
         $doanhThu = DoanhThuNCKH::where('university_id', $universityId)
             ->where('year', $year)->first();
-        return $doanhThu ? $doanhThu->ti_so_tren_cb_ch : -1;
+        return $doanhThu ? $doanhThu->ti_so_tren_cb_ch : 0;
     }
 
     public static function tiSoDienTichSV($universityId, $year)
@@ -272,7 +272,7 @@ class TomTat
         $dienTich = DienTich::where('university_id', $universityId)
             ->where('year', $year)->where('noi_dung', 3)->first();
         if (!$tongSv) {
-            return -1;
+            return 0;
         }
         $s = $dienTich ? $dienTich->dien_tich : 0;
         return round($s / $tongSv, 2);
@@ -282,7 +282,7 @@ class TomTat
     {
         $sv = SvKtx::where('university_id', $universityId)->where('year', $year)->first();
         if (!$sv) {
-            return -1;
+            return 0;
         }
         return 0;
     }

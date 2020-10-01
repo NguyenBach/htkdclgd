@@ -37,6 +37,7 @@ use Modules\ThongTinChung\Entities\Branch;
 use Modules\ThongTinChung\Entities\EducationType;
 use Modules\ThongTinChung\Entities\Faculty;
 use Modules\ThongTinChung\Entities\KeyOfficer;
+use Modules\ThongTinChung\Entities\TomTatChiSo;
 use Modules\ThongTinChung\Entities\University;
 use PhpOffice\PhpWord\Element\Section;
 use PhpOffice\PhpWord\IOFactory;
@@ -132,10 +133,10 @@ class ExportHelper
         $this->report17($officerGenders, $year);
 
         $lectureByDegree = LecturerByDegree::where('university_id', $universityId)->whereBetween('year', [$year - 5, $year])->get();
-        $this->report18($lectureByDegree, $year);
+        $this->report18($lectureByDegree, $year, $universityId);
 
         $lecturerByAge = LecturerByAge::where('university_id', $universityId)->whereBetween('year', [$year - 5, $year])->get();
-        $this->report19($lecturerByAge, $year);
+        $this->report19($lecturerByAge, $year, $universityId);
 
         $lecturerByFl = LecturerByFl::where('university_id', $universityId)->whereBetween('year', [$year - 5, $year])->get();
         $this->report20($lecturerByFl, $year);
@@ -146,7 +147,7 @@ class ExportHelper
         $svNhapHocChinhQuy = SvNhapHoc::where('university_id', $universityId)
             ->whereBetween('year', [$year - 5, $year])->where('he_hoc', 1)
             ->get();
-        $this->report21($svNhapHocChinhQuy, $year);
+        $this->report21($svNhapHocChinhQuy, $year, $universityId);
 
         $svNhapHocKoChinhQuy = SvNhapHoc::where('university_id', $universityId)
             ->whereBetween('year', [$year - 5, $year])->where('he_hoc', 0)
@@ -182,7 +183,7 @@ class ExportHelper
         $slNckh = SoLuongNCKH::where('university_id', $universityId)
             ->whereBetween('year', [$year - 5, $year])
             ->get();
-        $this->report28($slNckh, $year);
+        $this->report28($slNckh, $year, $universityId);
 
         $doanhThu = DoanhThuNCKH::where('university_id', $universityId)
             ->whereBetween('year', [$year - 5, $year])
@@ -217,7 +218,7 @@ class ExportHelper
         $baoCaoHoiThao = BaoCaoHoiThao::where('university_id', $universityId)
             ->whereBetween('year', [$year - 5, $year])
             ->get();
-        $this->report35($baoCaoHoiThao, $year);
+        $this->report35($baoCaoHoiThao, $year, $universityId);
 
         $canBoHoiThao = CanBoHoiThao::where('university_id', $universityId)
             ->whereBetween('year', [$year - 5, $year])
@@ -271,6 +272,10 @@ class ExportHelper
 
         $kiemDinh = KiemDinhChatLuong::where('university_id', $universityId)->get();
         $this->report48($kiemDinh);
+
+        $this->paragraphTitle('VII', "VII. Tóm tắt một số chỉ số quan trọng");
+        $tomTat = TomTatChiSo::where('university_id', $universityId)->where('year', $year)->first();
+        $this->tomTatChiSo($tomTat);
 
         $filename = 'csdl_' . $university->short_name_vi . '_' . date('Y_m_d') . "_" . time() . '.docx';
         $path = 'export_csdl';
@@ -760,7 +765,7 @@ class ExportHelper
 
     }
 
-    public function report18($giangVienTrinhDo, $year)
+    public function report18($giangVienTrinhDo, $year, $universityId = 0)
     {
         $line1 = '18. Thống kê, phân loại giảng viên theo trình độ: ';
         $this->section->addText($line1);
@@ -815,16 +820,18 @@ class ExportHelper
                 $index++;
                 $table->addCell(1250)->addText($sum);
             }
-
+            $tongCoHuu = TomTat::tongGiangVienCoHuu($universityId, $currentYear);
+            $line2 = "Tổng số giảng viên cơ hữu:{$tongCoHuu} người";
+            $this->section->addText($line2, [], ['indent' => true]);
+            $tile = TomTat::tongGianVienTrenTongCanBo($universityId, $year);
+            $line3 = "Tỷ lệ giảng viên cơ hữu trên tổng số cán bộ cơ hữu: {$tile}";
+            $this->section->addText($line3, [], ['indent' => true]);
         }
 
-        $line2 = 'Tổng số giảng viên cơ hữu1:………………………. người';
-        $this->section->addText($line2, [], ['indent' => true]);
-        $line3 = 'Tỷ lệ giảng viên cơ hữu trên tổng số cán bộ cơ hữu: ....';
-        $this->section->addText($line3, [], ['indent' => true]);
+
     }
 
-    public function report19($giangVienDoTuoi, $year)
+    public function report19($giangVienDoTuoi, $year, $universityId = 0)
     {
         $line1 = '19. Thống kê, phân loại giảng viên cơ hữu theo độ tuổi (số người): ';
         $this->section->addText($line1);
@@ -903,16 +910,20 @@ class ExportHelper
                 $table->addCell(900)->addText($rowData->less_60);
                 $table->addCell(850)->addText($rowData->over_60);
             }
-
+            $line2 = 'Độ tuổi trung bình của giảng viên cơ hữu:..........................tuổi ';
+            $this->section->addText($line2, [], ['indent' => true]);
+            $tiLe = TomTat::tiLeGiangVienTienSi($universityId, $currentYear);
+            $tiLe = $tiLe > 0 ? $tiLe : 0;
+            $line2 = "Tỷ lệ giảng viên cơ hữu có trình độ tiến sĩ trở lên trên tổng số giảng viên cơ hữu của CSGD: {$tiLe} ";
+            $this->section->addText($line2, [], ['indent' => true]);
+            $tiLe = TomTat::tiLeGiangVienThacSi($universityId, $currentYear);
+            $tiLe = $tiLe > 0 ? $tiLe : 0;
+            $line2 = "Tỷ lệ giảng viên cơ hữu có trình độ thạc sĩ trên tổng số giảng viên cơ hữu của CSGD: {$tiLe}";
+            $this->section->addText($line2, [], ['indent' => true]);
             $this->section->addTextBreak(1);
         }
 
-        $line2 = 'Độ tuổi trung bình của giảng viên cơ hữu:..........................tuổi ';
-        $this->section->addText($line2, [], ['indent' => true]);
-        $line2 = 'Tỷ lệ giảng viên cơ hữu có trình độ tiến sĩ trở lên trên tổng số giảng viên cơ hữu của CSGD: ................. ';
-        $this->section->addText($line2, [], ['indent' => true]);
-        $line2 = 'Tỷ lệ giảng viên cơ hữu có trình độ thạc sĩ trên tổng số giảng viên cơ hữu của CSGD: ....................... ';
-        $this->section->addText($line2, [], ['indent' => true]);
+
     }
 
     public function report20($data, $year)
@@ -968,7 +979,7 @@ class ExportHelper
         }
     }
 
-    public function report21($svNhapHoc, $year)
+    public function report21($svNhapHoc, $year, $universityId = 0)
     {
         $line1 = '21. Tổng số người học đăng ký dự thi vào CSGD, trúng tuyển và nhập học trong 5 năm gần đây hệ chính quy ';
         $this->section->addText($line1);
@@ -1030,8 +1041,8 @@ class ExportHelper
                 $table->addCell(1250)->addText($currentData->sl_sv_quoc_te);
             }
         }
-
-        $line2 = 'Số lượng người học hệ chính quy đang học tập tại CSGD: .......................... người.';
+        $sv = TomTat::tongSoSinhVienChinhQuy($universityId, $year);
+        $line2 = 'Số lượng người học hệ chính quy đang học tập tại CSGD: ' . $sv . 'người.';
         $this->section->addText($line2, [], ['indent' => true]);
     }
 
@@ -1389,7 +1400,7 @@ class ExportHelper
         $this->rowReport26($table, $tinhTrang, $year, 13, '5.3 Tỷ lệ sinh viên phải được đào tạo lại hoặc đào tạo bổ sung ít nhất 6 tháng (%)');
     }
 
-    public function report28($deTai, $year)
+    public function report28($deTai, $year, $universityId = 0)
     {
         $line1 = '28. Số lượng đề tài nghiên cứu khoa học và chuyển giao khoa học công nghệ của
         nhà trường được nghiệm thu trong 5 năm gần đây:';
@@ -1459,7 +1470,9 @@ class ExportHelper
 
         $line2 = '* Bao gồm đề tài cấp Bộ hoặc tương đương, đề tài nhánh cấp Nhà nước';
         $this->section->addText($line2, [], ['indent' => true]);
-        $line2 = 'Tỷ số đề tài nghiên cứu khoa học và chuyển giao khoa học công nghệ trên cán bộ cơ hữu: ........';
+        $tiSo = TomTat::tiLeDeTaiCanBo($universityId, $year);
+        $tiSo = $tiSo > 0 ? $tiSo : 0;
+        $line2 = 'Tỷ số đề tài nghiên cứu khoa học và chuyển giao khoa học công nghệ trên cán bộ cơ hữu: ' . $tiSo;
         $this->section->addText($line2, [], ['indent' => true]);
     }
 
@@ -1581,7 +1594,7 @@ class ExportHelper
         $this->section->addText($line2, [], ['indent' => true]);
     }
 
-    public function report31($sach, $year)
+    public function report31($sach, $year, $universityId = 0)
     {
         $line1 = '31. Số lượng sách của CSGD được xuất bản trong 5 năm gần đây:';
         $this->section->addText($line1);
@@ -1639,7 +1652,9 @@ class ExportHelper
         }
         $table->addCell(1000)->addText('');
 
-        $line2 = 'Tỷ số sách đã được xuất bản trên cán bộ cơ hữu: ........................';
+        $tiSo = TomTat::tiSoSachCanBo($universityId, $year);
+        $tiSo = $tiSo > 0 ? $tiSo : 1;
+        $line2 = 'Tỷ số sách đã được xuất bản trên cán bộ cơ hữu: ' . $tiSo;
         $this->section->addText($line2, [], ['indent' => true]);
     }
 
@@ -1712,7 +1727,7 @@ class ExportHelper
 
     }
 
-    public function report33($canBoTapChi, $year)
+    public function report33($canBoTapChi, $year, $universityId = 0)
     {
         $line1 = '33. Số lượng bài của các cán bộ cơ hữu của CSGD được đăng tạp chí trong 5 năm gần đây:';
         $this->section->addText($line1);
@@ -1808,7 +1823,9 @@ class ExportHelper
         }
         $table->addCell(1000)->addText('');
 
-        $line2 = 'Tỷ số bài đăng tạp chí (quy đổi) trên cán bộ cơ hữu:  ..............................';
+        $tiSo = TomTat::tiSoBaiDangTapChi($universityId, $year);
+        $tiSo = $tiSo > 0 ? $tiSo : 1;
+        $line2 = 'Tỷ số bài đăng tạp chí (quy đổi) trên cán bộ cơ hữu: ' . $tiSo;
         $this->section->addText($line2, [], ['indent' => true]);
     }
 
@@ -1878,7 +1895,7 @@ class ExportHelper
 
     }
 
-    public function report35($hoiThao, $year)
+    public function report35($hoiThao, $year, $universityId = 0)
     {
         $line1 = '31. Số lượng sách của CSGD được xuất bản trong 5 năm gần đây:';
         $this->section->addText($line1);
@@ -1935,7 +1952,9 @@ class ExportHelper
         }
         $table->addCell(1000)->addText('');
 
-        $line2 = 'Tỷ số bài báo cáo trên cán bộ cơ hữu:  ......................................';
+        $tiSo = TomTat::tiSoBaoCaoHoiThao($universityId, $year);
+        $tiSo = $tiSo > 0 ? $tiSo : 1;
+        $line2 = 'Tỷ số bài báo cáo trên cán bộ cơ hữu: ' . $tiSo;
         $this->section->addText($line2, [], ['indent' => true]);
     }
 
@@ -2507,5 +2526,74 @@ class ExportHelper
             $table->addCell(500)->addText($item->gia_tri_den);
             $index++;
         }
+    }
+
+    public function tomTatChiSo($tomTat)
+    {
+        $indent = ['intent' => true];
+        $line1 = 'Từ kết quả khảo sát ở trên, tổng hợp thành một số chỉ số quan trọng dưới đây (số liệu năm cuối kỳ đánh giá):';
+        $this->section->addText($line1, [], $indent);
+        $this->section->addText("1. Giảng viên:");
+        $value = $tomTat->tong_gv_co_huu ?? 0;
+        $this->section->addText("Tổng số giảng viên cơ hữu(người):{$value}", [], $indent);
+        $value = $tomTat->ti_le_gv_cb ?? 0;
+        $this->section->addText("Tỷ lệ giảng viên cơ hữu trên tổng số cán bộ cơ hữu(%):{$value}", [], $indent);
+        $value = $tomTat->ti_le_gv_ts ?? 0;
+        $this->section->addText("Tỷ lệ giảng viên cơ hữu có trình độ tiến sĩ trở lên trên tổng số giảng viên cơ hữu(%):{$value}", [], $indent);
+        $value = $tomTat->ti_le_gv_ths ?? 0;
+        $this->section->addText("Tỷ lệ giảng viên cơ hữu có trình độ thạc sĩ trên tổng số giảng viên cơ hữu(%):{$value}", [], $indent);
+
+        $this->section->addText("2. Sinh viên:");
+        $value = $tomTat->tong_sv ?? 0;
+        $this->section->addText("Tổng số sinh viên chính quy(người):{$value}", [], $indent);
+        $value = $tomTat->ti_le_sv_gv ?? 0;
+        $this->section->addText("Tỷ số sinh viên trên giảng viên(sau khi quy đổi):{$value}", [], $indent);
+        $value = $tomTat->ti_le_tot_nghiep ?? 0;
+        $this->section->addText("Tỷ lệ sinh viên tốt nghiệp so với số tuyển vào(%):{$value}", [], $indent);
+
+        $this->section->addText("3. Đánh giá của sinh viên tốt nghiệp về chất lượng đào tạo của nhà trường:");
+        $value = $tomTat->ti_le_tra_loi_duoc ?? 0;
+        $this->section->addText("Tỷ lệ sinh viên trả lời đã học được những kiến thức và kỹ năng cần thiết cho công việc theo ngành tốt nghiệp(%):{$value}", [], $indent);
+        $value = $tomTat->ti_le_tra_loi_1_phan ?? 0;
+        $this->section->addText("Tỷ lệ sinh viên trả lời chỉ học được một phần kiến thức và kỹ năng cần thiết cho công việc theo ngành tốt nghiệp(%):{$value}", [], $indent);
+
+        $this->section->addText("4. Sinh viên có việc làm trong năm đầu tiên sau khi tốt nghiệp:");
+        $value = $tomTat->ti_le_dung_nganh ?? 0;
+        $this->section->addText("Tỷ lệ sinh viên có việc làm đúng ngành đào tạo, trong đó bao gồm cả sinh viên chưa có việc làm học tập nâng cao(%):{$value}", [], $indent);
+        $value = $tomTat->ti_le_trai_nganh ?? 0;
+        $this->section->addText("Tỷ lệ sinh viên có việc làm trái ngành đào tạo(%):{$value}", [], $indent);
+        $value = $tomTat->ti_le_tu_tao ?? 0;
+        $this->section->addText("Tỷ lệ tự tạo được việc làm trong số sinh viên có việc làm(%):{$value}", [], $indent);
+        $value = $tomTat->thu_nhap_binh_quan ?? 0;
+        $this->section->addText("Thu nhập bình quân / tháng của sinh viên có việc làm(triệu VNĐ):{$value}", [], $indent);
+
+        $this->section->addText("5. Đánh giá của nhà sử dụng về sinh viên tốt nghiệp có việc làm đúng ngành đào tạo:");
+        $value = $tomTat->ti_le_dap_ung_ngay ?? 0;
+        $this->section->addText("Tỷ lệ sinh viên đáp ứng yêu cầu của công việc, có thể sử dụng được ngay(%):{$value}", [], $indent);
+        $value = $tomTat->ti_le_dao_tao_them ?? 0;
+        $this->section->addText("Tỷ lệ sinh viên cơ bản đáp ứng yêu cầu của công việc, nhưng phải đào tạo thêm(%):{$value}", [], $indent);
+
+        $this->section->addText("6. Nghiên cứu khoa học, chuyển giao công nghệ và phục vụ cộng đồng:");
+        $value = $tomTat->ti_le_de_tai_cb ?? 0;
+        $this->section->addText("Tỷ số đề tài nghiên cứu khoa học, chuyển giao khoa học công nghệ và phục vụ cộng đồng trên cán bộ cơ hữu:{$value}", [], $indent);
+        $value = $tomTat->ti_so_doanh_thu ?? 0;
+        $this->section->addText("Tỷ số doanh thu từ nghiên cứu khoa học, chuyển giao công nghệ và phục vụ cộng đồng trên cán bộ cơ hữu: {$value}", [], $indent);
+        $value = $tomTat->ti_so_sach_cb ?? 0;
+        $this->section->addText(" Tỷ số sách đã được xuất bản trên cán bộ cơ hữu: {$value}", [], $indent);
+        $value = $tomTat->ti_so_tap_chi_cb ?? 0;
+        $this->section->addText(" Tỷ số bài đăng tạp chí trên cán bộ cơ hữu: {$value}", [], $indent);
+        $value = $tomTat->ti_so_bai_bao_cb ?? 0;
+        $this->section->addText(" Tỷ số bài báo cáo trên cán bộ cơ hữu:{$value}", [], $indent);
+
+        $this->section->addText("7. Cơ sở vật chất(số liệu năm cuối kỳ đánh giá):");
+        $value = $tomTat->ti_so_dien_tich_sv ?? 0;
+        $this->section->addText("Tỷ số diện tích sàn xây dựng trên sinh viên chính quy: {$value}", [], $indent);
+        $value = $tomTat->ti_so_ktx_sv ?? 0;
+        $this->section->addText("Tỷ số chỗ ở ký túc xá trên sinh viên chính quy: {$value}", [], $indent);
+
+        $this->section->addText("8. Kết quả kiểm định chất lượng giáo dục");
+        $this->section->addText("Cấp cơ sở giáo dục:........................", [], $indent);
+        $this->section->addText("Cấp chương trình đào tạo:................", [], $indent);
+
     }
 }
