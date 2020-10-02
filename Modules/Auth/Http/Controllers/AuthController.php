@@ -25,9 +25,9 @@ class AuthController extends Controller
             $response = [
                 'success' => false,
                 'code' => 400,
-                'message' => 'Unauthorized'
+                'message' => 'Tài khoản hoặc mật khẩu không đúng'
             ];
-            return response()->json($response, 400);
+            return response()->json($response, 200);
         }
 
         Log::info('Đăng nhập thành công');
