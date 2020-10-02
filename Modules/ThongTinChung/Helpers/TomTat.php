@@ -15,9 +15,27 @@ use Modules\NghienCuuKhoaHoc\Entities\SoLuongSach;
 use Modules\NghienCuuKhoaHoc\Entities\TapChiDuocDang;
 use Modules\NguoiHoc\Entities\SvKtx;
 use Modules\NguoiHoc\Entities\TinhTrangSvTotNghiep;
+use Modules\ThongTinChung\Entities\TomTatChiSo;
 
 class TomTat
 {
+
+    public static function save($universityId, $year, $key, $value)
+    {
+        $tomTat = TomTatChiSo::where('university_id', $universityId)
+            ->where('year', $year)->first();
+        if (!$tomTat) {
+            $tomTat = new TomTatChiSo();
+            $tomTat->university_id = $universityId;
+            $tomTat->year = $year;
+        }
+        if (in_array($key, $tomTat->getFillable())) {
+            $tomTat->$key = $value;
+        }
+        $tomTat->save();
+        $tomTat->refresh();
+        return $tomTat;
+    }
 
     public static function tongGiangVienCoHuu($universityId, $year)
     {

@@ -14,6 +14,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Modules\GiangVien\Entities\LecturerByDegree;
 use Modules\GiangVien\Http\Requests\LecturerByDegreeRequest;
+use Modules\ThongTinChung\Entities\TomTatChiSo;
+use Modules\ThongTinChung\Helpers\TomTat;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class LecturerByDegreeController extends Controller
@@ -49,6 +51,7 @@ class LecturerByDegreeController extends Controller
             ->where('year', $year)
             ->where('lecturer_type', 5)
             ->first();
+        $tomTat = TomTatChiSo::where('university_id', $universityId)->where('year', $year)->first();
         $result = [
             'success' => true,
             'message' => 'Lấy giảng viên thành công',
@@ -57,7 +60,9 @@ class LecturerByDegreeController extends Controller
                 'dai_han' => $daiHan,
                 'quan_ly' => $quanLy,
                 'trong_nuoc' => $trongNuoc,
-                'quoc_te' => $quocTe
+                'quoc_te' => $quocTe,
+                'tong_gv_co_huu' => $tomTat->tong_gv_co_huu ?? 0,
+                'ti_le_gv_cb' => $tomTat->ti_le_gv_cb ?? 0
             ]
         ];
         return response()->json($result, 200);

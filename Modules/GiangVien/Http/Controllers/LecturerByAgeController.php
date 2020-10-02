@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
 use Modules\GiangVien\Entities\LecturerByAge;
 use Modules\GiangVien\Http\Requests\LecturerByAgeRequest;
+use Modules\ThongTinChung\Entities\TomTatChiSo;
+use Modules\ThongTinChung\Helpers\TomTat;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class LecturerByAgeController extends Controller
@@ -36,11 +38,6 @@ class LecturerByAgeController extends Controller
             ->where('year', $year)
             ->where('lecturer_degree', 1)
             ->first();
-        if (!is_null($giaoSu)) {
-            $avgAge = $giaoSu->avg_age;
-        } else {
-            $avgAge = 0;
-        }
         $phoGiaoSu = LecturerByAge::where('university_id', $universityId)
             ->where('year', $year)
             ->where('lecturer_degree', 2)
@@ -73,6 +70,8 @@ class LecturerByAgeController extends Controller
             ->where('year', $year)
             ->where('lecturer_degree', 9)
             ->first();
+        $tomTat = TomTatChiSo::where('university_id', $universityId)->where('year', $year)->first();
+        $avgAge = $tomTat->do_tuoi_tb ?? 0;
         $result = [
             'success' => true,
             'message' => 'Lấy giảng viên thành công',
@@ -87,7 +86,6 @@ class LecturerByAgeController extends Controller
                 'trung_cap' => $trungCap,
                 'khac' => $khac,
                 'avg_age' => $avgAge
-
             ]
         ];
         return response()->json($result, 200);
@@ -112,11 +110,6 @@ class LecturerByAgeController extends Controller
                 ->where('year', $year)
                 ->where('lecturer_degree', 1)
                 ->first();
-            if (!is_null($giaoSu)) {
-                $avgAge = $giaoSu->avg_age;
-            } else {
-                $avgAge = 0;
-            }
             $phoGiaoSu = LecturerByAge::where('university_id', $universityId)
                 ->where('year', $year)
                 ->where('lecturer_degree', 2)
@@ -149,6 +142,8 @@ class LecturerByAgeController extends Controller
                 ->where('year', $year)
                 ->where('lecturer_degree', 9)
                 ->first();
+            $tomTat = TomTatChiSo::where('university_id', $universityId)->where('year', $year)->first();
+            $avgAge = $tomTat->do_tuoi_tb ?? 0;
             $data[$year] = [
                 'giao_su' => $giaoSu,
                 'pho_giao_su' => $phoGiaoSu,
@@ -189,6 +184,8 @@ class LecturerByAgeController extends Controller
         }
 
         $data = $request->validated();
+        $avgAge = $data['avg_age'] ?? 0;
+        TomTat::save($universityId, $year, 'do_tuoi_tb', $avgAge);
         $insertData = [];
         $insertData['university_id'] = $universityId;
         $insertData['year'] = $year;
@@ -204,7 +201,6 @@ class LecturerByAgeController extends Controller
         $insertData['less_50'] = $giaoSu['less_50'] ?? 0;
         $insertData['less_60'] = $giaoSu['less_60'] ?? 0;
         $insertData['over_60'] = $giaoSu['over_60'] ?? 0;
-        $insertData['avg_age'] = $data['avg_age'] ?? 0;
 
         $giaoSu = LecturerByAge::updateOrCreate(
             [

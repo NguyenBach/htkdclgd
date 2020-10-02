@@ -34,7 +34,8 @@ class TomTatChiSo extends Model
         'ti_so_dien_tich_sv',
         'ti_so_ktx_sv',
         'cap_co_so',
-        'cap_ctdt'
+        'cap_ctdt',
+        'do_tuoi_tb'
     ];
 
 }

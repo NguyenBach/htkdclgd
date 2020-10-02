@@ -24,10 +24,10 @@ class AuthController extends Controller
             Log::info('Đăng nhập thất bại');
             $response = [
                 'success' => false,
-                'code' => 401,
+                'code' => 400,
                 'message' => 'Unauthorized'
             ];
-            return response()->json($response, 401);
+            return response()->json($response, 400);
         }
 
         Log::info('Đăng nhập thành công');

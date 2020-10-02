@@ -93,6 +93,7 @@ class BranchController extends Controller
         }
 
         $branch = $this->branch->create($data);
+        dd($branch);
         if ($branch) {
             $result = [
                 'success' => true,
@@ -165,7 +166,6 @@ class BranchController extends Controller
     //    }
 
         $success = $branch->update($data);
-
         if ($success) {
             $result = [
                 'success' => true,
