@@ -54,7 +54,7 @@ Route::group([
     Route::get('/list', 'EducationTypeController@list')->name('education-type.list');
     Route::post('/create', 'EducationTypeController@create')->name('education-type.create');
     Route::post('/update/{educationType}', 'EducationTypeController@update')->name('education-type.update');
-    Route::post('/delete/{educationType}', 'EducationTypeController@delete')->name('education-type.delete');
+    Route::post('/delete/{model}', 'EducationTypeController@delete')->name('education-type.delete');
 });
 
 Route::group([
@@ -73,8 +73,8 @@ Route::group([
 ], function () {
     Route::get('/list', 'BranchController@index')->name('faculty.list');
     Route::post('/create', 'BranchController@store')->name('faculty.create');
-    Route::post('/update/{faculty}', 'BranchController@update')->name('faculty.update');
-    Route::post('/delete/{faculty}', 'BranchController@delete')->name('faculty.delete');
+    Route::post('/update/{branch}', 'BranchController@update')->name('faculty.update');
+    Route::post('/delete/{branch}', 'BranchController@destroy')->name('faculty.delete');
 });
 
 Route::group([

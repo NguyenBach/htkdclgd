@@ -52,4 +52,10 @@ class BasePolicy
         return AuthHelper::isCAE($user)
             || AuthHelper::isUniversityManager($user);
     }
+
+    public function delete(User $user)
+    {
+        return AuthHelper::isCAE($user)
+            || AuthHelper::isUniversityManager($user);
+    }
 }

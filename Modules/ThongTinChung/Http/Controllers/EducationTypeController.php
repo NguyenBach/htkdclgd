@@ -40,6 +40,7 @@ class EducationTypeController extends Controller
 
         $types = $this->model
             ->where('university_id', $universityId)
+            ->orderBy('order')
             ->get();
         $result = [
             'success' => true,
@@ -67,6 +68,16 @@ class EducationTypeController extends Controller
         $data['slug'] = $slugify->slugify($data['name']);
         $data['university_id'] = $universityId;
         $data['created_by'] = $user->id;
+        if (!$data['order']) {
+            $lastOrder = EducationType::select(['order'])->where('university_id', $universityId)->orderBy('order', 'desc')->first();
+            if ($lastOrder) {
+                $lastOrder = $lastOrder->order;
+            } else {
+                $lastOrder = 0;
+            }
+            $data['order'] = $lastOrder + 1;
+        }
+
         $exist = EducationType::checkExist($data['slug'], $data['university_id']);
         if (!$exist) {
             $result = [
@@ -111,6 +122,15 @@ class EducationTypeController extends Controller
         $data['slug'] = $this->createSlug($data['name']);
         $data['university_id'] = $universityId;
         $data['created_by'] = $user->id;
+        if (!$data['order']) {
+            $lastOrder = EducationType::select(['order'])->where('university_id', $universityId)->orderBy('order', 'desc')->first();
+            if ($lastOrder) {
+                $lastOrder = $lastOrder->order;
+            } else {
+                $lastOrder = 0;
+            }
+            $data['order'] = $lastOrder + 1;
+        }
         $model = $educationType->update($data);
         if ($model) {
             $educationType->refresh();
@@ -135,17 +155,19 @@ class EducationTypeController extends Controller
     public function delete(EducationType $model)
     {
         $this->authorize('delete', $model);
+
         $success = $model->delete();
+
         if ($success) {
             $result = [
                 'success' => true,
-                'message' => 'Xóa phòng ban học thành công',
+                'message' => 'Xóa loại hình đào tạo thành công',
             ];
             return response()->json($result, 200);
         } else {
             $result = [
                 'success' => false,
-                'message' => 'Xóa phòng ban học thất bại ',
+                'message' => 'Xóa loại hình đào tạo thất bại ',
             ];
             return response()->json($result, 500);
         }

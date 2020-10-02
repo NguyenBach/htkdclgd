@@ -4,6 +4,7 @@
 namespace Modules\ThongTinChung\Helpers;
 
 
+use Illuminate\Support\Facades\Cache;
 use Modules\CoSoVatChat\Entities\DienTich;
 use Modules\GiangVien\Entities\Lecturer;
 use Modules\GiangVien\Entities\LecturerByDegree;
@@ -22,8 +23,13 @@ class TomTat
 
     public static function save($universityId, $year, $key, $value)
     {
-        $tomTat = TomTatChiSo::where('university_id', $universityId)
-            ->where('year', $year)->first();
+        $cacheKey = "tom_tat:university_{$universityId}_{$year}";
+        if (Cache::has($cacheKey)) {
+            $tomTat = Cache::get($cacheKey);
+        } else {
+            $tomTat = TomTatChiSo::where('university_id', $universityId)
+                ->where('year', $year)->first();
+        }
         if (!$tomTat) {
             $tomTat = new TomTatChiSo();
             $tomTat->university_id = $universityId;
@@ -34,6 +40,7 @@ class TomTat
         }
         $tomTat->save();
         $tomTat->refresh();
+        Cache::forever($cacheKey, $tomTat);
         return $tomTat;
     }
 

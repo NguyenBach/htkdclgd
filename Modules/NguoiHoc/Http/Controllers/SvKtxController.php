@@ -64,9 +64,7 @@ class SvKtxController extends Controller
             $svktx = SvKtx::where('university_id', $universityId)
                 ->where('year', $year)
                 ->first();
-            $data[$year] = [
-                'sv_ktx' => $svktx
-            ];
+            $data[$year] = $svktx;
             $year--;
             $i--;
         }

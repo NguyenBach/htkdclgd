@@ -12,7 +12,8 @@ class EducationType extends Model
     protected $fillable = [
         'university_id',
         'name',
-        'slug'
+        'slug',
+        'order'
     ];
 
     protected static $logAttributes = [

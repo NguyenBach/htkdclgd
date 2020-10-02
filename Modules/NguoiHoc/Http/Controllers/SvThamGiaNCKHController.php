@@ -64,9 +64,7 @@ class SvThamGiaNCKHController extends Controller
             $svktx = SvThamGiaNCKH::where('university_id', $universityId)
                 ->where('year', $year)
                 ->first();
-            $data[$year] = [
-                'sv_tham_gia_nckh' => $svktx
-            ];
+            $data[$year] = $svktx;
             $year--;
             $i--;
         }

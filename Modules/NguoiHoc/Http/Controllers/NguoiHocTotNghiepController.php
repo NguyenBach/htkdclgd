@@ -64,9 +64,7 @@ class NguoiHocTotNghiepController extends Controller
             $nguoiHoc = NguoiHocTotNghiep::where('university_id', $universityId)
                 ->where('year', $year)
                 ->first();
-            $data[$year] = [
-                'nguoi_hoc_tot_nghiep' => $nguoiHoc
-            ];
+            $data[$year] = $nguoiHoc;
             $year--;
             $i--;
         }

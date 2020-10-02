@@ -72,6 +72,8 @@ class LecturerByAgeController extends Controller
             ->first();
         $tomTat = TomTatChiSo::where('university_id', $universityId)->where('year', $year)->first();
         $avgAge = $tomTat->do_tuoi_tb ?? 0;
+        $tiLeTs = $tomTat->ti_le_gv_ts ?? 0;
+        $tiLeThs = $tomTat->ti_le_gv_ths ?? 0;
         $result = [
             'success' => true,
             'message' => 'Lấy giảng viên thành công',
@@ -85,7 +87,9 @@ class LecturerByAgeController extends Controller
                 'cao_dang' => $caoDang,
                 'trung_cap' => $trungCap,
                 'khac' => $khac,
-                'avg_age' => $avgAge
+                'avg_age' => $avgAge,
+                'ti_le_gv_ts' => $tiLeTs,
+                'ti_le_gv_ths' => $tiLeThs
             ]
         ];
         return response()->json($result, 200);
@@ -144,6 +148,8 @@ class LecturerByAgeController extends Controller
                 ->first();
             $tomTat = TomTatChiSo::where('university_id', $universityId)->where('year', $year)->first();
             $avgAge = $tomTat->do_tuoi_tb ?? 0;
+            $tiLeTs = $tomTat->ti_le_gv_ts ?? 0;
+            $tiLeThs = $tomTat->ti_le_gv_ths ?? 0;
             $data[$year] = [
                 'giao_su' => $giaoSu,
                 'pho_giao_su' => $phoGiaoSu,
@@ -154,7 +160,9 @@ class LecturerByAgeController extends Controller
                 'cao_dang' => $caoDang,
                 'trung_cap' => $trungCap,
                 'khac' => $khac,
-                'avg_age' => $avgAge
+                'avg_age' => $avgAge,
+                'ti_le_gv_ts' => $tiLeTs,
+                'ti_le_gv_ths' => $tiLeThs
             ];
             $year--;
             $i++;
@@ -185,7 +193,6 @@ class LecturerByAgeController extends Controller
 
         $data = $request->validated();
         $avgAge = $data['avg_age'] ?? 0;
-        TomTat::save($universityId, $year, 'do_tuoi_tb', $avgAge);
         $insertData = [];
         $insertData['university_id'] = $universityId;
         $insertData['year'] = $year;
@@ -370,6 +377,11 @@ class LecturerByAgeController extends Controller
             ],
             $insertData);
 
+        TomTat::save($universityId, $year, 'do_tuoi_tb', $avgAge);
+        $tiLeTs = TomTat::tiLeGiangVienTienSi($universityId, $year);
+        TomTat::save($universityId, $year, 'ti_le_gv_ts', $tiLeTs);
+        $tiLeThs = TomTat::tiLeGiangVienThacSi($universityId, $year);
+        TomTat::save($universityId, $year, 'ti_le_gv_ths', $tiLeThs);
         $result = [
             'success' => true,
             'message' => 'Update giảng viên thành công',
@@ -382,7 +394,10 @@ class LecturerByAgeController extends Controller
                 'dai_hoc' => $daiHoc,
                 'cao_dang' => $caoDang,
                 'trung_cap' => $trungCap,
-                'khac' => $khac
+                'khac' => $khac,
+                'avg_age' => $avgAge,
+                'ti_le_gv_ts' => $tiLeTs,
+                'ti_le_gv_ths' => $tiLeThs
             ]
         ];
         return response()->json($result, 200);
