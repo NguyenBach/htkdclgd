@@ -13,6 +13,7 @@ class TuDanhGia extends Model
         'tieu_chuan',
         'tieu_chi',
         'university_id',
+        'submit_at',
         'diem',
     ];
 

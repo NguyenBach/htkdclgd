@@ -13,6 +13,7 @@ class DanhGiaNgoai extends Model
         'tieu_chi',
         'university_id',
         'diem',
+        'submit_at'
     ];
 
     protected $hidden = [

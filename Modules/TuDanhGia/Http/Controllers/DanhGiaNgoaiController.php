@@ -111,12 +111,13 @@ class DanhGiaNgoaiController extends Controller
         }
         $draft = DanhGiaNgoaiDraft::where('university_id', $universityId)
             ->get();
+        DanhGiaNgoai::where('university_id', $universityId)
+            ->delete();
         foreach ($draft as $item) {
-            DanhGiaNgoai::updateOrCreate([
+            DanhGiaNgoai::create([
                 'university_id' => $universityId,
                 'tieu_chuan' => $item->tieu_chuan,
-                'tieu_chi' => $item->tieu_chi
-            ], [
+                'tieu_chi' => $item->tieu_chi,
                 'diem' => $item->diem_thong_nhat,
                 'submit_at' => date('Y-m-d H:i:s')
             ]);
