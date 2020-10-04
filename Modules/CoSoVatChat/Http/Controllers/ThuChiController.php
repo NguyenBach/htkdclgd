@@ -61,9 +61,8 @@ class ThuChiController extends Controller
                 ->where('university_id', $universityId)
                 ->first();
 
-            $data[$year] = [
-                'thu_chi' => $thuChi
-            ];
+            $data[$year] = $thuChi;
+
             $year--;
             $i--;
         }

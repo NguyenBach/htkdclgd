@@ -20,6 +20,23 @@ use Modules\ThongTinChung\Entities\TomTatChiSo;
 
 class TomTat
 {
+    public static function get($universityId, $year, $key, $default)
+    {
+        $cacheKey = "tom_tat:university_{$universityId}_{$year}";
+        if (Cache::has($cacheKey)) {
+            $tomTat = Cache::get($cacheKey);
+        } else {
+            $tomTat = TomTatChiSo::where('university_id', $universityId)
+                ->where('year', $year)->first();
+        }
+        if (!$tomTat) {
+            return $default;
+        }
+        if (in_array($key, $tomTat->getFillable())) {
+            return $tomTat->$key;
+        }
+        return $default;
+    }
 
     public static function save($universityId, $year, $key, $value)
     {

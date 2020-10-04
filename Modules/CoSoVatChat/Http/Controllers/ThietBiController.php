@@ -86,6 +86,7 @@ class ThietBiController extends Controller
         $data['university_id'] = $universityId;
 
         $thietBi = $this->thietBiModel->create($data);
+        dd($danhMucTrangThietBi);
         $thietBi->danh_muc_trang_thiet_bi()->attach($danhMucTrangThietBi);
         if ($thietBi) {
             $result = [

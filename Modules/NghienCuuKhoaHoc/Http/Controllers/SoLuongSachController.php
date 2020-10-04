@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
 use Modules\NghienCuuKhoaHoc\Entities\SoLuongSach;
 use Modules\NghienCuuKhoaHoc\Http\Requests\SoLuongSachRequest;
+use Modules\ThongTinChung\Helpers\TomTat;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class SoLuongSachController extends Controller
@@ -71,7 +72,7 @@ class SoLuongSachController extends Controller
             }
         }
         $this->authorize('index', SoLuongSach::class);
-
+        $viewYear = $year;
         $data = [];
         $i = 5;
         while ($i > 0) {
@@ -102,10 +103,15 @@ class SoLuongSachController extends Controller
             $i--;
         }
 
+        $tiSo = TomTat::get($universityId, $viewYear, 'ti_so_sach_cb', 0);
+        $responseData = [
+            'so_luong_sach' => $data,
+            'ti_so_sach' => $tiSo
+        ];
         $result = [
             'success' => true,
             'message' => 'Lấy số lượng sách thành công',
-            'data' => $data
+            'data' => $responseData
         ];
         return response()->json($result, 200);
     }
@@ -169,6 +175,9 @@ class SoLuongSachController extends Controller
             ],
             $data);
 
+        $tiSo = TomTat::tiSoSachCanBo($universityId, $year);
+        TomTat::save($universityId, $year, 'ti_so_sach_cb', $tiSo);
+
         $result = [
             'success' => true,
             'message' => 'Update só lượng sách thành công',
@@ -176,9 +185,11 @@ class SoLuongSachController extends Controller
                 'chuyen_khao' => $chuyenKhao,
                 'giao_trinh' => $giaoTrinh,
                 'tham_khao' => $thamKhao,
-                'huong_dan' => $huongDan
+                'huong_dan' => $huongDan,
+                'ti_le' => $tiSo
             ]
         ];
+
         return response()->json($result, 200);
     }
 }

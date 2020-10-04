@@ -12,10 +12,5 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
-});
-
-Route::get('/export', function () {
-    $export = new \Modules\ThongTinChung\Helpers\ExportHelper();
-    $export->export(1, 2020);
+    return view('frontend::index');
 });

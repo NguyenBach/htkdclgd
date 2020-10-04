@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
 use Modules\NghienCuuKhoaHoc\Entities\SoLuongNCKH;
 use Modules\NghienCuuKhoaHoc\Http\Requests\SoLuongNCKHRequest;
+use Modules\ThongTinChung\Helpers\TomTat;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class SoLuongNCKHController extends Controller
@@ -46,6 +47,7 @@ class SoLuongNCKHController extends Controller
     public function list($year)
     {
         $user = Auth::user();
+        $viewYear = $year;
         $this->authorize('index', SoLuongNCKH::class);
         $universityId = $user->university_id;
         if (!$universityId) {
@@ -61,18 +63,22 @@ class SoLuongNCKHController extends Controller
             $soLuongNCKH = SoLuongNCKH::where('university_id', $universityId)
                 ->where('year', $year)
                 ->first();
-            $data[$year] = [
-                'so_luong_nckh' => $soLuongNCKH
-            ];
+            $data[$year] = $soLuongNCKH;
             $year--;
             $i--;
         }
 
+        $tiLe = TomTat::get($universityId, $viewYear, 'ti_le_de_tai_cb', 0);
+        $responseData = [
+            'so_luong_nckh' => $data,
+            'ti_le_de_tai' => $tiLe
+        ];
 
         $result = [
             'success' => true,
             'message' => 'Lấy số lượng nghiên cứu khoa học thành công',
-            'data' => $data
+            'data' => $responseData
+
         ];
         return response()->json($result, 200);
     }
@@ -100,12 +106,14 @@ class SoLuongNCKHController extends Controller
                 'university_id' => $universityId
             ],
             $data);
-
+        $tiLe = TomTat::tiLeDeTaiCanBo($universityId, $year);
+        TomTat::save($universityId, $year, 'ti_le_de_tai_cb', $tiLe);
         $result = [
             'success' => true,
             'message' => 'Update số lượng nghiên cứu khoa hoc thành công',
             'data' => [
-                'so_luong_nckh' => $soLuongNCKH
+                'so_luong_nckh' => $soLuongNCKH,
+                'ti_le' => $tiLe,
             ]
         ];
         return response()->json($result, 200);

@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
 use Modules\NghienCuuKhoaHoc\Entities\TapChiDuocDang;
 use Modules\NghienCuuKhoaHoc\Http\Requests\TapChiDuocDangRequest;
+use Modules\ThongTinChung\Helpers\TomTat;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class TapChiDuocDangController extends Controller
@@ -84,6 +85,7 @@ class TapChiDuocDangController extends Controller
                 throw new NotFoundHttpException('Không có trường đại học');
             }
         }
+        $tiSo = TomTat::get($universityId, $year, 'ti_so_tap_chi_cb', 0);
 
         $data = [];
         $i = 5;
@@ -124,11 +126,15 @@ class TapChiDuocDangController extends Controller
             $i--;
         }
 
+        $responseData = [
+            'tap_chi_duoc_dang' => $data,
+            'ti_so_tap_chi' => $tiSo
+        ];
 
         $result = [
             'success' => true,
             'message' => 'Lấy tap chí được đăng thành công',
-            'data' => $data
+            'data' => $responseData
         ];
         return response()->json($result, 200);
     }
@@ -207,6 +213,9 @@ class TapChiDuocDangController extends Controller
                 'phan_loai_tap_chi_id' => 3
             ],
             $data);
+
+        $tiSo = TomTat::tiSoBaiDangTapChi($universityId, $year);
+        TomTat::save($universityId, $year, 'ti_so_tap_chi_cb', $tiSo);
 
         $result = [
             'success' => true,
