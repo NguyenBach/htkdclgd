@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
+use Modules\ThongTinChung\Entities\University;
 use Modules\TuDanhGia\Entities\DanhGiaNgoai;
 use Modules\TuDanhGia\Entities\DanhGiaNgoaiDraft;
 use Modules\TuDanhGia\Entities\SubmitHistory;
@@ -15,6 +16,23 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class DanhGiaNgoaiController extends Controller
 {
+
+    public function thongKe()
+    {
+        $user = Auth::user();
+        $perPage = Input::get('per-page');
+        if (!$perPage || !is_numeric($perPage)) {
+            $perPage = 5;
+        }
+        $universities = University::select(['id', 'name_vi', 'short_name_vi'])->with('danhGiaNgoai')->paginate($perPage);
+
+        $result = [
+            'success' => true,
+            'message' => "Lấy thông tin thành công",
+            'data' => $universities
+        ];
+        return \response()->json($result);
+    }
 
     public function index($tieuChuan)
     {

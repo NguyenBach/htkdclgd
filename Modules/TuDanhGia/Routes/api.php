@@ -44,3 +44,25 @@ Route::group([
 
 });
 
+Route::group([
+    'prefix' => 'danh-gia-ngoai',
+    'middleware' => 'jwt.auth'
+], function () {
+    Route::post('/submit', "DanhGiaNgoaiController@submit")->name('danh-gia-ngoai.submit');
+    Route::get('/thong-ke', "DanhGiaNgoaiController@thongKe")->name('danh-gia-ngoai.thong-ke');
+    Route::get('/submit-history', "DanhGiaNgoaiController@submitHistory")->name('danh-gia-ngoai.submit-history');
+    Route::get('/submit-history/last', "DanhGiaNgoaiController@lastSubmit")->name('danh-gia-ngoai.submit-history-last');
+    Route::post('/{tieuChuan}', "DanhGiaNgoaiController@create")->name('danh-gia-ngoai.create');
+    Route::get('/{tieuChuan}', "DanhGiaNgoaiController@index")->name('danh-gia-ngoai.index');
+
+});
+
+Route::group([
+    'prefix' => 'thong-ke',
+    'middleware' => 'jwt.auth'
+], function () {
+    Route::get('/danh-gia-ngoai', "ThongKeController@thongKe")->name('thong-ke.danh-gia-ngoai');
+    Route::get('/tu-danh-gia', "ThongKeController@thongKe")->name('thong-ke.tu-danh-gia');
+    Route::get('/so-sanh', "ThongKeController@soSanh")->name('thong-ke.so-sanh');
+
+});
