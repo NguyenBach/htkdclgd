@@ -51,7 +51,8 @@ class LecturerByDegreeController extends Controller
             ->where('year', $year)
             ->where('lecturer_type', 5)
             ->first();
-        $tomTat = TomTatChiSo::where('university_id', $universityId)->where('year', $year)->first();
+        $tongGvCoHuu = TomTat::get($universityId, $year, 'tong_gv_co_huu', 0);
+        $tiLeGvCanBo = TomTat::get($universityId, $year, 'ti_le_gv_cb', 0);
         $result = [
             'success' => true,
             'message' => 'Lấy giảng viên thành công',
@@ -61,8 +62,8 @@ class LecturerByDegreeController extends Controller
                 'quan_ly' => $quanLy,
                 'trong_nuoc' => $trongNuoc,
                 'quoc_te' => $quocTe,
-                'tong_gv_co_huu' => $tomTat->tong_gv_co_huu ?? 0,
-                'ti_le_gv_cb' => $tomTat->ti_le_gv_cb ?? 0
+                'tong_gv_co_huu' => $tongGvCoHuu,
+                'ti_le_gv_cb' => $tiLeGvCanBo
             ]
         ];
         return response()->json($result, 200);

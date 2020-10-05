@@ -61,8 +61,8 @@ Route::group([
     'prefix' => 'thong-ke',
     'middleware' => 'jwt.auth'
 ], function () {
-    Route::get('/danh-gia-ngoai', "ThongKeController@thongKe")->name('thong-ke.danh-gia-ngoai');
-    Route::get('/tu-danh-gia', "ThongKeController@thongKe")->name('thong-ke.tu-danh-gia');
+    Route::get('/danh-gia-ngoai', "ThongKeController@danhGiaNgoai")->name('thong-ke.danh-gia-ngoai');
+    Route::get('/tu-danh-gia', "ThongKeController@tuDanhGia")->name('thong-ke.tu-danh-gia');
     Route::get('/so-sanh', "ThongKeController@soSanh")->name('thong-ke.so-sanh');
 
 });
