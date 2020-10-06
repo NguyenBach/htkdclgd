@@ -18,6 +18,7 @@ class UniversityPolicy extends BasePolicy
             return true;
         }
     }
+
     /**
      * Create a new policy instance.
      *
@@ -30,17 +31,18 @@ class UniversityPolicy extends BasePolicy
 
     public function list(User $user)
     {
-        return AuthHelper::can($user, 'university:list');
+        return AuthHelper::isCAE($user) || AuthHelper::isAdmin($user) || AuthHelper::isSuperAdmin($user);
     }
 
     public function create(User $user)
     {
-        return AuthHelper::can($user, 'university:create');
+        return AuthHelper::isSuperAdmin($user) || AuthHelper::isAdmin($user);
     }
 
     public function update(User $user, University $university = null)
     {
-        $can = AuthHelper::can($user, 'university:update');
+        $can =AuthHelper::isSuperAdmin($user) || AuthHelper::isAdmin($user) || AuthHelper::isUniversityManager($user)
+            || AuthHelper::isUniversityOfficer($user);
         if ($can) {
             if ($user->university_id == 0) {
                 return true;
