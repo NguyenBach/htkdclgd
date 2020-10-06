@@ -61,7 +61,7 @@ class UniversityController extends Controller
         $this->authorize('create', University::class);
         $universityData = $request->validated();
         if (!empty($universityData['institution_type_other'])) {
-            $universityData['institution_type'] = 0;
+            $universityData['institution_type'] = 5;
         }
         $university = $this->universityModel->create($universityData);
         $result = [
@@ -104,6 +104,7 @@ class UniversityController extends Controller
 
     public function destroy(University $model)
     {
+        $model->users()->delete();
         $success = $model->delete();
         if ($success) {
             $result = [

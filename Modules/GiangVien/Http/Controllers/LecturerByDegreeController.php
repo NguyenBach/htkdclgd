@@ -243,6 +243,10 @@ class LecturerByDegreeController extends Controller
             ],
             $insertData);
 
+        $tong = TomTat::tongGiangVienCoHuu($universityId, $year);
+        TomTat::save($universityId, $year, 'tong_gv_co_huu', $tong);
+        $tile = TomTat::tongGianVienTrenTongCanBo($universityId, $year);
+        TomTat::save($universityId, $year, 'ti_le_gv_cb', $tile);
         $result = [
             'success' => true,
             'message' => 'Thêm giảng viên thành công',

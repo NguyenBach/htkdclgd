@@ -70,10 +70,9 @@ class LecturerByAgeController extends Controller
             ->where('year', $year)
             ->where('lecturer_degree', 9)
             ->first();
-        $tomTat = TomTatChiSo::where('university_id', $universityId)->where('year', $year)->first();
-        $avgAge = $tomTat->do_tuoi_tb ?? 0;
-        $tiLeTs = $tomTat->ti_le_gv_ts ?? 0;
-        $tiLeThs = $tomTat->ti_le_gv_ths ?? 0;
+        $avgAge = TomTat::get($universityId, $year, 'do_tuoi_tb', 0);
+        $tiLeTs = TomTat::get($universityId, $year, 'ti_le_gv_ts', 0);
+        $tiLeThs = TomTat::get($universityId, $year, 'ti_le_gv_ths', 0);
         $result = [
             'success' => true,
             'message' => 'Lấy giảng viên thành công',
@@ -146,10 +145,9 @@ class LecturerByAgeController extends Controller
                 ->where('year', $year)
                 ->where('lecturer_degree', 9)
                 ->first();
-            $tomTat = TomTatChiSo::where('university_id', $universityId)->where('year', $year)->first();
-            $avgAge = $tomTat->do_tuoi_tb ?? 0;
-            $tiLeTs = $tomTat->ti_le_gv_ts ?? 0;
-            $tiLeThs = $tomTat->ti_le_gv_ths ?? 0;
+            $avgAge = TomTat::get($universityId, $year, 'do_tuoi_tb', 0);
+            $tiLeTs = TomTat::get($universityId, $year, 'ti_le_gv_ts', 0);
+            $tiLeThs = TomTat::get($universityId, $year, 'ti_le_gv_ths', 0);
             $data[$year] = [
                 'giao_su' => $giaoSu,
                 'pho_giao_su' => $phoGiaoSu,

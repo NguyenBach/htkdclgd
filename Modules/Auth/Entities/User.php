@@ -2,6 +2,7 @@
 
 namespace Modules\Auth\Entities;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Modules\ThongTinChung\Entities\University;
 use Spatie\Activitylog\Traits\LogsActivity;
@@ -10,6 +11,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 class User extends Authenticatable implements JWTSubject
 {
     use LogsActivity;
+    use SoftDeletes;
 
     protected $table = 'users';
 

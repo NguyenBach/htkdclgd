@@ -50,7 +50,7 @@ class UserController extends Controller
     public function profile($id)
     {
         $this->authorize('view_profile', Auth::user());
-        $user = $this->user->find($id);
+        $user = User::where('id',$id)->with('university')->first();
         $user->permissions = $user->permissions()->get();
         if (is_null($user)) {
             Log::info("Lấy thông tin cá nhân thất bại");
@@ -233,7 +233,7 @@ class UserController extends Controller
         $this->authorize('list', User::class);
         $currentUser = Auth::user();
         if (AuthHelper::isSuperAdmin($currentUser) || AuthHelper::isAdmin($currentUser)) {
-            $listUser = User::all();
+            $listUser = User::with('university')->get();
         } else {
             $listUser = User::where('created_by', $currentUser->id)
                 ->where('university_id', $currentUser->university_id)

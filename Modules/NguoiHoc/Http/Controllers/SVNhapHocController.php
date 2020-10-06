@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
 use Modules\NguoiHoc\Entities\SvNhapHoc;
 use Modules\NguoiHoc\Http\Requests\SvNhapHocRequest;
+use Modules\ThongTinChung\Helpers\TomTat;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class SVNhapHocController extends Controller
@@ -75,6 +76,8 @@ class SVNhapHocController extends Controller
             ->where('he_hoc', $heHoc)
             ->where('type', 'KHAC')
             ->first();
+        $tongSv = TomTat::get($universityId, $year, 'tong_sv', 0);
+
         $result = [
             'success' => true,
             'message' => 'Lấy người học thành công',
@@ -85,6 +88,7 @@ class SVNhapHocController extends Controller
                 'cd' => $cd,
                 'tc' => $tc,
                 'khac' => $khac,
+                'tong_sv' => $tongSv
             ]
         ];
         return response()->json($result, 200);
@@ -113,6 +117,8 @@ class SVNhapHocController extends Controller
                 throw new NotFoundHttpException('Không có trường đại học');
             }
         }
+
+        $tongSv = TomTat::get($universityId, $year, 'tong_sv', 0);
 
         $data = [];
         $i = 5;
@@ -161,11 +167,15 @@ class SVNhapHocController extends Controller
             $year--;
             $i--;
         }
+        $responseData = [
+            'sv_nhap_hoc' => $data,
+            'tong_sv' => $tongSv
+        ];
 
         $result = [
             'success' => true,
             'message' => 'Lấy người học thành công',
-            'data' => $data
+            'data' => $responseData
         ];
         return response()->json($result, 200);
     }

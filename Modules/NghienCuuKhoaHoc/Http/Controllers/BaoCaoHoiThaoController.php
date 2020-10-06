@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Modules\NghienCuuKhoaHoc\Entities\BaoCaoHoiThao;
 use Modules\NghienCuuKhoaHoc\Http\Requests\BaoCaoHoiThaoRequest;
+use Modules\ThongTinChung\Helpers\TomTat;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class BaoCaoHoiThaoController extends Controller
@@ -43,7 +44,7 @@ class BaoCaoHoiThaoController extends Controller
             ->where('phan_loai_hoi_thao_id', 3)
             ->first();
 
-
+        $tiSo = TomTat::get($universityId, $year, 'ti_so_bai_bao_cb', 0);
         $result = [
             'success' => true,
             'message' => 'Lấy báo cáo hội thảo thành công',
@@ -51,7 +52,7 @@ class BaoCaoHoiThaoController extends Controller
                 'quoc_te' => $quocTe,
                 'trong_nuoc' => $trongNuoc,
                 'cap_truong' => $capTruong,
-
+                'ti_so_bao_cao' => $tiSo
             ]
         ];
         return response()->json($result, 200);
@@ -151,7 +152,8 @@ class BaoCaoHoiThaoController extends Controller
                 'phan_loai_hoi_thao_id' => 3
             ],
             $data);
-
+        $tiLe = TomTat::tiSoBaoCaoHoiThao($universityId, $year);
+        TomTat::save($universityId, $year, 'ti_so_bai_bao_cb', $tiLe);
         $result = [
             'success' => true,
             'message' => 'Update báo cáo hội thảo thành công',

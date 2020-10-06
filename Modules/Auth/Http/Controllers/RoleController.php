@@ -21,12 +21,7 @@ class RoleController extends Controller
 
     public function list()
     {
-//        $this->authorize('list', Permission::class);
-        $user = Auth::user();
-        $roles = Role::all()
-            ->reject(function ($role) use ($user) {
-                return !in_array($user->role_id, json_decode($role->role_base));
-            });
+        $roles = Role::all();
 
         $result = [
             'success' => true,
