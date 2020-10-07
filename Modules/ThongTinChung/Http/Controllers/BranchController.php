@@ -23,10 +23,8 @@ class BranchController extends Controller
 
     /**
      * Display a listing of the resource.
-     * @return Response
-     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function index()
+    public function index($year)
     {
         $this->authorize('index', Branch::class);
         $user = Auth::user();
@@ -39,7 +37,9 @@ class BranchController extends Controller
             }
         }
 
-        $branches = $this->branch->where('university_id', $universityId)->get();
+        $branches = $this->branch->where('university_id', $universityId)
+            ->where('year', $year)
+            ->get();
         $result = [
             'success' => true,
             'message' => 'Lấy thông tin thành công',
@@ -55,9 +55,8 @@ class BranchController extends Controller
      * Store a newly created resource in storage.
      * @param BranchRequest $request
      * @throws AuthorizationException
-     * @return Response
      */
-    public function store(BranchRequest $request)
+    public function store($year, BranchRequest $request)
     {
         $this->authorize('store', Branch::class);
         $user = Auth::user();
@@ -79,6 +78,7 @@ class BranchController extends Controller
             $data['number_officer'] = 0;
         }
         $data['university_id'] = $universityId;
+        $data['year'] = $year;
         $slugify = new Slugify();
         $data['slug'] = $slugify->slugify($data['name']);
 
@@ -93,7 +93,6 @@ class BranchController extends Controller
         }
 
         $branch = $this->branch->create($data);
-        dd($branch);
         if ($branch) {
             $result = [
                 'success' => true,
@@ -115,7 +114,6 @@ class BranchController extends Controller
     /**
      * Show the specified resource.
      * @param Branch $id
-     * @return Response
      */
     public function show(Branch $id)
     {

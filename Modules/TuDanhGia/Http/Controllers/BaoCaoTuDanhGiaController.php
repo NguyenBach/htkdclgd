@@ -64,7 +64,7 @@ class BaoCaoTuDanhGiaController extends Controller
             return \response()->json($data, 400);
         }
         $filename = time() . '_' . $file->getClientOriginalName();
-        $path = "bao-cao-tu-danh-gia/{$user->university->short_name_vi}";
+        $path = "bao-cao-tu-danh-gia/{$user->university->data()->first()->short_name_vi}";
         $filePath = $file->storeAs($path, $this->clean($filename), ['disk']);
         $data['filename'] = $file->getClientOriginalName();
         $data['university_id'] = $universityId;
@@ -93,7 +93,7 @@ class BaoCaoTuDanhGiaController extends Controller
             return \response()->json($data, 400);
         }
         $filename = time() . '_nhan_xet_' . $file->getClientOriginalName();
-        $path = "bao-cao-tu-danh-gia/{$baoCao->university->short_name_vi}";
+        $path = "bao-cao-tu-danh-gia/{$baoCao->university->data()->first()->short_name_vi}";
         $filePath = $file->storeAs($path, $this->clean($filename), ['disk']);
         $baoCao->file_comment_name = $file->getClientOriginalName();
         $baoCao->commented_by = $user->id;

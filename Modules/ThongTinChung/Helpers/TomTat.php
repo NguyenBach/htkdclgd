@@ -63,11 +63,16 @@ class TomTat
 
     public static function tongGiangVienCoHuu($universityId, $year)
     {
-        $giangVien = Lecturer::where('university_id', $universityId)
+        $giangVien = LecturerByDegree::where('university_id', $universityId)
             ->where('year', $year)
-            ->first();
+            ->whereIn('lecturer_type', [1, 2, 3])
+            ->get();
         if ($giangVien) {
-            return $giangVien->total_1;
+            return $giangVien->reduce(function ($carry, $item) {
+                return $carry + $item->professor + $item->associate_professor
+                    + $item->science_doctor + $item->doctor + $item->master + $item->undergraduate
+                    + $item->college + $item->intermediate + $item->other;
+            });
         }
         return 0;
     }

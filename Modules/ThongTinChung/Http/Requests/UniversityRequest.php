@@ -14,24 +14,10 @@ class UniversityRequest extends APIRequest
     public function rules()
     {
         return [
-            'name_vi' => '',
-            'name_en' => '',
-            'short_name_vi' => 'unique:universities,short_name_vi',
-            'short_name_en' => 'unique:universities,short_name_en',
-            'name_before' => '',
-            'governing_body' => '',
-            'address' => '',
-            'phone_number' => '',
-            'fax_number' => '',
-            'email' => '',
-            'website' => '',
-            'founded_year' => '',
-            'k1_start_date' => '',
-            'k1_end_date' => '',
+            'name_vi' => 'required',
+            'governing_body' => 'required',
             'institution_type' => '',
             'institution_type_other' => '',
-            'training_type' => 'json',
-            'training_type_other' => ''
         ];
     }
 

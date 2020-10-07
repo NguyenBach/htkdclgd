@@ -41,21 +41,21 @@ class UniversityPolicy extends BasePolicy
 
     public function update(User $user, University $university = null)
     {
-        $can =AuthHelper::isSuperAdmin($user) || AuthHelper::isAdmin($user) || AuthHelper::isUniversityManager($user)
+        return AuthHelper::isSuperAdmin($user) || AuthHelper::isAdmin($user) || AuthHelper::isUniversityManager($user)
             || AuthHelper::isUniversityOfficer($user);
-        if ($can) {
-            if ($user->university_id == 0) {
-                return true;
-            } else {
-                if ($user->university_id == $university->id) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        } else {
-            return false;
-        }
+//        if ($can) {
+//            if ($user->university_id == 0) {
+//                return true;
+//            } else {
+//                if ($user->university_id == $university->id) {
+//                    return true;
+//                } else {
+//                    return false;
+//                }
+//            }
+//        } else {
+//            return false;
+//        }
     }
 
     public function view(User $user, University $university)

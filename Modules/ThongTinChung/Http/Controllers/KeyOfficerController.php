@@ -29,7 +29,7 @@ class KeyOfficerController extends Controller
         $this->keyOfficerModel = $keyOfficer;
     }
 
-    public function list()
+    public function list($year)
     {
         $this->authorize('index', KeyOfficer::class);
         $user = Auth::user();
@@ -40,7 +40,9 @@ class KeyOfficerController extends Controller
                 throw new NotFoundHttpException('Không có trường đại học');
             }
         }
-        $keyOfficers = KeyOfficer::where('university_id', $universityId)->get();
+        $keyOfficers = KeyOfficer::where('university_id', $universityId)
+            ->where('year', $year)
+            ->get();
         $result = [
             'success' => true,
             'message' => 'Lấy danh sách cán bộ thành công',
@@ -49,7 +51,7 @@ class KeyOfficerController extends Controller
         return response()->json($result, 200);
     }
 
-    public function create(KeyOfficerRequest $request)
+    public function create($year, KeyOfficerRequest $request)
     {
         $this->authorize('create', KeyOfficer::class);
         $user = Auth::user();
@@ -70,6 +72,7 @@ class KeyOfficerController extends Controller
             return response()->json($result, 400);
         }
         $data['university_id'] = $universityId;
+        $data['year'] = $year;
         $keyOfficer = KeyOfficer::create($data);
         if (!$keyOfficer) {
             $result = [

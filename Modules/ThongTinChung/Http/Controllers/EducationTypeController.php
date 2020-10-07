@@ -26,7 +26,7 @@ class EducationTypeController extends Controller
         $this->model = $model;
     }
 
-    public function list()
+    public function list($year)
     {
         $this->authorize('index', EducationType::class);
         $user = Auth::user();
@@ -40,6 +40,7 @@ class EducationTypeController extends Controller
 
         $types = $this->model
             ->where('university_id', $universityId)
+            ->where('year', $year)
             ->orderBy('order')
             ->get();
         $result = [
@@ -52,7 +53,7 @@ class EducationTypeController extends Controller
         return response()->json($result, 200);
     }
 
-    public function create(EducationTypeRequest $request)
+    public function create($year, EducationTypeRequest $request)
     {
         $this->authorize('create', EducationType::class);
         $slugify = new Slugify();
@@ -66,10 +67,12 @@ class EducationTypeController extends Controller
             }
         }
         $data['slug'] = $slugify->slugify($data['name']);
+        $data['year'] = $year;
         $data['university_id'] = $universityId;
         $data['created_by'] = $user->id;
         if (!$data['order']) {
-            $lastOrder = EducationType::select(['order'])->where('university_id', $universityId)->orderBy('order', 'desc')->first();
+            $lastOrder = EducationType::select(['order'])->where('university_id', $universityId)->where('year',$year)
+                ->orderBy('order', 'desc')->first();
             if ($lastOrder) {
                 $lastOrder = $lastOrder->order;
             } else {

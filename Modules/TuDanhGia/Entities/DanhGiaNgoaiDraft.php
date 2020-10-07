@@ -27,5 +27,4 @@ class DanhGiaNgoaiDraft extends Model
         'moc_chuan' => 'array',
         'minh_chung' => 'array'
     ];
-
 }

@@ -14,22 +14,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class TuDanhGiaController extends Controller
 {
-    public function thongKe()
-    {
-        $user = Auth::user();
-        $perPage = Input::get('per-page');
-        if (!$perPage || !is_numeric($perPage)) {
-            $perPage = 5;
-        }
-        $universities = University::select(['id', 'name_vi', 'short_name_vi'])->with('tuDanhGia')->paginate($perPage);
-
-        $result = [
-            'success' => true,
-            'message' => "Lấy thông tin thành công",
-            'data' => $universities
-        ];
-        return \response()->json($result);
-    }
 
     public function index($tieuChuan)
     {
@@ -42,7 +26,6 @@ class TuDanhGiaController extends Controller
             }
         }
         $tuDanhGia = TuDanhGiaDraft::where('university_id', $universityId)
-            ->where('role', $user->role_id)
             ->where('tieu_chuan', $tieuChuan)
             ->get();
 
@@ -68,7 +51,6 @@ class TuDanhGiaController extends Controller
         }
         $insertData = [
             'university_id' => $universityId,
-            'role' => $user->role_id,
             'tieu_chuan' => $tieuChuan
         ];
         foreach ($data as $tieuChi) {
@@ -86,7 +68,6 @@ class TuDanhGiaController extends Controller
             }
             TuDanhGiaDraft::updateOrCreate([
                 'university_id' => $universityId,
-                'role' => $user->role_id,
                 'tieu_chuan' => $tieuChuan,
                 'tieu_chi' => $tieuChi['id']
             ], $insertData);
@@ -108,10 +89,8 @@ class TuDanhGiaController extends Controller
                 throw new NotFoundHttpException('Không có trường đại học');
             }
         }
-        $draft = TuDanhGiaDraft::where('university_id', $universityId)
-            ->where('role', $user->role_id)->get();
-        TuDanhGia::where('university_id', $universityId)
-            ->where('role', $user->role_id)->delete();
+        $draft = TuDanhGiaDraft::where('university_id', $universityId)->get();
+        TuDanhGia::where('university_id', $universityId)->delete();
         foreach ($draft as $item) {
             TuDanhGia::create([
                 'university_id' => $universityId,

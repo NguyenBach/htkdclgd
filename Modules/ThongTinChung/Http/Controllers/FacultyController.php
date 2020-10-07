@@ -28,7 +28,7 @@ class FacultyController extends Controller
         $this->model = $model;
     }
 
-    public function list()
+    public function list($year = 2020)
     {
         $this->authorize('faculty', Faculty::class);
         $user = Auth::user();
@@ -40,6 +40,7 @@ class FacultyController extends Controller
             }
         }
         $faculties = $this->model->where('university_id', $universityId)
+            ->where('year', $year)
             ->get();
         $result = [
             'success' => true,
@@ -51,7 +52,7 @@ class FacultyController extends Controller
         return response()->json($result, 200);
     }
 
-    public function create(FacultyRequest $request)
+    public function create($year = 2020, FacultyRequest $request = null)
     {
         $this->authorize('faculty', Faculty::class);
         $user = Auth::user();
@@ -64,6 +65,7 @@ class FacultyController extends Controller
         }
         $data = $request->validated();
         $data['university_id'] = $universityId;
+        $data['year'] = $year;
         $slugify = new Slugify();
         $data['slug'] = $slugify->slugify($data['name']);
 
@@ -155,16 +157,16 @@ class FacultyController extends Controller
             }
         }
         if ($faculty->university_id != $universityId) {
-            return response()->json( [
+            return response()->json([
                 'success' => false,
                 'message' => 'Không được phép',
-            ],403);
+            ], 403);
         }
 
         $faculty->delete();
-        return response()->json( [
+        return response()->json([
             'success' => true,
             'message' => 'Xóa thành công',
-        ],200);
+        ], 200);
     }
 }

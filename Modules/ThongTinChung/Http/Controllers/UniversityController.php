@@ -12,13 +12,17 @@ namespace Modules\ThongTinChung\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Input;
 use Modules\GiangVien\Entities\Lecturer;
 use Modules\GiangVien\Entities\LecturerByDegree;
 use Modules\GiangVien\Entities\Officer;
 use Modules\ThongTinChung\Entities\TrainingType;
 use Modules\ThongTinChung\Entities\University;
+use Modules\ThongTinChung\Entities\UniversityData;
 use Modules\ThongTinChung\Http\Requests\UniversityRequest;
 use Modules\ThongTinChung\Http\Requests\UniversityUpdateRequest;
+use Modules\ThongTinChung\Http\Requests\UniversityDataRequest;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class UniversityController extends Controller
 {
@@ -43,9 +47,25 @@ class UniversityController extends Controller
         return response()->json($result, 200);
     }
 
-    public function view(University $model)
+    public function view(University $model, $year = null)
     {
         $this->authorize('view', $model);
+        if (!$year) {
+            $year = date('Y');
+        }
+        $fillable = (new UniversityData)->getFillable();
+        $data = $model->data()->where('year', $year)->first();
+        foreach ($fillable as $key) {
+            if (in_array($key, $model->getFillable())) {
+                continue;
+            }
+
+            if (isset($data->{$key})) {
+                $model->{$key} = $data->{$key};
+            } else {
+                $model->{$key} = '';
+            }
+        }
         $result = [
             'success' => true,
             'message' => 'Lấy thông tin thành công',
@@ -74,7 +94,7 @@ class UniversityController extends Controller
         return response()->json($result, 200);
     }
 
-    public function update(University $model, UniversityUpdateRequest $request)
+    public function update(University $model, UniversityUpdateRequest $request = null)
     {
         $this->authorize('update', $model);
         $data = $request->validated();
@@ -100,6 +120,47 @@ class UniversityController extends Controller
             return response()->json($result, 500);
         }
 
+    }
+
+    public function updateUniversityData($year, UniversityDataRequest $request)
+    {
+        $this->authorize('update', University::class);
+
+        $user = Auth::user();
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = Input::get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+
+        $data = $request->validated();
+        if (is_array($data['training_type_other'])) {
+            $data['training_type_other'] = json_encode($data['training_type_other']);
+        }
+        University::updateOrCreate([
+            'id' => $universityId,
+        ], $data);
+
+        $success = UniversityData::updateOrCreate([
+            'university_id' => $universityId,
+            'year' => $year
+        ], $data);
+
+        if ($success) {
+            $result = [
+                'success' => true,
+                'message' => 'Cập nhật trường đại học thành công',
+            ];
+            return response()->json($result, 200);
+        } else {
+            $result = [
+                'success' => false,
+                'message' => 'Cập nhật trường đại học thất bại',
+            ];
+            return response()->json($result, 500);
+        }
     }
 
     public function destroy(University $model)

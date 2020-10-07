@@ -9,40 +9,60 @@ use Modules\TuDanhGia\Entities\DanhGiaNgoai;
 use Modules\TuDanhGia\Entities\TuDanhGia;
 use Spatie\Activitylog\Traits\LogsActivity;
 
-class University extends Model
+class UniversityData extends Model
 {
     use LogsActivity;
     use SoftDeletes;
 
-    protected $fillable = [
+    protected static $logAttributes = [
         "name_vi",
+        "name_en",
+        "short_name_vi",
+        "short_name_en",
+        "name_before",
         "governing_body",
+        "address",
+        "phone_number",
+        "fax_number",
+        "email",
+        "website",
+        "founded_year",
+        "k1_start_date",
+        "k1_end_date",
         "institution_type",
-        "institution_type_other"
+        "institution_type_other",
+        "training_type",
+        "training_type_other"
+    ];
+    protected $fillable = [
+        'university_id',
+        'year',
+        "name_vi",
+        "name_en",
+        "short_name_vi",
+        "short_name_en",
+        "name_before",
+        "governing_body",
+        "address",
+        "phone_number",
+        "fax_number",
+        "email",
+        "website",
+        "founded_year",
+        "k1_start_date",
+        "k1_end_date",
+        "institution_type",
+        "institution_type_other",
+        "training_type",
+        "training_type_other"
     ];
     protected $hidden = [
         'created_at',
         'updated_at'
     ];
-
-    protected static $logAttributes = [
-        "name_vi",
-        "governing_body",
-        "institution_type",
-    ];
     protected $appends = [
         'loai_hinh'
     ];
-
-    public function tuDanhgia()
-    {
-        return $this->hasMany(TuDanhGia::class, 'university_id');
-    }
-
-    public function danhGiaNgoai()
-    {
-        return $this->hasMany(DanhGiaNgoai::class, 'university_id');
-    }
 
     public function getLoaiHinhAttribute()
     {
@@ -60,16 +80,6 @@ class University extends Model
             default:
                 return '';
         }
-    }
-
-    public function users()
-    {
-        return $this->hasMany(User::class);
-    }
-
-    public function data()
-    {
-        return $this->hasMany(UniversityData::class);
     }
 
 }

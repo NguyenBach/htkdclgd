@@ -10,6 +10,7 @@ class KeyOfficer extends Model
     use LogsActivity;
 
     protected $fillable = [
+        'year',
         'university_id',
         'department_id',
         'fullname',

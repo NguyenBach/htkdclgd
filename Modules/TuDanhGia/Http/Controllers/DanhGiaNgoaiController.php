@@ -17,23 +17,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class DanhGiaNgoaiController extends Controller
 {
 
-    public function thongKe()
-    {
-        $user = Auth::user();
-        $perPage = Input::get('per-page');
-        if (!$perPage || !is_numeric($perPage)) {
-            $perPage = 5;
-        }
-        $universities = University::select(['id', 'name_vi', 'short_name_vi'])->with('danhGiaNgoai')->paginate($perPage);
-
-        $result = [
-            'success' => true,
-            'message' => "Lấy thông tin thành công",
-            'data' => $universities
-        ];
-        return \response()->json($result);
-    }
-
     public function index($tieuChuan)
     {
         $user = Auth::user();
@@ -87,7 +70,6 @@ class DanhGiaNgoaiController extends Controller
             }
             DanhGiaNgoaiDraft::updateOrCreate([
                 'university_id' => $universityId,
-                'role' => $user->role_id,
                 'tieu_chuan' => $tieuChuan,
                 'tieu_chi' => $tieuChi['id']
             ], $insertData);
