@@ -13,12 +13,14 @@ class Faculty extends Model
         'university_id',
         'name',
         'slug',
-        'number'
+        'number',
+        'year'
     ];
 
     protected static $logAttributes = [
         'name',
-        'number'
+        'number',
+        'year'
     ];
 
     protected $hidden = [
@@ -32,9 +34,10 @@ class Faculty extends Model
     ];
 
 
-    public static function checkExist($slug, $universityId)
+    public static function checkExist($slug, $universityId, $year)
     {
         $faculty = self::where('slug', $slug)
+            ->where('year', $year)
             ->where('university_id', $universityId)
             ->first();
         return !is_null($faculty);

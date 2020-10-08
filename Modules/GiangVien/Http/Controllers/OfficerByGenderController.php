@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Modules\GiangVien\Entities\OfficerByGender;
 use Modules\GiangVien\Http\Requests\OfficerByGenderRequest;
+use Modules\ThongTinChung\Helpers\TomTat;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class OfficerByGenderController extends Controller
@@ -31,7 +32,7 @@ class OfficerByGenderController extends Controller
         ];
 
         $officer = OfficerByGender::updateOrCreate($primary, $data);
-
+        TomTat::tomTat($universityId, $year);
         $result = [
             'success' => true,
             'message' => 'Thêm cán bộ theo giới tính thành công',

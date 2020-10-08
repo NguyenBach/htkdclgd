@@ -71,7 +71,7 @@ class EducationTypeController extends Controller
         $data['university_id'] = $universityId;
         $data['created_by'] = $user->id;
         if (!$data['order']) {
-            $lastOrder = EducationType::select(['order'])->where('university_id', $universityId)->where('year',$year)
+            $lastOrder = EducationType::select(['order'])->where('university_id', $universityId)->where('year', $year)
                 ->orderBy('order', 'desc')->first();
             if ($lastOrder) {
                 $lastOrder = $lastOrder->order;
@@ -81,7 +81,7 @@ class EducationTypeController extends Controller
             $data['order'] = $lastOrder + 1;
         }
 
-        $exist = EducationType::checkExist($data['slug'], $data['university_id']);
+        $exist = EducationType::checkExist($data['slug'], $data['university_id'], $year);
         if (!$exist) {
             $result = [
                 'success' => false,
@@ -89,7 +89,9 @@ class EducationTypeController extends Controller
             ];
             return response()->json($result, 400);
         }
+
         $model = $this->model->create($data);
+
         if ($model) {
             $result = [
                 'success' => true,

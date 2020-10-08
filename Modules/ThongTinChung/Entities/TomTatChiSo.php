@@ -12,6 +12,7 @@ class TomTatChiSo extends Model
         'university_id',
         'year',
         'tong_gv_co_huu',
+        'tong_cb_co_huu',
         'ti_le_gv_cb',
         'ti_le_gv_ts',
         'ti_le_gv_ths',

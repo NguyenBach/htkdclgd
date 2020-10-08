@@ -13,11 +13,12 @@ class EducationType extends Model
         'university_id',
         'name',
         'slug',
-        'order'
+        'order',
+        'year'
     ];
 
     protected static $logAttributes = [
-        'name',
+        'name', 'year', 'order'
     ];
 
     protected $hidden = [
@@ -26,10 +27,11 @@ class EducationType extends Model
         'university_id'
     ];
 
-    public static function checkExist($slug, $universityId)
+    public static function checkExist($slug, $universityId, $year)
     {
         $department = self::where('slug', $slug)
             ->where('university_id', $universityId)
+            ->where('year', $year)
             ->first();
         return is_null($department);
     }

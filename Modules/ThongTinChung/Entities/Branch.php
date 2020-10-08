@@ -16,16 +16,18 @@ class Branch extends Model
         'field',
         'number_researcher',
         'number_officer',
-        'slug'
+        'slug',
+        'year'
     ];
 
-    protected static $logAttributes= [
+    protected static $logAttributes = [
         'name',
         'founded_year',
         'field',
         'number_researcher',
         'number_officer',
-        'slug'
+        'slug',
+        'year'
     ];
 
     protected $hidden = [

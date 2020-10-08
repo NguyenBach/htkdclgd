@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
 use Modules\NghienCuuKhoaHoc\Entities\DoanhThuNCKH;
 use Modules\NghienCuuKhoaHoc\Http\Requests\DoanhThuNCKHRequest;
+use Modules\ThongTinChung\Helpers\TomTat;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class DoanhThuNCKHController extends Controller
@@ -34,12 +35,13 @@ class DoanhThuNCKHController extends Controller
         $doanhThuNCKH = DoanhThuNCKH::where('university_id', $universityId)
             ->where('year', $year)
             ->first();
-
+        $tongCB = TomTat::get($universityId, $year, 'tong_cb_co_huu', 0);
         $result = [
             'success' => true,
             'message' => 'Lấy doanh thu nghiên cứu khoa học thành công',
             'data' => [
-                'doanh_thu_nckh' => $doanhThuNCKH
+                'doanh_thu_nckh' => $doanhThuNCKH,
+                'tong_cb' => $tongCB
             ]
         ];
         return response()->json($result, 200);
@@ -63,8 +65,10 @@ class DoanhThuNCKHController extends Controller
             $doanhThuNCKH = DoanhThuNCKH::where('university_id', $universityId)
                 ->where('year', $year)
                 ->first();
+            $tongCB = TomTat::get($universityId, $year, 'tong_cb_co_huu', 0);
             $data[$year] = [
-                'doanh_thu_nckh' => $doanhThuNCKH
+                'doanh_thu_nckh' => $doanhThuNCKH,
+                'tong_cb' => $tongCB
             ];
             $year--;
             $i--;

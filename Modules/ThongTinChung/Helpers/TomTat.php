@@ -7,8 +7,10 @@ namespace Modules\ThongTinChung\Helpers;
 use Illuminate\Support\Facades\Cache;
 use Modules\CoSoVatChat\Entities\DienTich;
 use Modules\GiangVien\Entities\Lecturer;
+use Modules\GiangVien\Entities\LecturerByAge;
 use Modules\GiangVien\Entities\LecturerByDegree;
 use Modules\GiangVien\Entities\Officer;
+use Modules\GiangVien\Entities\OfficerByGender;
 use Modules\NghienCuuKhoaHoc\Entities\BaoCaoHoiThao;
 use Modules\NghienCuuKhoaHoc\Entities\DoanhThuNCKH;
 use Modules\NghienCuuKhoaHoc\Entities\SoLuongNCKH;
@@ -20,6 +22,51 @@ use Modules\ThongTinChung\Entities\TomTatChiSo;
 
 class TomTat
 {
+
+    public static function tomTat($universityId, $year)
+    {
+        $tomTat = TomTatChiSo::where('university_id', $universityId)
+            ->where('year', $year)->first();
+        if (!$tomTat) {
+            $tomTat = new TomTatChiSo();
+            $tomTat->university_id = $universityId;
+            $tomTat->year = $year;
+        }
+
+        //Tinh toan o day
+        $tomTat->tong_gv_co_huu = self::tongGiangVienCoHuu($universityId, $year);
+        $tomTat->tong_cb_co_huu = self::tongCanBoCoHuu($universityId, $year);
+        $tomTat->ti_le_gv_cb = self::tongGianVienTrenTongCanBo($universityId, $year);
+        $tomTat->ti_le_gv_ts = self::tiLeGiangVienTienSi($universityId, $year);
+        $tomTat->ti_le_gv_ths = self::tiLeGiangVienThacSi($universityId, $year);
+        $tomTat->tong_sv = self::tongSoSinhVienChinhQuy($universityId, $year);
+        $tomTat->ti_le_sv_gv = self::tiLeSvGv($universityId, $year);
+        $tomTat->ti_le_tot_nghiep = self::tiLeTotNghiep($universityId, $year);
+        $tomTat->ti_le_tra_loi_duoc = self::tiLeTraLoiDuoc($universityId, $year);
+        $tomTat->ti_le_tra_loi_1_phan = self::tiLeTraLoiDuoc1Phan($universityId, $year);
+        $tomTat->ti_le_dung_nganh = self::tiLeDungNganh($universityId, $year);
+        $tomTat->ti_le_trai_nganh = self::tiLeTraiNganh($universityId, $year);
+        $tomTat->ti_le_tu_tao = self::tiLeTuTao($universityId, $year);
+        $tomTat->thu_nhap_binh_quan = self::thuNhapTrungBinh($universityId, $year);
+        $tomTat->ti_le_dap_ung_ngay = self::tiLeDapUngNgay($universityId, $year);
+        $tomTat->ti_le_dao_tao_them = self::tiLeDaoTaoThem($universityId, $year);
+        $tomTat->ti_le_de_tai_cb = self::tiLeDeTaiCanBo($universityId, $year);
+        $tomTat->ti_so_sach_cb = self::tiSoSachCanBo($universityId, $year);
+        $tomTat->ti_so_tap_chi_cb = self::tiSoBaiDangTapChi($universityId, $year);
+        $tomTat->ti_so_bai_bao_cb = self::tiSoBaoCaoHoiThao($universityId, $year);
+        $tomTat->ti_so_doanh_thu = self::tiSoDoanhThu($universityId, $year);
+        $tomTat->ti_so_dien_tich_sv = self::tiSoDienTichSV($universityId, $year);
+        $tomTat->ti_so_ktx_sv = self::tiSoKTXSV($universityId, $year);
+//        'cap_co_so',
+//        'cap_ctdt'
+
+        $tomTat->save();
+        $tomTat->refresh();
+        $cacheKey = "tom_tat:university_{$universityId}_{$year}";
+        Cache::forever($cacheKey, $tomTat);
+        return $tomTat;
+    }
+
     public static function get($universityId, $year, $key, $default)
     {
         $cacheKey = "tom_tat:university_{$universityId}_{$year}";
@@ -79,62 +126,67 @@ class TomTat
 
     public static function tongGianVienTrenTongCanBo($universityId, $year)
     {
-        $canBoCoHuu = Officer::where('university_id', $universityId)
-            ->where('year', $year)
-            ->first();
-        if (!$canBoCoHuu) {
-            $canBoCoHuu = new \stdClass();
-            $canBoCoHuu->quan_ly_co_huu = 0;
-            $canBoCoHuu->nhan_vien_co_huu = 0;
-        }
-
-        $quanLyCoHuu = $canBoCoHuu->quan_ly_co_huu;
-        $nhanhVienCoHuu = $canBoCoHuu->nhan_vien_co_huu;
+        $canBoCoHuu = self::tongCanBoCoHuu($universityId, $year);
         $giangVienCoHuu = self::tongGiangVienCoHuu($universityId, $year);
-        $tongCanBo = $giangVienCoHuu + $quanLyCoHuu + $nhanhVienCoHuu;
-        if (!$tongCanBo) {
+
+        if (!$canBoCoHuu) {
             return 0;
         }
-        return round(($giangVienCoHuu / $tongCanBo), 3) * 100;
+        return round(($giangVienCoHuu / $canBoCoHuu), 3) * 100;
     }
 
     public static function tongCanBoCoHuu($universityId, $year)
     {
-        $canBoCoHuu = Officer::where('university_id', $universityId)
+        $canBoCoHuu = OfficerByGender::where('university_id', $universityId)
             ->where('year', $year)
             ->first();
         if (!$canBoCoHuu) {
             $canBoCoHuu = new \stdClass();
-            $canBoCoHuu->quan_ly_co_huu = 0;
-            $canBoCoHuu->nhan_vien_co_huu = 0;
+            $canBoCoHuu->bien_che_nam = 0;
+            $canBoCoHuu->bien_che_nu = 0;
+            $canBoCoHuu->dai_han_nam = 0;
+            $canBoCoHuu->dai_han_nu = 0;
         }
 
-        $quanLyCoHuu = $canBoCoHuu->quan_ly_co_huu;
-        $nhanhVienCoHuu = $canBoCoHuu->nhan_vien_co_huu;
-        $giangVienCoHuu = self::tongGiangVienCoHuu($universityId, $year);
-        return $giangVienCoHuu + $quanLyCoHuu + $nhanhVienCoHuu;
+        return $canBoCoHuu->bien_che_nam + $canBoCoHuu->bien_che_nu + $canBoCoHuu->dai_han_nam + $canBoCoHuu->dai_han_nu;
     }
 
     public static function tiLeGiangVienTienSi($universityId, $year)
     {
-        $giangVien = Lecturer::where('university_id', $universityId)
+        $giangVien = LecturerByAge::where('university_id', $universityId)
             ->where('year', $year)
-            ->first();
-        if ($giangVien) {
-            return $giangVien->percent_doctor_1;
+            ->get();
+        $tongTienSi = 0;
+        $tongGV = 0;
+        foreach ($giangVien as $item) {
+            $tongGV += $item->total;
+            if (in_array($item->lecturer_degree, [1, 2, 3, 4])) {
+                $tongTienSi += $item->total;
+            }
         }
-        return 0;
+        if ($tongGV == 0) {
+            return 0;
+        }
+        return round($tongTienSi / $tongGV, 3) * 100;
     }
 
     public static function tiLeGiangVienThacSi($universityId, $year)
     {
-        $giangVienCoHuu = self::tongGiangVienCoHuu($universityId, $year);
-        $giangVienTheoTrinhDo = LecturerByDegree::where('university_id', $universityId)
+        $giangVien = LecturerByAge::where('university_id', $universityId)
             ->where('year', $year)
-            ->where('lecturer_type', 1)
-            ->first();
-        $soLuongThacSi = $giangVienTheoTrinhDo ? $giangVienTheoTrinhDo->master : 0;
-        return $giangVienCoHuu > 0 ? round($soLuongThacSi / $giangVienCoHuu, 3) * 100 : 0;
+            ->get();
+        $tongThs = 0;
+        $tongGV = 0;
+        foreach ($giangVien as $item) {
+            $tongGV += $item->total;
+            if ($item->lecturer_degree == 5) {
+                $tongThs += $item->total;
+            }
+        }
+        if ($tongGV == 0) {
+            return 0;
+        }
+        return round($tongThs / $tongGV, 3) * 100;
     }
 
     public static function tongSoSinhVienChinhQuy($universityId, $year)

@@ -52,7 +52,7 @@ class FacultyController extends Controller
         return response()->json($result, 200);
     }
 
-    public function create($year = 2020, FacultyRequest $request = null)
+    public function create(FacultyRequest $request, $year = 2020)
     {
         $this->authorize('faculty', Faculty::class);
         $user = Auth::user();
@@ -69,7 +69,7 @@ class FacultyController extends Controller
         $slugify = new Slugify();
         $data['slug'] = $slugify->slugify($data['name']);
 
-        $facultyExist = Faculty::checkExist($data['slug'], $data['university_id']);
+        $facultyExist = Faculty::checkExist($data['slug'], $data['university_id'],$year);
         if ($facultyExist) {
             $result = [
                 'success' => false,

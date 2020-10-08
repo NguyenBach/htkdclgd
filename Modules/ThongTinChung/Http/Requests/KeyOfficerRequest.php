@@ -20,7 +20,7 @@ class KeyOfficerRequest extends FormRequest
             'degree' => 'required',
             'position' => 'required',
             'phone_number' => '',
-            'email' => 'email'
+            'email' => ''
         ];
     }
 

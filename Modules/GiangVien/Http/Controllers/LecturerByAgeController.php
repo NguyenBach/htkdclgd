@@ -70,6 +70,7 @@ class LecturerByAgeController extends Controller
             ->where('year', $year)
             ->where('lecturer_degree', 9)
             ->first();
+        $tongGv = TomTat::get($universityId, $year, 'tong_gv_co_huu', 0);
         $avgAge = TomTat::get($universityId, $year, 'do_tuoi_tb', 0);
         $tiLeTs = TomTat::get($universityId, $year, 'ti_le_gv_ts', 0);
         $tiLeThs = TomTat::get($universityId, $year, 'ti_le_gv_ths', 0);
@@ -88,7 +89,8 @@ class LecturerByAgeController extends Controller
                 'khac' => $khac,
                 'avg_age' => $avgAge,
                 'ti_le_gv_ts' => $tiLeTs,
-                'ti_le_gv_ths' => $tiLeThs
+                'ti_le_gv_ths' => $tiLeThs,
+                'tong_gv' => $tongGv
             ]
         ];
         return response()->json($result, 200);
@@ -148,6 +150,7 @@ class LecturerByAgeController extends Controller
             $avgAge = TomTat::get($universityId, $year, 'do_tuoi_tb', 0);
             $tiLeTs = TomTat::get($universityId, $year, 'ti_le_gv_ts', 0);
             $tiLeThs = TomTat::get($universityId, $year, 'ti_le_gv_ths', 0);
+            $tongGv = TomTat::get($universityId, $year, 'tong_gv_co_huu', 0);
             $data[$year] = [
                 'giao_su' => $giaoSu,
                 'pho_giao_su' => $phoGiaoSu,
@@ -160,7 +163,8 @@ class LecturerByAgeController extends Controller
                 'khac' => $khac,
                 'avg_age' => $avgAge,
                 'ti_le_gv_ts' => $tiLeTs,
-                'ti_le_gv_ths' => $tiLeThs
+                'ti_le_gv_ths' => $tiLeThs,
+                'tong_gv' => $tongGv
             ];
             $year--;
             $i++;

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Modules\GiangVien\Entities\Lecturer;
 use Modules\GiangVien\Http\Requests\LecturerRequest;
+use Modules\ThongTinChung\Helpers\TomTat;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class LecturerController extends Controller
@@ -33,12 +34,14 @@ class LecturerController extends Controller
             ->where('year', $year)
             ->where('lecturer_type', 2)
             ->get();
+        $tongGv = TomTat::get($universityId, $year, 'tong_gv_co_huu', 0);
         $result = [
             'success' => true,
             'message' => 'Lấy giảng viên thành công',
             'data' => [
                 'giang_vien' => $lecturer,
-                'nghien_cuu_vien' => $researcher
+                'nghien_cuu_vien' => $researcher,
+                'tong_gv' => $tongGv
             ]
         ];
         return response()->json($result, 200);
@@ -70,10 +73,12 @@ class LecturerController extends Controller
                 ->where('year', $year)
                 ->where('lecturer_type', 2)
                 ->get();
+            $tongGv = TomTat::get($universityId, $year, 'tong_gv_co_huu', 0);
 
             $data[$year] = [
                 'giang_vien' => $lecturer,
-                'nghien_cuu_vien' => $researcher
+                'nghien_cuu_vien' => $researcher,
+                'tong_gv' => $tongGv
             ];
 
             $year--;
