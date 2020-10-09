@@ -13,6 +13,8 @@ class KiemDinhChatLuong extends Model
 
     protected $fillable = [
         'university_id',
+        'year',
+        'type',
         'doi_tuong',
         'bo_tieu_chuan',
         'nam_hoan_thanh_1',

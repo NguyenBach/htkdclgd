@@ -12,7 +12,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class KiemDinhChatLuongController extends Controller
 {
 
-    public function index(Request $request)
+    public function index($year, Request $request)
     {
         $this->authorize('index', KiemDinhChatLuong::class);
         $user = Auth::user();
@@ -24,6 +24,7 @@ class KiemDinhChatLuongController extends Controller
             }
         }
         $kiemDinh = KiemDinhChatLuong::where('university_id', $universityId)
+            ->where('year', $year)
             ->get();
         $result = [
             'success' => true,
@@ -36,7 +37,7 @@ class KiemDinhChatLuongController extends Controller
     }
 
 
-    public function store(KiemDinhChatLuongRequest $request)
+    public function store($year, KiemDinhChatLuongRequest $request)
     {
         //
         $this->authorize('store', KiemDinhChatLuong::class);
@@ -50,6 +51,7 @@ class KiemDinhChatLuongController extends Controller
             }
         }
         $data['university_id'] = $universityId;
+        $data['year'] = $year;
         $kiemDinh = KiemDinhChatLuong::create($data);
         $result = [
             'success' => true,

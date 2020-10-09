@@ -14,7 +14,7 @@ class KiemDinhChatLuongRequest extends APIRequest
     public function rules()
     {
         return [
-            //
+            'type' => 'required|in:1,2',
             'doi_tuong' => 'required',
             'bo_tieu_chuan' => 'required',
             'nam_hoan_thanh_1' => 'required|numeric',

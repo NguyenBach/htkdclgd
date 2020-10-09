@@ -131,7 +131,9 @@ class DienTichController extends Controller
         $dataTong = json_decode($inputData['tong'], true);
         $data['noi_dung'] = 1;
         $data['dien_tich'] = $dataTong['dien_tich'] ?? 0;
-        $data['hinh_thuc'] = $dataTong['hinh_thuc'] ?? 0;
+        $data['so_huu'] = $dataTong['so_huu'] ?? 0;
+        $data['lien_ket'] = $dataTong['lien_ket'] ?? 0;
+        $data['thue'] = $dataTong['thue'] ?? 0;
 
         $tong = DienTich::updateOrCreate(
             [
@@ -144,7 +146,9 @@ class DienTichController extends Controller
         $dataGiangDuong = json_decode($inputData['giang_duong'], true);
         $data['noi_dung'] = 2;
         $data['dien_tich'] = $dataGiangDuong['dien_tich'] ?? 0;
-        $data['hinh_thuc'] = $dataGiangDuong['hinh_thuc'] ?? 0;
+        $data['so_huu'] = $dataGiangDuong['so_huu'] ?? 0;
+        $data['lien_ket'] = $dataGiangDuong['lien_ket'] ?? 0;
+        $data['thue'] = $dataGiangDuong['thue'] ?? 0;
 
         $giangDuong = DienTich::updateOrCreate(
             [
@@ -157,7 +161,9 @@ class DienTichController extends Controller
         $dataThuVien = json_decode($inputData['thu_vien'], true);
         $data['noi_dung'] = 3;
         $data['dien_tich'] = $dataThuVien['dien_tich'] ?? 0;
-        $data['hinh_thuc'] = $dataThuVien['hinh_thuc'] ?? 0;
+        $data['so_huu'] = $dataThuVien['so_huu'] ?? 0;
+        $data['lien_ket'] = $dataThuVien['lien_ket'] ?? 0;
+        $data['thue'] = $dataThuVien['thue'] ?? 0;
 
         $capTruong = DienTich::updateOrCreate(
             [
@@ -170,7 +176,9 @@ class DienTichController extends Controller
         $dataTrungTam = json_decode($inputData['trung_tam'], true);
         $data['noi_dung'] = 4;
         $data['dien_tich'] = $dataTrungTam['dien_tich'] ?? 0;
-        $data['hinh_thuc'] = $dataTrungTam['hinh_thuc'] ?? 0;
+        $data['so_huu'] = $dataTrungTam['so_huu'] ?? 0;
+        $data['lien_ket'] = $dataTrungTam['lien_ket'] ?? 0;
+        $data['thue'] = $dataTrungTam['thue'] ?? 0;
 
         $trungTam = DienTich::updateOrCreate(
             [

@@ -30,7 +30,7 @@ class ThietBiController extends Controller
         $this->thietBiModel = new ThietBi();
     }
 
-    public function index()
+    public function index($year)
     {
         $this->authorize('index', ThietBi::class);
         $user = Auth::user();
@@ -42,6 +42,7 @@ class ThietBiController extends Controller
             }
         }
         $thietBi = $this->thietBiModel->where('university_id', $universityId)
+            ->where('year', $year)
             ->with('danh_muc_trang_thiet_bi')
             ->get();
         $result = [
@@ -69,7 +70,7 @@ class ThietBiController extends Controller
     }
 
 
-    public function store(ThietBiRequest $request)
+    public function store(ThietBiRequest $request, $year)
     {
         $this->authorize('create', ThietBi::class);
         $user = Auth::user();
@@ -84,9 +85,8 @@ class ThietBiController extends Controller
         }
 
         $data['university_id'] = $universityId;
-
+        $data['year'] = $year;
         $thietBi = $this->thietBiModel->create($data);
-        dd($danhMucTrangThietBi);
         $thietBi->danh_muc_trang_thiet_bi()->attach($danhMucTrangThietBi);
         if ($thietBi) {
             $result = [
@@ -115,18 +115,7 @@ class ThietBiController extends Controller
     public function update(ThietBi $thietBi, ThietBiRequest $request)
     {
         $this->authorize('update', $thietBi);
-        $user = Auth::user();
         $data = $request->validated();
-
-        $universityId = $user->university_id;
-        if (!$universityId) {
-            $universityId = $request->get('university_id');
-            if (!$universityId) {
-                throw new NotFoundHttpException('Không có trường đại học');
-            }
-        }
-
-        $data['university_id'] = $universityId;
 
         $success = $thietBi->update($data);
 

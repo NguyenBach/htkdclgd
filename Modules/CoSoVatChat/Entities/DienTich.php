@@ -16,7 +16,10 @@ class DienTich extends Model
         'university_id',
         'noi_dung',
         'dien_tich',
-        'hinh_thuc'
+        'hinh_thuc',
+        'so_huu',
+        'lien_ket',
+        'thue'
     ];
 
     protected static $logAttributes = [
@@ -24,7 +27,10 @@ class DienTich extends Model
         'university_id',
         'noi_dung',
         'dien_tich',
-        'hinh_thuc'
+        'hinh_thuc',
+        'so_huu',
+        'lien_ket',
+        'thue'
     ];
 
     protected $hidden = [
