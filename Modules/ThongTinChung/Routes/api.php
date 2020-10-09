@@ -100,7 +100,7 @@ Route::group([
     'middleware' => 'jwt.auth'
 ], function () {
     Route::post('{year}', 'BaCongKhaiController@submit')->name('ba-cong-khai.submit');
-    Route::get('history', 'BaCongKhaiController@submitHistory')->name('ba-cong-khai.submit-history');
+    Route::get('history/{year}', 'BaCongKhaiController@submitHistory')->name('ba-cong-khai.submit-history');
 });
 
 

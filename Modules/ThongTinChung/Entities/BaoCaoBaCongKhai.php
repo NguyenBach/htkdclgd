@@ -12,6 +12,7 @@ class BaoCaoBaCongKhai extends Model
 
     protected $fillable = [
         'university_id',
+        'year',
         'user_id',
         'filename',
         'submitted_at'

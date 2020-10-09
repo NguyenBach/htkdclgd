@@ -24,11 +24,14 @@ class BaCongKhaiController extends Controller
                 throw new NotFoundHttpException('Không có trường đại học');
             }
         }
-
+        if ($year != date('Y')) {
+            $year = date('Y');
+        }
         $export = new ExportHelper();
         $fileName = $export->export($universityId, $year);
         BaoCaoBaCongKhai::create([
             'university_id' => $universityId,
+            'year' => $year,
             'user_id' => $user->id,
             'filename' => $fileName,
             'submitted_at' => date('Y-m-d H:i:s')
@@ -40,7 +43,7 @@ class BaCongKhaiController extends Controller
         return response()->json($result, 200);
     }
 
-    public function submitHistory()
+    public function submitHistory($year)
     {
         $user = Auth::user();
         $universityId = $user->university_id;
@@ -52,6 +55,7 @@ class BaCongKhaiController extends Controller
         }
 
         $history = BaoCaoBaCongKhai::where('university_id', $universityId)
+            ->where('year', $year)
             ->orderBy('submitted_at', 'desc')->with('user')->get();
 
         $result = [
