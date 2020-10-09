@@ -19,7 +19,7 @@ class ThongKeController extends Controller
         if (!$perPage || !is_numeric($perPage)) {
             $perPage = 5;
         }
-        $universities = University::select(['id', 'name_vi', 'short_name_vi'])->with('danhGiaNgoai')->paginate($perPage);
+        $universities = University::select(['id', 'name_vi'])->with('danhGiaNgoai')->paginate($perPage);
 
         $result = [
             'success' => true,
@@ -36,7 +36,7 @@ class ThongKeController extends Controller
         if (!$perPage || !is_numeric($perPage)) {
             $perPage = 5;
         }
-        $universities = University::select(['id', 'name_vi', 'short_name_vi'])->with('tuDanhGia')->paginate($perPage);
+        $universities = University::select(['id', 'name_vi'])->with('tuDanhGia')->paginate($perPage);
 
         $result = [
             'success' => true,
@@ -53,7 +53,7 @@ class ThongKeController extends Controller
         if (!$perPage || !is_numeric($perPage)) {
             $perPage = 5;
         }
-        $universities = University::select(['id', 'name_vi', 'short_name_vi'])
+        $universities = University::select(['id', 'name_vi'])
             ->with('danhGiaNgoai')
             ->with('tuDanhGia')
             ->paginate($perPage);
