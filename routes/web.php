@@ -14,3 +14,10 @@
 Route::get('/', function () {
     return view('frontend::index');
 });
+
+\Illuminate\Support\Facades\Route::any('/webhook', function (\Illuminate\Http\Request $request) {
+   \Illuminate\Support\Facades\Log::info($request->method());
+   \Illuminate\Support\Facades\Log::info(json_encode($request->all()));
+   \Illuminate\Support\Facades\Log::info(json_encode($request->header()));
+//   \Illuminate\Support\Facades\Log::info(json_encode($request->));
+});
