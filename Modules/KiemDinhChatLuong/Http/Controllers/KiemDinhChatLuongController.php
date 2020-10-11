@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Modules\KiemDinhChatLuong\Entities\KiemDinhChatLuong;
 use Modules\KiemDinhChatLuong\Http\Requests\KiemDinhChatLuongRequest;
+use Modules\ThongTinChung\Helpers\TomTat;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class KiemDinhChatLuongController extends Controller
@@ -53,6 +54,10 @@ class KiemDinhChatLuongController extends Controller
         $data['university_id'] = $universityId;
         $data['year'] = $year;
         $kiemDinh = KiemDinhChatLuong::create($data);
+        $data = TomTat::kdclCSGD($universityId, $year);
+        TomTat::save($universityId, $year, 'cap_co_so', $data);
+        $data = TomTat::kdclCTDT($universityId, $year);
+        TomTat::save($universityId, $year, 'cap_ctdt', $data);
         $result = [
             'success' => true,
             'message' => "create kiểm định chất lượng thành công ",

@@ -69,7 +69,7 @@ class BaoCaoHoiThaoController extends Controller
             }
         }
         $this->authorize('index', BaoCaoHoiThao::class);
-
+        $tiSo = TomTat::get($universityId, $year, 'ti_so_bai_bao_cb', 0);
         $data = [];
         $i = 5;
         while ($i > 0) {
@@ -94,12 +94,15 @@ class BaoCaoHoiThaoController extends Controller
             $year--;
             $i--;
         }
-
+        $responseData = [
+            'ti_so_bao_cao' => $tiSo,
+            'bao_cao' => $data
+        ];
 
         $result = [
             'success' => true,
             'message' => 'Lấy báo cáo hội thảo thành công',
-            'data' => $data
+            'data' => $responseData
         ];
         return response()->json($result, 200);
     }

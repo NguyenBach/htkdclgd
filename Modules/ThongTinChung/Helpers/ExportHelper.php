@@ -39,6 +39,7 @@ use Modules\ThongTinChung\Entities\Faculty;
 use Modules\ThongTinChung\Entities\KeyOfficer;
 use Modules\ThongTinChung\Entities\TomTatChiSo;
 use Modules\ThongTinChung\Entities\University;
+use Modules\ThongTinChung\Entities\UniversityData;
 use PhpOffice\PhpWord\Element\Section;
 use PhpOffice\PhpWord\IOFactory;
 use PhpOffice\PhpWord\PhpWord;
@@ -97,6 +98,19 @@ class ExportHelper
         $this->header();
         $this->paragraphTitle('I', 'Thông tin chung về cơ sở giáo dục');
         $university = University::find($universityId);
+        $fillable = (new UniversityData)->getFillable();
+        $data = $university->data()->where('year', $year)->first();
+        foreach ($fillable as $key) {
+            if (in_array($key, $university->getFillable())) {
+                continue;
+            }
+
+            if (isset($data->{$key})) {
+                $university->{$key} = $data->{$key};
+            } else {
+                $university->{$key} = '';
+            }
+        }
         $this->report1($university->name_vi, $university->name_en);
         $this->report2($university->short_name_vi, $university->short_name_en);
         $this->report3();
@@ -247,7 +261,7 @@ class ExportHelper
             ->get();
         $this->report38($dienTich);
 
-        $nhomNganh = NhomNganh::where('university_id', $universityId)->get();
+        $nhomNganh = NhomNganh::get();
         $thuVien = SachThuVien::where('university_id', $universityId)
             ->where('year', $year)->get();
         $this->report39($thuVien, $nhomNganh);
@@ -387,14 +401,14 @@ class ExportHelper
 
     public function report8($startDate)
     {
-        $line1 = '8. Thời gian bắt đầu đào tạo khóa I: ' . $startDate;
+        $line1 = '8. Thời gian bắt đầu đào tạo khóa I: ' . date('Y', strtotime($startDate));
         $this->section->addText($line1);
         return $this->section;
     }
 
     public function report9($endDate)
     {
-        $line1 = '9. Thời gian cấp bằng tốt nghiệp cho khoá I: ' . $endDate;
+        $line1 = '9. Thời gian cấp bằng tốt nghiệp cho khoá I: ' . date('Y', strtotime($endDate));
         $this->section->addText($line1);
         return $this->section;
     }
@@ -572,7 +586,7 @@ class ExportHelper
         $cellRowSpan = array('vMerge' => 'restart', 'valign' => 'center');
         $cellRowContinue = array('vMerge' => 'continue');
         $cellColSpan = array('gridSpan' => 2, 'valign' => 'center');
-        for ($i = 0; $i < 5; $i++) {
+        for ($i = 4; $i >= 0; $i--) {
             $currentYear = $year - $i;
             $line1 = 'Năm ' . $currentYear;
             $this->section->addText($line1);
@@ -639,7 +653,7 @@ class ExportHelper
         $line1 = '16. Thống kê số lượng cán bộ quản lý, nhân viên: ';
         $this->section->addText($line1);
 
-        for ($i = 0; $i < 5; $i++) {
+        for ($i = 4; $i >= 0; $i--) {
             $currentYear = $year - $i;
             $line1 = 'Năm ' . $currentYear;
             $this->section->addText($line1);
@@ -696,7 +710,7 @@ class ExportHelper
         $this->section->addText($line1);
         $bold = ['bold' => true];
 
-        for ($i = 0; $i < 5; $i++) {
+        for ($i = 4; $i >= 0; $i--) {
             $currentYear = $year - $i;
             $line1 = 'Năm ' . $currentYear;
             $this->section->addText($line1);
@@ -781,7 +795,7 @@ class ExportHelper
             'other' => 'Trình độ khác'
         ];
 
-        for ($i = 0; $i < 5; $i++) {
+        for ($i = 4; $i >= 0; $i--) {
             $currentYear = $year - $i;
             $line1 = 'Năm ' . $currentYear;
             $this->section->addText($line1);
@@ -848,7 +862,7 @@ class ExportHelper
             '9' => 'Trình độ khác'
         ];
 
-        for ($i = 0; $i < 5; $i++) {
+        for ($i = 4; $i >= 0; $i--) {
             $currentYear = $year - $i;
             $line1 = 'Năm ' . $currentYear;
             $this->section->addText($line1);
@@ -938,7 +952,7 @@ class ExportHelper
             5 => 'Hiếm khi sử dụng hoặc không sử dụng (0-20% thời gian của công việc)'
         ];
 
-        for ($i = 0; $i < 5; $i++) {
+        for ($i = 4; $i >= 0; $i--) {
             $currentYear = $year - $i;
             $line1 = 'Năm ' . $currentYear;
             $this->section->addText($line1);
@@ -1017,7 +1031,7 @@ class ExportHelper
             $table->addCell(1250)->addText('');
             $table->addCell(1250)->addText(' ');
             $index++;
-            for ($i = 0; $i < 5; $i++) {
+            for ($i = 4; $i >= 0; $i--) {
                 $currentYear = $year - $i;
                 $currentData = $svNhapHoc->where('year', $currentYear)->where('type', $key)->first();
                 if (!$currentData) {
@@ -1084,7 +1098,7 @@ class ExportHelper
             $table->addCell(1250)->addText('');
             $table->addCell(1250)->addText(' ');
             $index++;
-            for ($i = 0; $i < 5; $i++) {
+            for ($i = 4; $i >= 0; $i--) {
                 $currentYear = $year - $i;
                 $currentData = $svNhapHoc->where('year', $currentYear)->where('type', $key)->first();
                 if (!$currentData) {
@@ -1489,7 +1503,7 @@ class ExportHelper
         $table->addCell(2500)->addText('Tỷ lệ doanh thu từ NCKH và chuyển giao công nghệ so với tổng kinh phí đầu vào của CSGD (%)', ['bold' => true]);
         $table->addCell(2500)->addText('Tỷ số doanh thu từ NCKH và chuyển giao công nghệ trên cán bộ cơ hữu(triệu VNĐ/ người)', ['bold' => true]);
 
-        for ($i = 0; $i < 5; $i++) {
+        for ($i = 4; $i >= 0; $i--) {
             $currentYear = $year - $i;
             $currentData = $doanhThu->where('year', $currentYear)->first();
             if (!$currentData) {
@@ -1516,7 +1530,7 @@ class ExportHelper
         $cellRowContinue = array('vMerge' => 'continue');
         $cellColSpan = array('gridSpan' => 3, 'valign' => 'center');
 
-        for ($i = 0; $i < 5; $i++) {
+        for ($i = 4; $i >= 0; $i--) {
             $currentYear = $year - $i;
             $line1 = 'Năm ' . $currentYear;
             $this->section->addText($line1);
@@ -1680,7 +1694,7 @@ class ExportHelper
         $cellRowContinue = array('vMerge' => 'continue');
         $cellColSpan = array('gridSpan' => 4, 'valign' => 'center');
 
-        for ($i = 0; $i < 5; $i++) {
+        for ($i = 4; $i >= 0; $i--) {
             $currentYear = $year - $i;
             $line1 = 'Năm ' . $currentYear;
             $this->section->addText($line1);
@@ -1851,7 +1865,7 @@ class ExportHelper
         $cellRowContinue = array('vMerge' => 'continue');
         $cellColSpan = array('gridSpan' => 3, 'valign' => 'center');
 
-        for ($i = 0; $i < 5; $i++) {
+        for ($i = 4; $i >= 0; $i--) {
             $currentYear = $year - $i;
             $line1 = 'Năm ' . $currentYear;
             $this->section->addText($line1);
@@ -1977,7 +1991,7 @@ class ExportHelper
             'tren_15' => 'Trên 15 báo cáo '
         ];
 
-        for ($i = 0; $i < 5; $i++) {
+        for ($i = 4; $i >= 0; $i--) {
             $currentYear = $year - $i;
             $line1 = 'Năm ' . $currentYear;
             $this->section->addText($line1);
@@ -2032,7 +2046,7 @@ class ExportHelper
         $cell->addText('Số bằng phát minh, sáng chế được cấp', ['bold' => true]);
         $cell->addText('(ghi rõ nơi cấp, thời gian cấp, người được cấp)', ['bold' => true]);
 
-        for ($i = 0; $i < 5; $i++) {
+        for ($i = 4; $i >= 0; $i--) {
             $currentYear = $year - $i;
             $data = $sangChe->where('year', $currentYear)->first();
             if (!$data) {
@@ -2054,7 +2068,7 @@ class ExportHelper
         $cellRowContinue = array('vMerge' => 'continue');
         $cellColSpan = array('gridSpan' => 3, 'valign' => 'center');
 
-        for ($i = 0; $i < 5; $i++) {
+        for ($i = 4; $i >= 0; $i--) {
             $currentYear = $year - $i;
             $line1 = 'Năm ' . $currentYear;
             $this->section->addText($line1);
@@ -2357,7 +2371,7 @@ class ExportHelper
         $line1 = '41. Tổng kinh phí từ các nguồn thu của trường trong 5 năm gần đây:';
         $this->section->addText($line1);
 
-        for ($i = 0; $i < 5; $i++) {
+        for ($i = 4; $i >= 0; $i--) {
             $currentYear = $year - $i;
             $data = $kinhPhi->where('year', $currentYear)->first();
             if (!$data) {
@@ -2374,7 +2388,7 @@ class ExportHelper
         $line1 = '42. Tổng thu học phí (chỉ tính hệ chính quy) trong 5 năm gần đây:';
         $this->section->addText($line1);
 
-        for ($i = 0; $i < 5; $i++) {
+        for ($i = 4; $i >= 0; $i--) {
             $currentYear = $year - $i;
             $data = $kinhPhi->where('year', $currentYear)->first();
             if (!$data) {
@@ -2391,7 +2405,7 @@ class ExportHelper
         $line1 = '43. Tổng chi cho hoạt động nghiên cứu khoa học, chuyển giao công nghệ và phục vụ cộng đồng:';
         $this->section->addText($line1);
 
-        for ($i = 0; $i < 5; $i++) {
+        for ($i = 4; $i >= 0; $i--) {
             $currentYear = $year - $i;
             $data = $kinhPhi->where('year', $currentYear)->first();
             if (!$data) {
@@ -2408,7 +2422,7 @@ class ExportHelper
         $line1 = '44. Tổng thu từ hoạt động nghiên cứu khoa học, chuyển giao công nghệ và phục vụ cộng đồng';
         $this->section->addText($line1);
 
-        for ($i = 0; $i < 5; $i++) {
+        for ($i = 4; $i >= 0; $i--) {
             $currentYear = $year - $i;
             $data = $kinhPhi->where('year', $currentYear)->first();
             if (!$data) {
@@ -2425,7 +2439,7 @@ class ExportHelper
         $line1 = '45. Tổng chi cho hoạt động đào tạo';
         $this->section->addText($line1);
 
-        for ($i = 0; $i < 5; $i++) {
+        for ($i = 4; $i >= 0; $i--) {
             $currentYear = $year - $i;
             $data = $kinhPhi->where('year', $currentYear)->first();
             if (!$data) {
@@ -2442,7 +2456,7 @@ class ExportHelper
         $line1 = '46. Tổng chi cho phát triển đội ngũ';
         $this->section->addText($line1);
 
-        for ($i = 0; $i < 5; $i++) {
+        for ($i = 4; $i >= 0; $i--) {
             $currentYear = $year - $i;
             $data = $kinhPhi->where('year', $currentYear)->first();
             if (!$data) {
@@ -2459,7 +2473,7 @@ class ExportHelper
         $line1 = '47. Tổng chi cho hoạt động kết nối doanh nghiệp, tư vấn và hỗ trợ việc làm';
         $this->section->addText($line1);
 
-        for ($i = 0; $i < 5; $i++) {
+        for ($i = 4; $i >= 0; $i--) {
             $currentYear = $year - $i;
             $data = $kinhPhi->where('year', $currentYear)->first();
             if (!$data) {
@@ -2592,8 +2606,18 @@ class ExportHelper
         $this->section->addText("Tỷ số chỗ ở ký túc xá trên sinh viên chính quy: {$value}", [], $indent);
 
         $this->section->addText("8. Kết quả kiểm định chất lượng giáo dục");
-        $this->section->addText("Cấp cơ sở giáo dục:........................", [], $indent);
-        $this->section->addText("Cấp chương trình đào tạo:................", [], $indent);
+        $value = $tomTat->cap_co_so ?? '[]';
+        $value = json_decode($value, true);
+        $this->section->addText("Cấp cơ sở giáo dục:", [], $indent);
+        foreach ($value as $item) {
+            $this->section->addText($item, [], $indent);
+        }
+        $value = $tomTat->cap_ctdt ?? '[]';
+        $value = json_decode($value, true);
+        $this->section->addText("Cấp chương trình đào tạo:", [], $indent);
+        foreach ($value as $item) {
+            $this->section->addText($item, [], $indent);
+        }
 
     }
 }

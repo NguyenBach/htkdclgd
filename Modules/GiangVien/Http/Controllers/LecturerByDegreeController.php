@@ -103,12 +103,16 @@ class LecturerByDegreeController extends Controller
                 ->where('year', $year)
                 ->where('lecturer_type', 5)
                 ->first();
+            $tongGvCoHuu = TomTat::get($universityId, $year, 'tong_gv_co_huu', 0);
+            $tiLeGvCanBo = TomTat::get($universityId, $year, 'ti_le_gv_cb', 0);
             $data[$year] = [
                 'bien_che' => $bienChe,
                 'dai_han' => $daiHan,
                 'quan_ly' => $quanLy,
                 'trong_nuoc' => $trongNuoc,
-                'quoc_te' => $quocTe
+                'quoc_te' => $quocTe,
+                'tong_gv_co_huu' => $tongGvCoHuu,
+                'ti_le_gv_cb' => $tiLeGvCanBo
             ];
             $year--;
             $i--;

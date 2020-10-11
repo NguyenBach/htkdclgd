@@ -33,12 +33,13 @@ class SoLuongNCKHController extends Controller
         $soLuongNCKH = SoLuongNCKH::where('university_id', $universityId)
             ->where('year', $year)
             ->first();
-
+        $tiLe = TomTat::get($universityId, $year, 'ti_le_de_tai_cb', 0);
         $result = [
             'success' => true,
             'message' => 'Lấy số lượng nghiên cứu khoa học thành công',
             'data' => [
-                'so_luong_nckh' => $soLuongNCKH
+                'so_luong_nckh' => $soLuongNCKH,
+                'ti_le_de_tai' => $tiLe
             ]
         ];
         return response()->json($result, 200);

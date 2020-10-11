@@ -11,6 +11,7 @@ use Modules\GiangVien\Entities\LecturerByAge;
 use Modules\GiangVien\Entities\LecturerByDegree;
 use Modules\GiangVien\Entities\Officer;
 use Modules\GiangVien\Entities\OfficerByGender;
+use Modules\KiemDinhChatLuong\Entities\KiemDinhChatLuong;
 use Modules\NghienCuuKhoaHoc\Entities\BaoCaoHoiThao;
 use Modules\NghienCuuKhoaHoc\Entities\DoanhThuNCKH;
 use Modules\NghienCuuKhoaHoc\Entities\SoLuongNCKH;
@@ -57,8 +58,8 @@ class TomTat
         $tomTat->ti_so_doanh_thu = self::tiSoDoanhThu($universityId, $year);
         $tomTat->ti_so_dien_tich_sv = self::tiSoDienTichSV($universityId, $year);
         $tomTat->ti_so_ktx_sv = self::tiSoKTXSV($universityId, $year);
-//        'cap_co_so',
-//        'cap_ctdt'
+        $tomTat->cap_co_so = self::kdclCSGD($universityId, $year);
+        $tomTat->cap_ctdt = self::kdclCTDT($universityId, $year);
 
         $tomTat->save();
         $tomTat->refresh();
@@ -100,6 +101,9 @@ class TomTat
             $tomTat->year = $year;
         }
         if (in_array($key, $tomTat->getFillable())) {
+            if (is_array($value)) {
+                $value = json_encode($value);
+            }
             $tomTat->$key = $value;
         }
         $tomTat->save();
@@ -384,6 +388,30 @@ class TomTat
             return 0;
         }
         return 0;
+    }
+
+    public static function kdclCSGD($universityId, $year)
+    {
+        $kiemDinh = KiemDinhChatLuong::where('university_id', $universityId)
+            ->where('year', $year)
+            ->where('type', 1)
+            ->get();
+        $data = $kiemDinh->map(function ($item) {
+            return "Năm {$item->nam_danh_gia} đạt {$item->ket_qua}";
+        });
+        return $data;
+    }
+
+    public static function kdclCTDT($universityId, $year)
+    {
+        $kiemDinh = KiemDinhChatLuong::where('university_id', $universityId)
+            ->where('year', $year)
+            ->where('type', 2)
+            ->get();
+        $data = $kiemDinh->map(function ($item) {
+            return "{$item->doi_tuong} năm {$item->nam_danh_gia} đạt {$item->ket_qua}";
+        });
+        return $data;
     }
 
 }
