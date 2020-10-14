@@ -502,7 +502,7 @@ class ExportHelper
         $table = $this->section->addTable('defaultTable');
         $center = ['textAlignment' => Jc::CENTER];
 
-        $table->addRow(500, );
+        $table->addRow(500);
         $table->addCell(2000)->addText("Các đơn vị \n\r (bộ phận)", ['bold' => true], 'center');
         $table->addCell(2000)->addText('Họ và tên', ['bold' => true], "center");
         $table->addCell(2000)->addText('Chức danh, học vị, chức vụ', ['bold' => true], "center");
