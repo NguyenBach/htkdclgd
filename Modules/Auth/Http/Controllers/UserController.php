@@ -10,15 +10,12 @@ namespace Modules\Auth\Http\Controllers;
 
 
 use App\Http\Controllers\Controller;
-use function foo\func;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Modules\Auth\Entities\Permission;
 use Modules\Auth\Entities\User;
 use Modules\Auth\Entities\UserPermission;
-use Modules\Auth\Entities\UserRole;
 use Modules\Auth\Http\Helper\AuthHelper;
 use Modules\Auth\Http\Requests\CreateUserRequest;
 use Modules\Auth\Http\Requests\UpdateUserRequest;
@@ -50,7 +47,7 @@ class UserController extends Controller
     public function profile($id)
     {
         $this->authorize('view_profile', Auth::user());
-        $user = User::where('id',$id)->with('university')->first();
+        $user = User::where('id', $id)->with('university')->first();
         $user->permissions = $user->permissions()->get();
         if (is_null($user)) {
             Log::info("Lấy thông tin cá nhân thất bại");
@@ -233,7 +230,9 @@ class UserController extends Controller
         $this->authorize('list', User::class);
         $currentUser = Auth::user();
         if (AuthHelper::isSuperAdmin($currentUser) || AuthHelper::isAdmin($currentUser)) {
-            $listUser = User::with('university')->get();
+            $listUser = User::with('university')
+                ->orderBy('university_id')
+                ->get();
         } else {
             $listUser = User::where('created_by', $currentUser->id)
                 ->where('university_id', $currentUser->university_id)

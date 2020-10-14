@@ -41,6 +41,10 @@ Route::group([
     'prefix' => 'user',
     'middleware' => 'jwt.auth',
 ], function () {
+    Route::post('/reset-password/{user}', "AuthController@resetPassword")
+        ->name('user.resetPassword');
+    Route::post('/change-password', "AuthController@changePassword")
+        ->name('user.changePassword');
     Route::get('/me', 'UserController@me')
         ->name('user.me');
     Route::get('/profile/{id}', 'UserController@profile')

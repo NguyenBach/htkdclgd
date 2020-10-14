@@ -86,8 +86,8 @@ class ExportHelper
         ];
         $defaultTableFirstRow = [
             'borderBottomSize' => 18,
-            'borderBottomColor' => '0000FF',
-            'bgColor' => '66BBFF'
+            'borderBottomColor' => '000000',
+            'bgColor' => 'ffffff'
         ];
         $phpWord->addTableStyle('defaultTable', $defaultTable, $defaultTableFirstRow);
         return $phpWord;
@@ -485,7 +485,7 @@ class ExportHelper
         $table->addCell(2000)->addFormField('checkbox')->setDefault($trongNuoc);
         $table->addCell(2000)->addFormField('checkbox')->setDefault(!$trongNuoc);
 
-        $line2 = 'Các loại hình đào tạo khác: ' . $other;
+        $line2 = 'Các loại hình đào tạo khác: ' . implode(", ", json_decode($other));
         $this->section->addText($line2, [], ['indent' => true]);
     }
 
@@ -636,12 +636,12 @@ class ExportHelper
             $table->addCell(1500)->addText($tg->total_2);
             $table->addCell(1500)->addText($tg->percent_doctor_2);
 
-            $table->addRow();
+            $table->addRow(500, $bold);
             $table->addCell(4000)->addText('Tổng', $bold);
-            $table->addCell(1500)->addText($gv->total_1 + $tg->total_1);
-            $table->addCell(1500)->addText('Tiến sĩ (%)');
-            $table->addCell(1500)->addText($gv->total_2 + $tg->total_2);
-            $table->addCell(1500)->addText('Tiến sĩ (%)');
+            $table->addCell(1500)->addText($gv->total_1 + $tg->total_1, $bold);
+            $table->addCell(1500)->addText('0', $bold);
+            $table->addCell(1500)->addText($gv->total_2 + $tg->total_2, $bold);
+            $table->addCell(1500)->addText('0', $bold);
             $this->section->addTextBreak(1);
         }
 
@@ -697,9 +697,10 @@ class ExportHelper
 
             $table->addRow();
             $table->addCell(4000)->addText('Tổng', $bold);
-            $table->addCell(1500)->addText($currentData->nhan_vien_co_huu + $currentData->quan_ly_co_huu);
-            $table->addCell(1500)->addText($currentData->nhan_vien_hop_dong + $currentData->quan_ly_hop_dong);
-            $table->addCell(1500)->addText('');
+            $table->addCell(1500)->addText($currentData->nhan_vien_co_huu + $currentData->quan_ly_co_huu, $bold);
+            $table->addCell(1500)->addText($currentData->nhan_vien_hop_dong + $currentData->quan_ly_hop_dong, $bold);
+            $table->addCell(1500)->addText($currentData->nhan_vien_co_huu + $currentData->quan_ly_co_huu +
+                $currentData->nhan_vien_hop_dong + $currentData->quan_ly_hop_dong, $bold);
             $this->section->addTextBreak(1);
         }
     }
@@ -768,11 +769,13 @@ class ExportHelper
             $table->addCell(1500)->addText($currentData->ngan_han_nam + $currentData->ngan_han_nu);
 
             $table->addRow(500);
+            $tong1 = $currentData->ngan_han_nam + $currentData->dai_han_nam + $currentData->bien_che_nam;
+            $tong2 = $currentData->ngan_han_nu + $currentData->dai_han_nu + $currentData->bien_che_nu;
             $table->addCell(500)->addText('');
             $table->addCell(5000)->addText("Tổng cộng", $bold);
-            $table->addCell(1500)->addText($currentData->ngan_han_nam + $currentData->dai_han_nam + $currentData->bien_che_nam);
-            $table->addCell(1500)->addText($currentData->ngan_han_nu + $currentData->dai_han_nu + $currentData->bien_che_nu);
-            $table->addCell(1500)->addText('');
+            $table->addCell(1500)->addText($tong1, $bold);
+            $table->addCell(1500)->addText($tong2, $bold);
+            $table->addCell(1500)->addText(intval($tong1 + $tong2), $bold);
             $this->section->addTextBreak(1);
         }
 
@@ -817,6 +820,7 @@ class ExportHelper
             $table->addCell(1250)->addText('Tổng số', ['bold' => true]);
 
             $index = 1;
+            $tong = [0, 0, 0, 0, 0, 0, 0];
             foreach ($trinhDo as $key => $value) {
                 $table->addRow(500);
                 $table->addCell(500)->addText($index);
@@ -830,12 +834,23 @@ class ExportHelper
                     }
                     $table->addCell(1250)->addText($rowData->$key);
                     $sum += $rowData->$key;
+                    $tong[$j] += $rowData->$key;
                 }
                 $index++;
                 $table->addCell(1250)->addText($sum);
             }
+            $table->addRow(500);
+            $table->addCell(500)->addText('');
+            $table->addCell(2000)->addText('Tổng cộng', ['bold' => true]);
+            $table->addCell(1250)->addText($tong[1], ['bold' => true]);
+            $table->addCell(1250)->addText($tong[2], ['bold' => true]);
+            $table->addCell(1250)->addText($tong[3], ['bold' => true]);
+            $table->addCell(1250)->addText($tong[4], ['bold' => true]);
+            $table->addCell(1250)->addText($tong[5], ['bold' => true]);
+            $table->addCell(1250)->addText(array_sum($tong), ['bold' => true]);
+
             $tongCoHuu = TomTat::tongGiangVienCoHuu($universityId, $currentYear);
-            $line2 = "Tổng số giảng viên cơ hữu:{$tongCoHuu} người";
+            $line2 = "Tổng số giảng viên cơ hữu: {$tongCoHuu} người";
             $this->section->addText($line2, [], ['indent' => true]);
             $tile = TomTat::tongGianVienTrenTongCanBo($universityId, $year);
             $line3 = "Tỷ lệ giảng viên cơ hữu trên tổng số cán bộ cơ hữu: {$tile}";
@@ -897,6 +912,16 @@ class ExportHelper
             $table->addCell(900)->addText('51-60', $bold);
             $table->addCell(850)->addText('trên 60', $bold);
 
+            $tong['total'] = 0;
+            $tong['percent'] = 0;
+            $tong['lecturer_man'] = 0;
+            $tong['lecturer_woman'] = 0;
+            $tong['less_30'] = 0;
+            $tong['less_40'] = 0;
+            $tong['less_50'] = 0;
+            $tong['less_60'] = 0;
+            $tong['over_60'] = 0;
+
             foreach ($trinhDo as $key => $value) {
                 $rowData = $giangVien->where('lecturer_degree', $key)->first();
                 if (!$rowData) {
@@ -923,8 +948,32 @@ class ExportHelper
                 $table->addCell(900)->addText($rowData->less_50);
                 $table->addCell(900)->addText($rowData->less_60);
                 $table->addCell(850)->addText($rowData->over_60);
+
+                $tong['total'] += $rowData->total;
+                $tong['percent'] += $rowData->percent;
+                $tong['lecturer_man'] += $rowData->lecturer_man;
+                $tong['lecturer_woman'] += $rowData->lecturer_woman;
+                $tong['less_30'] += $rowData->less_30;
+                $tong['less_40'] += $rowData->less_40;
+                $tong['less_50'] += $rowData->less_50;
+                $tong['less_60'] += $rowData->less_60;
+                $tong['over_60'] += $rowData->over_60;
             }
-            $line2 = 'Độ tuổi trung bình của giảng viên cơ hữu:..........................tuổi ';
+            $table->addRow();
+            $table->addCell(500)->addText('');
+            $table->addCell(2000)->addText("Tổng cộng", $bold);
+            $table->addCell(900)->addText($tong['total']);
+            $table->addCell(900)->addText($tong['percent']);
+            $table->addCell(650)->addText($tong['lecturer_man']);
+            $table->addCell(650)->addText($tong['lecturer_woman']);
+            $table->addCell(900)->addText($tong['less_30']);
+            $table->addCell(900)->addText($tong['less_40']);
+            $table->addCell(900)->addText($tong['less_50']);
+            $table->addCell(900)->addText($tong['less_60']);
+            $table->addCell(850)->addText($tong['over_60']);
+
+            $doTuoi = TomTat::get($universityId, $year, 'do_tuoi_tb', 0);
+            $line2 = "Độ tuổi trung bình của giảng viên cơ hữu: {$doTuoi} tuổi ";
             $this->section->addText($line2, [], ['indent' => true]);
             $tiLe = TomTat::tiLeGiangVienTienSi($universityId, $currentYear);
             $tiLe = $tiLe > 0 ? $tiLe : 0;
@@ -1169,7 +1218,7 @@ class ExportHelper
             if ($currentData->sl_sv_dc_o) {
                 $currentData->ty_le = round($currentData->tong_dien_tich / $currentData->sl_sv_dc_o, 2);
             } else {
-                $currentData->ty_le = 'n/a';
+                $currentData->ty_le = '0';
             }
 
             $table->addCell(1250)->addText($currentData->ty_le);
@@ -1343,7 +1392,7 @@ class ExportHelper
             $currentData = $tinhTrang->where('cau_hoi_id', $cauHoiId)->where('year', $year - $i)->first();
             if (!$currentData) {
                 $currentData = new \stdClass();
-                $currentData->tra_loi = 'n/a';
+                $currentData->tra_loi = '0';
             }
             $table->addCell(1250, $border)->addText($currentData->tra_loi);
         }
@@ -2217,16 +2266,18 @@ class ExportHelper
         $data = $dienTich->where('noi_dung', 1)->first();
         if (!$data) {
             $data = new \stdClass();
-            $data->dien_tich = 'n/a';
-            $data->hinh_thuc = 0;
+            $data->dien_tich = '0';
+            $data->so_huu = 0;
+            $data->lien_ket = 0;
+            $data->thue = 0;
         }
         $table->addRow(500);
         $table->addCell(500)->addText(1);
         $table->addCell(4500)->addText('Tổng diện tích đất của trường');
         $table->addCell(2000)->addText($data->dien_tich);
-        $table->addCell(1000)->addText($data->hinh_thuc == 1 ? 'x' : '');
-        $table->addCell(1000)->addText($data->hinh_thuc == 2 ? 'x' : '');
-        $table->addCell(1000)->addText($data->hinh_thuc == 3 ? 'x' : '');
+        $table->addCell(1000)->addText($data->so_huu);
+        $table->addCell(1000)->addText($data->lien_ket);
+        $table->addCell(1000)->addText($data->thue);
 
         $table->addRow(500);
         $table->addCell(500)->addText(1);
@@ -2241,45 +2292,49 @@ class ExportHelper
         $data = $dienTich->where('noi_dung', 2)->first();
         if (!$data) {
             $data = new \stdClass();
-            $data->dien_tich = 'n/a';
-            $data->hinh_thuc = 0;
+            $data->dien_tich = 0;
+            $data->so_huu = 0;
+            $data->lien_ket = 0;
+            $data->thue = 0;
         }
         $table->addRow(500);
         $table->addCell(500)->addText(2.1);
         $table->addCell(4500)->addText('Hội trường, giảng đường, phòng học các loại, phòng đa năng,
         phòng làm việc của giáo sư, phó giáo sư, giảng viên cơ hữu');
         $table->addCell(2000)->addText($data->dien_tich);
-        $table->addCell(1000)->addText($data->hinh_thuc == 1 ? 'x' : '');
-        $table->addCell(1000)->addText($data->hinh_thuc == 2 ? 'x' : '');
-        $table->addCell(1000)->addText($data->hinh_thuc == 3 ? 'x' : '');
+        $table->addCell(1000)->addText($data->so_huu);
+        $table->addCell(1000)->addText($data->lien_ket);
+        $table->addCell(1000)->addText($data->thue);
 
         $data = $dienTich->where('noi_dung', 3)->first();
         if (!$data) {
             $data = new \stdClass();
-            $data->dien_tich = 'n/a';
-            $data->hinh_thuc = 0;
+            $data->dien_tich = 0;
+            $data->so_huu = 0;
+            $data->lien_ket = 0;
+            $data->thue = 0;
         }
         $table->addRow(500);
         $table->addCell(500)->addText(2.2);
         $table->addCell(4500)->addText('Thư viện, trung tâm học liệu');
         $table->addCell(2000)->addText($data->dien_tich);
-        $table->addCell(1000)->addText($data->hinh_thuc == 1 ? 'x' : '');
-        $table->addCell(1000)->addText($data->hinh_thuc == 2 ? 'x' : '');
-        $table->addCell(1000)->addText($data->hinh_thuc == 3 ? 'x' : '');
+        $table->addCell(1000)->addText($data->so_huu);
+        $table->addCell(1000)->addText($data->lien_ket);
+        $table->addCell(1000)->addText($data->thue);
 
         $data = $dienTich->where('noi_dung', 4)->first();
         if (!$data) {
             $data = new \stdClass();
-            $data->dien_tich = 'n/a';
+            $data->dien_tich = '0';
             $data->hinh_thuc = 0;
         }
         $table->addRow(500);
         $table->addCell(500)->addText(2.5);
         $table->addCell(4500)->addText('Trung tâm nghiên cứu, phòng thí nghiệm, thực nghiệm, cơ sở thực hành, thực tập, luyện tập');
         $table->addCell(2000)->addText($data->dien_tich);
-        $table->addCell(1000)->addText($data->hinh_thuc == 1 ? 'x' : '');
-        $table->addCell(1000)->addText($data->hinh_thuc == 2 ? 'x' : '');
-        $table->addCell(1000)->addText($data->hinh_thuc == 3 ? 'x' : '');
+        $table->addCell(1000)->addText($data->so_huu);
+        $table->addCell(1000)->addText($data->lien_ket);
+        $table->addCell(1000)->addText($data->thue);
     }
 
     public function report39($thuVien, $nhomNganh)
@@ -2463,7 +2518,8 @@ class ExportHelper
                 $data = new \stdClass();
                 $data->chi_doi_ngu = 0;
             }
-            $text = "Năm {$currentYear}: {$data->chi_doi_ngu}";
+            $number = number_format($data->chi_doi_ngu);
+            $text = "Năm {$currentYear}: {$number}";
             $this->section->addListItem($text);
         }
     }
@@ -2549,47 +2605,47 @@ class ExportHelper
         $this->section->addText($line1, [], $indent);
         $this->section->addText("1. Giảng viên:");
         $value = $tomTat->tong_gv_co_huu ?? 0;
-        $this->section->addText("Tổng số giảng viên cơ hữu(người):{$value}", [], $indent);
+        $this->section->addText("Tổng số giảng viên cơ hữu(người): {$value}", [], $indent);
         $value = $tomTat->ti_le_gv_cb ?? 0;
-        $this->section->addText("Tỷ lệ giảng viên cơ hữu trên tổng số cán bộ cơ hữu(%):{$value}", [], $indent);
+        $this->section->addText("Tỷ lệ giảng viên cơ hữu trên tổng số cán bộ cơ hữu(%): {$value}", [], $indent);
         $value = $tomTat->ti_le_gv_ts ?? 0;
-        $this->section->addText("Tỷ lệ giảng viên cơ hữu có trình độ tiến sĩ trở lên trên tổng số giảng viên cơ hữu(%):{$value}", [], $indent);
+        $this->section->addText("Tỷ lệ giảng viên cơ hữu có trình độ tiến sĩ trở lên trên tổng số giảng viên cơ hữu(%): {$value}", [], $indent);
         $value = $tomTat->ti_le_gv_ths ?? 0;
-        $this->section->addText("Tỷ lệ giảng viên cơ hữu có trình độ thạc sĩ trên tổng số giảng viên cơ hữu(%):{$value}", [], $indent);
+        $this->section->addText("Tỷ lệ giảng viên cơ hữu có trình độ thạc sĩ trên tổng số giảng viên cơ hữu(%): {$value}", [], $indent);
 
         $this->section->addText("2. Sinh viên:");
         $value = $tomTat->tong_sv ?? 0;
-        $this->section->addText("Tổng số sinh viên chính quy(người):{$value}", [], $indent);
+        $this->section->addText("Tổng số sinh viên chính quy(người): {$value}", [], $indent);
         $value = $tomTat->ti_le_sv_gv ?? 0;
-        $this->section->addText("Tỷ số sinh viên trên giảng viên(sau khi quy đổi):{$value}", [], $indent);
+        $this->section->addText("Tỷ số sinh viên trên giảng viên(sau khi quy đổi): {$value}", [], $indent);
         $value = $tomTat->ti_le_tot_nghiep ?? 0;
-        $this->section->addText("Tỷ lệ sinh viên tốt nghiệp so với số tuyển vào(%):{$value}", [], $indent);
+        $this->section->addText("Tỷ lệ sinh viên tốt nghiệp so với số tuyển vào(%): {$value}", [], $indent);
 
         $this->section->addText("3. Đánh giá của sinh viên tốt nghiệp về chất lượng đào tạo của nhà trường:");
         $value = $tomTat->ti_le_tra_loi_duoc ?? 0;
-        $this->section->addText("Tỷ lệ sinh viên trả lời đã học được những kiến thức và kỹ năng cần thiết cho công việc theo ngành tốt nghiệp(%):{$value}", [], $indent);
+        $this->section->addText("Tỷ lệ sinh viên trả lời đã học được những kiến thức và kỹ năng cần thiết cho công việc theo ngành tốt nghiệp(%): {$value}", [], $indent);
         $value = $tomTat->ti_le_tra_loi_1_phan ?? 0;
-        $this->section->addText("Tỷ lệ sinh viên trả lời chỉ học được một phần kiến thức và kỹ năng cần thiết cho công việc theo ngành tốt nghiệp(%):{$value}", [], $indent);
+        $this->section->addText("Tỷ lệ sinh viên trả lời chỉ học được một phần kiến thức và kỹ năng cần thiết cho công việc theo ngành tốt nghiệp(%): {$value}", [], $indent);
 
         $this->section->addText("4. Sinh viên có việc làm trong năm đầu tiên sau khi tốt nghiệp:");
         $value = $tomTat->ti_le_dung_nganh ?? 0;
-        $this->section->addText("Tỷ lệ sinh viên có việc làm đúng ngành đào tạo, trong đó bao gồm cả sinh viên chưa có việc làm học tập nâng cao(%):{$value}", [], $indent);
+        $this->section->addText("Tỷ lệ sinh viên có việc làm đúng ngành đào tạo, trong đó bao gồm cả sinh viên chưa có việc làm học tập nâng cao(%): {$value}", [], $indent);
         $value = $tomTat->ti_le_trai_nganh ?? 0;
-        $this->section->addText("Tỷ lệ sinh viên có việc làm trái ngành đào tạo(%):{$value}", [], $indent);
+        $this->section->addText("Tỷ lệ sinh viên có việc làm trái ngành đào tạo(%): {$value}", [], $indent);
         $value = $tomTat->ti_le_tu_tao ?? 0;
-        $this->section->addText("Tỷ lệ tự tạo được việc làm trong số sinh viên có việc làm(%):{$value}", [], $indent);
+        $this->section->addText("Tỷ lệ tự tạo được việc làm trong số sinh viên có việc làm(%): {$value}", [], $indent);
         $value = $tomTat->thu_nhap_binh_quan ?? 0;
-        $this->section->addText("Thu nhập bình quân / tháng của sinh viên có việc làm(triệu VNĐ):{$value}", [], $indent);
+        $this->section->addText("Thu nhập bình quân / tháng của sinh viên có việc làm(triệu VNĐ): {$value}", [], $indent);
 
         $this->section->addText("5. Đánh giá của nhà sử dụng về sinh viên tốt nghiệp có việc làm đúng ngành đào tạo:");
         $value = $tomTat->ti_le_dap_ung_ngay ?? 0;
-        $this->section->addText("Tỷ lệ sinh viên đáp ứng yêu cầu của công việc, có thể sử dụng được ngay(%):{$value}", [], $indent);
+        $this->section->addText("Tỷ lệ sinh viên đáp ứng yêu cầu của công việc, có thể sử dụng được ngay(%): {$value}", [], $indent);
         $value = $tomTat->ti_le_dao_tao_them ?? 0;
-        $this->section->addText("Tỷ lệ sinh viên cơ bản đáp ứng yêu cầu của công việc, nhưng phải đào tạo thêm(%):{$value}", [], $indent);
+        $this->section->addText("Tỷ lệ sinh viên cơ bản đáp ứng yêu cầu của công việc, nhưng phải đào tạo thêm(%): {$value}", [], $indent);
 
         $this->section->addText("6. Nghiên cứu khoa học, chuyển giao công nghệ và phục vụ cộng đồng:");
         $value = $tomTat->ti_le_de_tai_cb ?? 0;
-        $this->section->addText("Tỷ số đề tài nghiên cứu khoa học, chuyển giao khoa học công nghệ và phục vụ cộng đồng trên cán bộ cơ hữu:{$value}", [], $indent);
+        $this->section->addText("Tỷ số đề tài nghiên cứu khoa học, chuyển giao khoa học công nghệ và phục vụ cộng đồng trên cán bộ cơ hữu: {$value}", [], $indent);
         $value = $tomTat->ti_so_doanh_thu ?? 0;
         $this->section->addText("Tỷ số doanh thu từ nghiên cứu khoa học, chuyển giao công nghệ và phục vụ cộng đồng trên cán bộ cơ hữu: {$value}", [], $indent);
         $value = $tomTat->ti_so_sach_cb ?? 0;
@@ -2597,7 +2653,7 @@ class ExportHelper
         $value = $tomTat->ti_so_tap_chi_cb ?? 0;
         $this->section->addText(" Tỷ số bài đăng tạp chí trên cán bộ cơ hữu: {$value}", [], $indent);
         $value = $tomTat->ti_so_bai_bao_cb ?? 0;
-        $this->section->addText(" Tỷ số bài báo cáo trên cán bộ cơ hữu:{$value}", [], $indent);
+        $this->section->addText(" Tỷ số bài báo cáo trên cán bộ cơ hữu: {$value}", [], $indent);
 
         $this->section->addText("7. Cơ sở vật chất(số liệu năm cuối kỳ đánh giá):");
         $value = $tomTat->ti_so_dien_tich_sv ?? 0;
