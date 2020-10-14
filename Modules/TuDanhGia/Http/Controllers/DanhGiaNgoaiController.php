@@ -98,7 +98,6 @@ class DanhGiaNgoaiController extends Controller
         foreach ($draft as $item) {
             DanhGiaNgoai::updateOrCreate([
                 'university_id' => $universityId,
-                'role' => $user->role_id,
                 'tieu_chuan' => $item->tieu_chuan,
                 'tieu_chi' => $item->tieu_chi
             ], [
