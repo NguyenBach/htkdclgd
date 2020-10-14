@@ -52,6 +52,42 @@ class FacultyController extends Controller
         return response()->json($result, 200);
     }
 
+    public function copy($year)
+    {
+        $copyYear = Input::get('copy_year');
+        $this->authorize('index', Faculty::class);
+        $user = Auth::user();
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = Input::get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+        $faculty = Faculty::where('university_id', $universityId)
+            ->where('year', $copyYear)
+            ->get();
+        $educationType = EducationType::where('university_id', $universityId)
+            ->where('year', $copyYear)
+            ->get();
+
+        $faculty->map(function ($item) use ($year) {
+            $newData = $item->replicate();
+            $newData->year = $year;
+            $newData->save();
+        });
+        $educationType->map(function ($item) use ($year) {
+            $newData = $item->replicate();
+            $newData->year = $year;
+            $newData->save();
+        });
+        $result = [
+            'success' => true,
+            'message' => 'Sao chép danh sách thành công',
+        ];
+        return response()->json($result, 200);
+    }
+
     public function create(FacultyRequest $request, $year = 2020)
     {
         $this->authorize('faculty', Faculty::class);
@@ -69,7 +105,7 @@ class FacultyController extends Controller
         $slugify = new Slugify();
         $data['slug'] = $slugify->slugify($data['name']);
 
-        $facultyExist = Faculty::checkExist($data['slug'], $data['university_id'],$year);
+        $facultyExist = Faculty::checkExist($data['slug'], $data['university_id'], $year);
         if ($facultyExist) {
             $result = [
                 'success' => false,

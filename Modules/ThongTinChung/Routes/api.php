@@ -44,6 +44,7 @@ Route::group([
 ], function () {
     Route::get('/list/{year}', 'KeyOfficerController@list')->name('key-officer.list');
     Route::post('/create/{year}', 'KeyOfficerController@create')->name('key-officer.create');
+    Route::post('/copy/{year}', 'KeyOfficerController@copy')->name('key-officer.copy');
     Route::post('/update/{keyOfficer}', 'KeyOfficerController@update')->name('key-officer.update');
     Route::post('/delete/{keyOfficer}', 'KeyOfficerController@delete')->name('key-officer.delete');
 });
@@ -64,6 +65,7 @@ Route::group([
 ], function () {
     Route::get('/list/{year}', 'FacultyController@list')->name('faculty.list');
     Route::post('/create/{year}', 'FacultyController@create')->name('faculty.create');
+    Route::post('/copy/{year}', 'FacultyController@copy')->name('faculty.copy');
     Route::post('/update/{faculty}', 'FacultyController@update')->name('faculty.update');
     Route::delete('/delete/{faculty}', 'FacultyController@delete')->name('faculty.delete');
 });
@@ -74,6 +76,7 @@ Route::group([
 ], function () {
     Route::get('/list/{year}', 'BranchController@index')->name('faculty.list');
     Route::post('/create/{year}', 'BranchController@store')->name('faculty.create');
+    Route::post('/copy/{year}', 'BranchController@copy')->name('faculty.copy');
     Route::post('/update/{branch}', 'BranchController@update')->name('faculty.update');
     Route::post('/delete/{branch}', 'BranchController@destroy')->name('faculty.delete');
 });
