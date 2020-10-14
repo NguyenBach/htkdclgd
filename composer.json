@@ -26,7 +26,8 @@
     "nwidart/laravel-modules": "^5.0",
     "phpoffice/phpword": "^0.17.0",
     "spatie/laravel-activitylog": "1",
-    "tymon/jwt-auth": "dev-develop"
+    "tymon/jwt-auth": "dev-develop",
+    "ext-intl": "*"
   },
   "require-dev": {
     "beyondcode/laravel-dump-server": "^1.0",

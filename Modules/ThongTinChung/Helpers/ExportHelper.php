@@ -40,10 +40,13 @@ use Modules\ThongTinChung\Entities\KeyOfficer;
 use Modules\ThongTinChung\Entities\TomTatChiSo;
 use Modules\ThongTinChung\Entities\University;
 use Modules\ThongTinChung\Entities\UniversityData;
+use NumberFormatter;
 use PhpOffice\PhpWord\Element\Section;
 use PhpOffice\PhpWord\IOFactory;
 use PhpOffice\PhpWord\PhpWord;
 use PhpOffice\PhpWord\SimpleType\Jc;
+use PhpOffice\PhpWord\SimpleType\JcTable;
+use PhpOffice\PhpWord\SimpleType\TextAlignment;
 
 class ExportHelper
 {
@@ -62,6 +65,7 @@ class ExportHelper
         $phpWord = new PhpWord();
         $phpWord->setDefaultFontName('Times New Roman');
         $phpWord->setDefaultFontSize(13);
+        $phpWord->addParagraphStyle('center', ['alignment' => Jc::CENTER]);
         $phpWord = $this->setupTableStyle($phpWord);
         $this->phpWord = $phpWord;
         $this->section = $this->phpWord->addSection();
@@ -87,7 +91,9 @@ class ExportHelper
         $defaultTableFirstRow = [
             'borderBottomSize' => 18,
             'borderBottomColor' => '000000',
-            'bgColor' => 'ffffff'
+            'bgColor' => '000000',
+            'alignment' => Jc::CENTER,
+            'textAlignment' => TextAlignment::CENTER
         ];
         $phpWord->addTableStyle('defaultTable', $defaultTable, $defaultTableFirstRow);
         return $phpWord;
@@ -494,13 +500,14 @@ class ExportHelper
         $line1 = '12. Danh sách cán bộ lãnh đạo chủ chốt của CSGD: ';
         $this->section->addText($line1);
         $table = $this->section->addTable('defaultTable');
+        $center = ['textAlignment' => Jc::CENTER];
 
-        $table->addRow(500);
-        $table->addCell(2000)->addText('Các đơn vị (bộ phận)', ['bold' => true]);
-        $table->addCell(2000)->addText('Họ và tên', ['bold' => true]);
-        $table->addCell(2000)->addText('Chức danh, học vị, chức vụ', ['bold' => true]);
-        $table->addCell(2000)->addText('Điện thoại', ['bold' => true]);
-        $table->addCell(2000)->addText('E-mail', ['bold' => true]);
+        $table->addRow(500, );
+        $table->addCell(2000)->addText("Các đơn vị \n\r (bộ phận)", ['bold' => true], 'center');
+        $table->addCell(2000)->addText('Họ và tên', ['bold' => true], "center");
+        $table->addCell(2000)->addText('Chức danh, học vị, chức vụ', ['bold' => true], "center");
+        $table->addCell(2000)->addText('Điện thoại', ['bold' => true], "center");
+        $table->addCell(2000)->addText('E-mail', ['bold' => true], "center");
 
         foreach ($canBo as $item) {
             $table->addRow(500);
@@ -523,16 +530,16 @@ class ExportHelper
         $cellColSpan = array('gridSpan' => 2, 'valign' => 'center');
 
         $table->addRow();
-        $table->addCell(2500, $cellRowSpan)->addText('Khoa/viện đào tạo', $bold);
+        $table->addCell(2500, $cellRowSpan)->addText('Khoa/viện đào tạo', $bold, 'center');
         foreach ($educationType as $type) {
-            $table->addCell(2500, $cellColSpan)->addText($type->name, $bold);
+            $table->addCell(2500, $cellColSpan)->addText($type->name, $bold, 'center');
         }
 
         $table->addRow();
         $table->addCell(2500, $cellRowContinue);
         foreach ($educationType as $type) {
-            $table->addCell(1250)->addText('Số CTĐT', $bold);
-            $table->addCell(1250)->addText('Số sinh viên', $bold);
+            $table->addCell(1250)->addText('Số CTĐT', $bold, 'center');
+            $table->addCell(1250)->addText('Số sinh viên', $bold, 'center');
         }
 
         foreach ($khoa as $item) {
@@ -559,12 +566,12 @@ class ExportHelper
         $table = $this->section->addTable('defaultTable');
 
         $table->addRow(500);
-        $table->addCell(500)->addText('TT', ['bold' => true]);
-        $table->addCell(3000)->addText('Tên đơn vị', ['bold' => true]);
-        $table->addCell(1000)->addText('Năm thành lập ', ['bold' => true]);
-        $table->addCell(3000)->addText('Lĩnh vực  hoạt động', ['bold' => true]);
-        $table->addCell(1250)->addText('Số lượng nghiên cứu viên', ['bold' => true]);
-        $table->addCell(1250)->addText('Số lượng cán bộ/nhân viên', ['bold' => true]);
+        $table->addCell(550)->addText('TT', ['bold' => true], 'center');
+        $table->addCell(3000)->addText('Tên đơn vị', ['bold' => true], 'center');
+        $table->addCell(1000)->addText('Năm thành lập ', ['bold' => true], 'center');
+        $table->addCell(3000)->addText('Lĩnh vực  hoạt động', ['bold' => true], 'center');
+        $table->addCell(1250)->addText('Số lượng nghiên cứu viên', ['bold' => true], 'center');
+        $table->addCell(1250)->addText('Số lượng cán bộ/nhân viên', ['bold' => true], 'center');
 
         foreach ($donVi as $key => $item) {
             $table->addRow(500);
@@ -582,7 +589,8 @@ class ExportHelper
         $line1 = '15. Thống kê số lượng giảng viên và nghiên cứu viên: ';
         $this->section->addText($line1);
 
-        $bold = ['bold' => true];
+        $bold = ['bold' => true, 'alignment' => Jc::CENTER, 'textAlignment' => TextAlignment::CENTER];
+        $paragraph = ['alignment' => Jc::CENTER, 'textAlignment' => TextAlignment::CENTER];
         $cellRowSpan = array('vMerge' => 'restart', 'valign' => 'center');
         $cellRowContinue = array('vMerge' => 'continue');
         $cellColSpan = array('gridSpan' => 2, 'valign' => 'center');
@@ -595,9 +603,9 @@ class ExportHelper
 
             $table = $this->section->addTable('defaultTable');
             $table->addRow();
-            $table->addCell(4000, $cellRowSpan)->addText('Phân cấp giảng viên và nghiên cứu viên', $bold);
-            $table->addCell(3000, $cellColSpan)->addText('Cơ hữu/toàn thời gian', $bold);
-            $table->addCell(3000, $cellColSpan)->addText('Hợp đồng/ thỉnh giảng', $bold);
+            $table->addCell(4000, $cellRowSpan)->addText('Phân cấp giảng viên và nghiên cứu viên', $bold, $paragraph);
+            $table->addCell(3000, $cellColSpan)->addText('Cơ hữu/toàn thời gian', $bold, $paragraph);
+            $table->addCell(3000, $cellColSpan)->addText('Hợp đồng/ thỉnh giảng', $bold, $paragraph);
 
             $table->addRow();
             $table->addCell(4000, $cellRowContinue);
@@ -674,14 +682,14 @@ class ExportHelper
             $cellColSpan = array('gridSpan' => 3, 'valign' => 'center');
 
             $table->addRow();
-            $table->addCell(4000, $cellRowSpan)->addText('Phân cấp cán bộ, nhân viên', $bold);
-            $table->addCell(6000, $cellColSpan)->addText('Số lượng ', $bold);
+            $table->addCell(4000, $cellRowSpan)->addText('Phân cấp cán bộ, nhân viên', $bold, 'center');
+            $table->addCell(6000, $cellColSpan)->addText('Số lượng ', $bold, 'center');
 
             $table->addRow();
             $table->addCell(4000, $cellRowContinue);
-            $table->addCell(2000)->addText('Cơ hữu/toàn thời gian', $bold);
-            $table->addCell(2000)->addText('Hợp đồng bán thời gian', $bold);
-            $table->addCell(2000)->addText('Tổng số', $bold);
+            $table->addCell(2000)->addText('Cơ hữu/toàn thời gian', $bold, 'center');
+            $table->addCell(2000)->addText('Hợp đồng bán thời gian', $bold, 'center');
+            $table->addCell(2000)->addText('Tổng số', $bold, 'center');
 
             $table->addRow();
             $table->addCell(4000)->addText('Cán bộ quản lý');
@@ -730,11 +738,11 @@ class ExportHelper
 
             $table = $this->section->addTable('defaultTable');
             $table->addRow(500);
-            $table->addCell(500)->addText('TT', $bold);
-            $table->addCell(5000)->addText('Phân loại', $bold);
-            $table->addCell(1500)->addText('Nam ', $bold);
-            $table->addCell(1500)->addText('Nữ', $bold);
-            $table->addCell(1500)->addText('Tổng số', $bold);
+            $table->addCell(500)->addText('TT', $bold, 'center');
+            $table->addCell(5000)->addText('Phân loại', $bold, 'center');
+            $table->addCell(1500)->addText('Nam ', $bold, 'center');
+            $table->addCell(1500)->addText('Nữ', $bold, 'center');
+            $table->addCell(1500)->addText('Tổng số', $bold, 'center');
 
             $table->addRow(500);
             $table->addCell(500)->addText('I');
@@ -810,14 +818,14 @@ class ExportHelper
 
             $table = $this->section->addTable('defaultTable');
             $table->addRow(500);
-            $table->addCell(500)->addText('TT', ['bold' => true]);
-            $table->addCell(2000)->addText('Trình độ, học vị, chức danh', ['bold' => true]);
-            $table->addCell(1250)->addText('GV trong biên chế trực tiếp giảng dạy ', ['bold' => true]);
-            $table->addCell(1250)->addText('GV hợp đồng dài hạn trực tiếp giảng dạy', ['bold' => true]);
-            $table->addCell(1250)->addText('Giảng viên kiêm nhiệm là cán bộ quản lý', ['bold' => true]);
-            $table->addCell(1250)->addText('Giảng viên thỉnh giảng trong nước', ['bold' => true]);
-            $table->addCell(1250)->addText('Giảng viên thỉnh giảng quốc tế', ['bold' => true]);
-            $table->addCell(1250)->addText('Tổng số', ['bold' => true]);
+            $table->addCell(500)->addText('TT', ['bold' => true], 'center');
+            $table->addCell(2000)->addText('Trình độ, học vị, chức danh', ['bold' => true], 'center');
+            $table->addCell(1250)->addText('GV trong biên chế trực tiếp giảng dạy ', ['bold' => true], 'center');
+            $table->addCell(1250)->addText('GV hợp đồng dài hạn trực tiếp giảng dạy', ['bold' => true], 'center');
+            $table->addCell(1250)->addText('Giảng viên kiêm nhiệm là cán bộ quản lý', ['bold' => true], 'center');
+            $table->addCell(1250)->addText('Giảng viên thỉnh giảng trong nước', ['bold' => true], 'center');
+            $table->addCell(1250)->addText('Giảng viên thỉnh giảng quốc tế', ['bold' => true], 'center');
+            $table->addCell(1250)->addText('Tổng số', ['bold' => true], 'center');
 
             $index = 1;
             $tong = [0, 0, 0, 0, 0, 0, 0];
@@ -850,6 +858,9 @@ class ExportHelper
             $table->addCell(1250)->addText(array_sum($tong), ['bold' => true]);
 
             $tongCoHuu = TomTat::tongGiangVienCoHuu($universityId, $currentYear);
+            if (!$tongCoHuu) {
+                $tongCoHuu = 0;
+            }
             $line2 = "Tổng số giảng viên cơ hữu: {$tongCoHuu} người";
             $this->section->addText($line2, [], ['indent' => true]);
             $tile = TomTat::tongGianVienTrenTongCanBo($universityId, $year);
@@ -892,25 +903,25 @@ class ExportHelper
             $cellColSpan5 = array('gridSpan' => 5, 'valign' => 'center');
 
             $table->addRow();
-            $table->addCell(500, $cellRowSpan)->addText('TT', $bold);
-            $table->addCell(2000, $cellRowSpan)->addText('Trình độ / học vị', $bold);
-            $table->addCell(900, $cellRowSpan)->addText('Số lượng', $bold);
-            $table->addCell(900, $cellRowSpan)->addText('Tỷ lệ (%)', $bold);
-            $table->addCell(1300, $cellColSpan2)->addText('Phân loại theo giới tính', $bold);
-            $table->addCell(4450, $cellColSpan5)->addText('Phân loại theo tuổi (người) ', $bold);
+            $table->addCell(500, $cellRowSpan)->addText('TT', $bold, 'center');
+            $table->addCell(2000, $cellRowSpan)->addText('Trình độ / học vị', $bold, 'center');
+            $table->addCell(900, $cellRowSpan)->addText('Số lượng', $bold, 'center');
+            $table->addCell(900, $cellRowSpan)->addText('Tỷ lệ (%)', $bold, 'center');
+            $table->addCell(1300, $cellColSpan2)->addText('Phân loại theo giới tính', $bold, 'center');
+            $table->addCell(4450, $cellColSpan5)->addText('Phân loại theo tuổi (người) ', $bold, 'center');
 
             $table->addRow();
             $table->addCell(500, $cellRowContinue);
             $table->addCell(2000, $cellRowContinue);
             $table->addCell(900, $cellRowContinue);
             $table->addCell(900, $cellRowContinue);
-            $table->addCell(650)->addText('Nam', $bold);
-            $table->addCell(650)->addText('Nữ', $bold);
-            $table->addCell(900)->addText("dưới 30", $bold);
-            $table->addCell(900)->addText('30-40', $bold);
-            $table->addCell(900)->addText('41-50', $bold);
-            $table->addCell(900)->addText('51-60', $bold);
-            $table->addCell(850)->addText('trên 60', $bold);
+            $table->addCell(650)->addText('Nam', $bold, 'center');
+            $table->addCell(650)->addText('Nữ', $bold, 'center');
+            $table->addCell(900)->addText("dưới 30", $bold, 'center');
+            $table->addCell(900)->addText('30-40', $bold, 'center');
+            $table->addCell(900)->addText('41-50', $bold, 'center');
+            $table->addCell(900)->addText('51-60', $bold, 'center');
+            $table->addCell(850)->addText('trên 60', $bold, 'center');
 
             $tong['total'] = 0;
             $tong['percent'] = 0;
@@ -962,15 +973,15 @@ class ExportHelper
             $table->addRow();
             $table->addCell(500)->addText('');
             $table->addCell(2000)->addText("Tổng cộng", $bold);
-            $table->addCell(900)->addText($tong['total']);
-            $table->addCell(900)->addText($tong['percent']);
-            $table->addCell(650)->addText($tong['lecturer_man']);
-            $table->addCell(650)->addText($tong['lecturer_woman']);
-            $table->addCell(900)->addText($tong['less_30']);
-            $table->addCell(900)->addText($tong['less_40']);
-            $table->addCell(900)->addText($tong['less_50']);
-            $table->addCell(900)->addText($tong['less_60']);
-            $table->addCell(850)->addText($tong['over_60']);
+            $table->addCell(900)->addText($tong['total'], $bold);
+            $table->addCell(900)->addText($tong['percent'], $bold);
+            $table->addCell(650)->addText($tong['lecturer_man'], $bold);
+            $table->addCell(650)->addText($tong['lecturer_woman'], $bold);
+            $table->addCell(900)->addText($tong['less_30'], $bold);
+            $table->addCell(900)->addText($tong['less_40'], $bold);
+            $table->addCell(900)->addText($tong['less_50'], $bold);
+            $table->addCell(900)->addText($tong['less_60'], $bold);
+            $table->addCell(850)->addText($tong['over_60'], $bold);
 
             $doTuoi = TomTat::get($universityId, $year, 'do_tuoi_tb', 0);
             $line2 = "Độ tuổi trung bình của giảng viên cơ hữu: {$doTuoi} tuổi ";
@@ -1015,15 +1026,15 @@ class ExportHelper
             $cellColSpan2 = array('gridSpan' => 2, 'valign' => 'center');
 
             $table->addRow();
-            $table->addCell(500, $cellRowSpan)->addText('TT', $bold);
-            $table->addCell(5500, $cellRowSpan)->addText('Tần suất sử dụng', $bold);
-            $table->addCell(4000, $cellColSpan2)->addText('Tỷ lệ (%) giảng viên cơ hữu sử dụng ngoại ngữ và tin học', $bold);
+            $table->addCell(500, $cellRowSpan)->addText('TT', $bold, 'center');
+            $table->addCell(5500, $cellRowSpan)->addText('Tần suất sử dụng', $bold, 'center');
+            $table->addCell(4000, $cellColSpan2)->addText('Tỷ lệ (%) giảng viên cơ hữu sử dụng ngoại ngữ và tin học', $bold, 'center');
 
             $table->addRow();
             $table->addCell(500, $cellRowContinue);
             $table->addCell(5500, $cellRowContinue);
-            $table->addCell(2000)->addText('Ngoại ngữ', $bold);
-            $table->addCell(2000)->addText('Tin học', $bold);
+            $table->addCell(2000)->addText('Ngoại ngữ', $bold, 'center');
+            $table->addCell(2000)->addText('Tin học', $bold, 'center');
 
             foreach ($frequency as $key => $item) {
                 $rowData = $currentData->where('frequency', $key)->first();
@@ -1049,14 +1060,14 @@ class ExportHelper
 
         $table = $this->section->addTable('defaultTable');
         $table->addRow(500);
-        $table->addCell(1250)->addText('Đối tượng, thời gian (năm)', ['bold' => true]);
-        $table->addCell(1250)->addText('Số thí sinh dự tuyển(người) ', ['bold' => true]);
-        $table->addCell(1250)->addText('Số trúng tuyển (người)', ['bold' => true]);
-        $table->addCell(1250)->addText('Tỷ lệ cạnh tranh', ['bold' => true]);
-        $table->addCell(1250)->addText('Số nhập học thực tế (người)', ['bold' => true]);
-        $table->addCell(1250)->addText('Điểm tuyển đầu vào (thang điểm 30)', ['bold' => true]);
-        $table->addCell(1250)->addText('Điểm trung bình của người học được tuyển', ['bold' => true]);
-        $table->addCell(1250)->addText('Số lượng sinh viên quốc tế nhập học (người)', ['bold' => true]);
+        $table->addCell(1250)->addText('Đối tượng, thời gian (năm)', ['bold' => true], 'center');
+        $table->addCell(1250)->addText('Số thí sinh dự tuyển(người) ', ['bold' => true], 'center');
+        $table->addCell(1250)->addText('Số trúng tuyển (người)', ['bold' => true], 'center');
+        $table->addCell(1250)->addText('Tỷ lệ cạnh tranh', ['bold' => true], 'center');
+        $table->addCell(1250)->addText('Số nhập học thực tế (người)', ['bold' => true], 'center');
+        $table->addCell(1250)->addText('Điểm tuyển đầu vào (thang điểm 30)', ['bold' => true], 'center');
+        $table->addCell(1250)->addText('Điểm trung bình của người học được tuyển', ['bold' => true], 'center');
+        $table->addCell(1250)->addText('Số lượng sinh viên quốc tế nhập học (người)', ['bold' => true], 'center');
 
         $type = [
             'NCS' => 'Nghiên cứu sinh',
@@ -1105,7 +1116,7 @@ class ExportHelper
             }
         }
         $sv = TomTat::tongSoSinhVienChinhQuy($universityId, $year);
-        $line2 = 'Số lượng người học hệ chính quy đang học tập tại CSGD: ' . $sv . 'người.';
+        $line2 = 'Số lượng người học hệ chính quy đang học tập tại CSGD: ' . $sv . ' người.';
         $this->section->addText($line2, [], ['indent' => true]);
     }
 
@@ -1116,14 +1127,14 @@ class ExportHelper
         $table = $this->section->addTable('defaultTable');
 
         $table->addRow(500);
-        $table->addCell(1250)->addText('Đối tượng, thời gian (năm)', ['bold' => true]);
-        $table->addCell(1250)->addText('Số thí sinh dự tuyển(người) ', ['bold' => true]);
-        $table->addCell(1250)->addText('Số trúng tuyển (người)', ['bold' => true]);
-        $table->addCell(1250)->addText('Tỷ lệ cạnh tranh', ['bold' => true]);
-        $table->addCell(1250)->addText('Số nhập học thực tế (người)', ['bold' => true]);
-        $table->addCell(1250)->addText('Điểm tuyển đầu vào (thang điểm 30)', ['bold' => true]);
-        $table->addCell(1250)->addText('Điểm trung bình của người học được tuyển', ['bold' => true]);
-        $table->addCell(1250)->addText('Số lượng sinh viên quốc tế nhập học (người)', ['bold' => true]);
+        $table->addCell(1250)->addText('Đối tượng, thời gian (năm)', ['bold' => true], 'center');
+        $table->addCell(1250)->addText('Số thí sinh dự tuyển(người) ', ['bold' => true], 'center');
+        $table->addCell(1250)->addText('Số trúng tuyển (người)', ['bold' => true], 'center');
+        $table->addCell(1250)->addText('Tỷ lệ cạnh tranh', ['bold' => true], 'center');
+        $table->addCell(1250)->addText('Số nhập học thực tế (người)', ['bold' => true], 'center');
+        $table->addCell(1250)->addText('Điểm tuyển đầu vào (thang điểm 30)', ['bold' => true], 'center');
+        $table->addCell(1250)->addText('Điểm trung bình của người học được tuyển', ['bold' => true], 'center');
+        $table->addCell(1250)->addText('Số lượng sinh viên quốc tế nhập học (người)', ['bold' => true], 'center');
 
         $type = [
             'NCS' => 'Nghiên cứu sinh',
@@ -1180,9 +1191,9 @@ class ExportHelper
         $table = $this->section->addTable('defaultTable');
 
         $table->addRow(500);
-        $table->addCell(3000)->addText('Các tiêu chí', ['bold' => true]);
+        $table->addCell(3000)->addText('Các tiêu chí', ['bold' => true], 'center');
         for ($i = 4; $i >= 0; $i--) {
-            $table->addCell(1250)->addText($year - $i, ['bold' => true]);
+            $table->addCell(1250)->addText($year - $i, ['bold' => true], 'center');
         }
 
         $tieuChi = [
@@ -1234,9 +1245,9 @@ class ExportHelper
         $table = $this->section->addTable('defaultTable');
 
         $table->addRow(500);
-        $table->addCell(3000)->addText('', ['bold' => true]);
+        $table->addCell(3000)->addText('', ['bold' => true], 'center');
         for ($i = 4; $i >= 0; $i--) {
-            $table->addCell(1250)->addText($year - 1, ['bold' => true]);
+            $table->addCell(1250)->addText($year - 1, ['bold' => true], 'center');
         }
 
         $table->addRow(500);
@@ -1276,13 +1287,13 @@ class ExportHelper
         $table = $this->section->addTable('defaultTable');
 
         $table->addRow(500);
-        $table->addCell(3000, $cellRowSpan)->addText('Các tiêu chí', ['bold' => true]);
-        $table->addCell(6250, $cellColSpan)->addText('Năm tốt nghiệp', ['bold' => true]);
+        $table->addCell(3000, $cellRowSpan)->addText('Các tiêu chí', ['bold' => true], 'center');
+        $table->addCell(6250, $cellColSpan)->addText('Năm tốt nghiệp', ['bold' => true], 'center');
 
         $table->addRow(500);
         $table->addCell(3000, $cellRowContinue);
         for ($i = 4; $i >= 0; $i--) {
-            $table->addCell(1250)->addText($year - $i, ['bold' => true]);
+            $table->addCell(1250)->addText($year - $i, ['bold' => true], 'center');
         }
         $tieuChi = [
             'ncs_bv_luan_an_ts' => '1. Nghiên cứu sinh bảo vệ thành công luận án tiến sĩ',
@@ -1331,13 +1342,13 @@ class ExportHelper
         $table = $this->section->addTable('defaultTable');
 
         $table->addRow(500);
-        $table->addCell(3000, $cellRowSpan)->addText('Các tiêu chí', ['bold' => true]);
-        $table->addCell(6250, $cellColSpan)->addText('Năm tốt nghiệp', ['bold' => true]);
+        $table->addCell(3000, $cellRowSpan)->addText('Các tiêu chí', ['bold' => true], 'center');
+        $table->addCell(6250, $cellColSpan)->addText('Năm tốt nghiệp', ['bold' => true], 'center');
 
         $table->addRow(500);
         $table->addCell(3000, $cellRowContinue);
         for ($i = 4; $i >= 0; $i--) {
-            $table->addCell(1250)->addText($year - $i, ['bold' => true]);
+            $table->addCell(1250)->addText($year - $i, ['bold' => true], 'center');
         }
 
         $this->rowReport26($table, $tinhTrang, $year, 1, '1. Số lượng sinh viên tốt nghiệp (người)');
@@ -1410,13 +1421,13 @@ class ExportHelper
         $table = $this->section->addTable('defaultTable');
 
         $table->addRow(500);
-        $table->addCell(3000, $cellRowSpan)->addText('Các tiêu chí', ['bold' => true]);
-        $table->addCell(6250, $cellColSpan)->addText('Năm tốt nghiệp', ['bold' => true]);
+        $table->addCell(3000, $cellRowSpan)->addText('Các tiêu chí', ['bold' => true], 'center');
+        $table->addCell(6250, $cellColSpan)->addText('Năm tốt nghiệp', ['bold' => true], 'center');
 
         $table->addRow(500);
         $table->addCell(3000, $cellRowContinue);
         for ($i = 4; $i >= 0; $i--) {
-            $table->addCell(1250)->addText($year - $i, ['bold' => true]);
+            $table->addCell(1250)->addText($year - $i, ['bold' => true], 'center');
         }
 
         $this->rowReport26($table, $tinhTrang, $year, 1, '1. Số lượng sinh viên tốt nghiệp (người)');
@@ -1471,19 +1482,19 @@ class ExportHelper
 
         $cellRowSpan = array('vMerge' => 'restart', 'valign' => 'center');
         $cellRowContinue = array('vMerge' => 'continue');
-        $cellColSpan = array('gridSpan' => 5, 'valign' => 'center');
+        $cellColSpan = array('gridSpan' => 6, 'valign' => 'center');
         $table = $this->section->addTable('defaultTable');
 
         $row = $table->addRow(500);
-        $row->addCell(500, $cellRowSpan)->addText('TT', ['bold' => true]);
-        $row->addCell(2500, $cellRowSpan)->addText('Các tiêu chí', ['bold' => true]);
-        $row->addCell(6250, $cellColSpan)->addText('Năm tốt nghiệp', ['bold' => true]);
+        $row->addCell(500, $cellRowSpan)->addText('TT', ['bold' => true], 'center');
+        $row->addCell(2500, $cellRowSpan)->addText('Các tiêu chí', ['bold' => true], 'center');
+        $row->addCell(6250, $cellColSpan)->addText('Năm tốt nghiệp', ['bold' => true], 'center');
 
         $table->addRow(500);
         $table->addCell(500, $cellRowContinue);
         $table->addCell(2500, $cellRowContinue);
         for ($i = 4; $i >= 0; $i--) {
-            $table->addCell(1250)->addText($year - $i, ['bold' => true]);
+            $table->addCell(1250)->addText($year - $i, ['bold' => true], 'center');
         }
         $table->addCell(1250)->addText('Tổng số', ['bold' => true]);
 
@@ -1530,6 +1541,7 @@ class ExportHelper
         $rowNhaNuoc->addCell(1250)->addText($tongNhaNuoc);
         $rowCapBo->addCell(1250)->addText($tongCapBo);
         $rowCapTruong->addCell(1250)->addText($tongCapTruong);
+        $rowTong->addCell(1250)->addText($tongCapTruong + $tongCapBo + $tongNhaNuoc);
 
         $line2 = '* Bao gồm đề tài cấp Bộ hoặc tương đương, đề tài nhánh cấp Nhà nước';
         $this->section->addText($line2, [], ['indent' => true]);
@@ -1546,11 +1558,11 @@ class ExportHelper
         $table = $this->section->addTable('defaultTable');
 
         $table->addRow(500);
-        $table->addCell(500)->addText('TT', ['bold' => true]);
-        $table->addCell(1500)->addText('Năm', ['bold' => true]);
-        $table->addCell(2500)->addText('Doanh thu từ NCKH và chuyển giao công nghệ (triệu VNĐ)', ['bold' => true]);
-        $table->addCell(2500)->addText('Tỷ lệ doanh thu từ NCKH và chuyển giao công nghệ so với tổng kinh phí đầu vào của CSGD (%)', ['bold' => true]);
-        $table->addCell(2500)->addText('Tỷ số doanh thu từ NCKH và chuyển giao công nghệ trên cán bộ cơ hữu(triệu VNĐ/ người)', ['bold' => true]);
+        $table->addCell(500)->addText('TT', ['bold' => true], 'center');
+        $table->addCell(1500)->addText('Năm', ['bold' => true], 'center');
+        $table->addCell(2500)->addText('Doanh thu từ NCKH và chuyển giao công nghệ (triệu VNĐ)', ['bold' => true], 'center');
+        $table->addCell(2500)->addText('Tỷ lệ doanh thu từ NCKH và chuyển giao công nghệ so với tổng kinh phí đầu vào của CSGD (%)', ['bold' => true], 'center');
+        $table->addCell(2500)->addText('Tỷ số doanh thu từ NCKH và chuyển giao công nghệ trên cán bộ cơ hữu(triệu VNĐ/ người)', ['bold' => true], 'center');
 
         for ($i = 4; $i >= 0; $i--) {
             $currentYear = $year - $i;
@@ -1587,15 +1599,15 @@ class ExportHelper
             $table = $this->section->addTable('defaultTable');
 
             $table->addRow(500);
-            $table->addCell(3000, $cellRowSpan)->addText('Số lượng đề tài', ['bold' => true]);
-            $table->addCell(4500, $cellColSpan)->addText('Số lượng cán bộ tham gia', ['bold' => true]);
-            $table->addCell(2500, $cellRowSpan)->addText('Ghi chú', ['bold' => true]);
+            $table->addCell(3000, $cellRowSpan)->addText('Số lượng đề tài', ['bold' => true], 'center');
+            $table->addCell(4500, $cellColSpan)->addText('Số lượng cán bộ tham gia', ['bold' => true], 'center');
+            $table->addCell(2500, $cellRowSpan)->addText('Ghi chú', ['bold' => true], 'center');
 
             $table->addRow(500);
             $table->addCell(3000, $cellRowContinue);
-            $table->addCell(1500)->addText('Đề tài cấp Nhà nước', ['bold' => true]);
-            $table->addCell(1500)->addText('Đề tài cấp Bộ*', ['bold' => true]);
-            $table->addCell(1500)->addText('Đề tài cấp trường', ['bold' => true]);
+            $table->addCell(1500)->addText('Đề tài cấp Nhà nước', ['bold' => true], 'center');
+            $table->addCell(1500)->addText('Đề tài cấp Bộ*', ['bold' => true], 'center');
+            $table->addCell(1500)->addText('Đề tài cấp trường', ['bold' => true], 'center');
             $table->addCell(2500, $cellRowContinue);
 
             $currentData = $canBoNCKH->where('year', $currentYear);
@@ -1645,11 +1657,11 @@ class ExportHelper
             $table->addCell(2500)->addText('');
 
             $table->addRow(500);
-            $table->addCell(3000)->addText('Tổng số cán bộ tham gia');
-            $table->addCell(1500)->addText($dataNhaNuoc->tu_1_3 + $dataNhaNuoc->tu_4_6 + $dataNhaNuoc->tren_6);
-            $table->addCell(1500)->addText($dataCapBo->tu_4_6 + $dataCapBo->tu_1_3 + $dataCapBo->tren_6);
-            $table->addCell(1500)->addText($dataCapTruong->tu_4_6 + $dataCapTruong->tu_1_3 + $dataCapTruong->tren_6);
-            $table->addCell(2500)->addText('');
+            $table->addCell(3000)->addText('Tổng số cán bộ tham gia', ['bold' => true]);
+            $table->addCell(1500)->addText($dataNhaNuoc->tu_1_3 + $dataNhaNuoc->tu_4_6 + $dataNhaNuoc->tren_6, ['bold' => true]);
+            $table->addCell(1500)->addText($dataCapBo->tu_4_6 + $dataCapBo->tu_1_3 + $dataCapBo->tren_6, ['bold' => true]);
+            $table->addCell(1500)->addText($dataCapTruong->tu_4_6 + $dataCapTruong->tu_1_3 + $dataCapTruong->tren_6, ['bold' => true]);
+            $table->addCell(2500)->addText('', ['bold' => true]);
             $this->section->addTextBreak(1);
         }
 
@@ -1676,15 +1688,15 @@ class ExportHelper
         $table = $this->section->addTable('defaultTable');
 
         $table->addRow(500);
-        $table->addCell(500, $cellRowSpan)->addText('TT', ['bold' => true]);
-        $table->addCell(3000, $cellRowSpan)->addText('Phân loại sách', ['bold' => true]);
-        $table->addCell(6000, $cellColSpan)->addText('Số lượng', ['bold' => true]);
+        $table->addCell(500, $cellRowSpan)->addText('TT', ['bold' => true], 'center');
+        $table->addCell(3000, $cellRowSpan)->addText('Phân loại sách', ['bold' => true], 'center');
+        $table->addCell(6000, $cellColSpan)->addText('Số lượng', ['bold' => true], 'center');
 
         $table->addRow(500);
         $table->addCell(500, $cellRowContinue);
         $table->addCell(3000, $cellRowContinue);
         for ($i = 4; $i >= 0; $i--) {
-            $table->addCell(1000)->addText($year - $i, ['bold' => true]);
+            $table->addCell(1000)->addText($year - $i, ['bold' => true], 'center');
             $tongNam[$year - $i] = 0;
         }
         $table->addCell(1000)->addText('Tổng số', ['bold' => true]);
@@ -1711,9 +1723,9 @@ class ExportHelper
         $table->addCell(500)->addText('');
         $table->addCell(3000)->addText('Tổng cộng', ['bold' => true]);
         for ($i = 4; $i >= 0; $i--) {
-            $table->addCell(1000)->addText($tongNam[$year - $i]);
+            $table->addCell(1000)->addText($tongNam[$year - $i], ['bold' => true]);
         }
-        $table->addCell(1000)->addText('');
+        $table->addCell(1000)->addText('', ['bold' => true]);
 
         $tiSo = TomTat::tiSoSachCanBo($universityId, $year);
         $tiSo = $tiSo > 0 ? $tiSo : 1;
@@ -1752,14 +1764,14 @@ class ExportHelper
 
             $table = $this->section->addTable('defaultTable');
             $table->addRow(500);
-            $table->addCell(3000, $cellRowSpan)->addText('Số lượng sách', ['bold' => true]);
-            $table->addCell(6000, $cellColSpan)->addText('Số lượng cán bộ cơ hữu tham gia viết sách', ['bold' => true]);
+            $table->addCell(3000, $cellRowSpan)->addText('Số lượng sách', ['bold' => true], 'center');
+            $table->addCell(6000, $cellColSpan)->addText('Số lượng cán bộ cơ hữu tham gia viết sách', ['bold' => true], 'center');
             $table->addRow(500);
             $table->addCell(3000, $cellRowContinue);
-            $table->addCell(1250)->addText('Sách chuyên khảo', ['bold' => true]);
-            $table->addCell(1250)->addText('Sách giáo trình', ['bold' => true]);
-            $table->addCell(1250)->addText('Sách tham khảo', ['bold' => true]);
-            $table->addCell(1250)->addText('Sách hướng dẫn', ['bold' => true]);
+            $table->addCell(150)->addText('Sách chuyên khảo', ['bold' => true], 'center');
+            $table->addCell(1500)->addText('Sách giáo trình', ['bold' => true], 'center');
+            $table->addCell(1500)->addText('Sách tham khảo', ['bold' => true], 'center');
+            $table->addCell(1500)->addText('Sách hướng dẫn', ['bold' => true], 'center');
             $tong = [];
             foreach ($soLuongSach as $key => $item) {
                 $table->addRow(500);
@@ -1780,11 +1792,11 @@ class ExportHelper
                 }
             }
             $table->addRow(500);
-            $table->addCell(3000)->addText('Tổng số cán bộ tham gia');
-            $table->addCell(1250)->addText($tong[1]);
-            $table->addCell(1250)->addText($tong[2]);
-            $table->addCell(1250)->addText($tong[3]);
-            $table->addCell(1250)->addText($tong[4]);
+            $table->addCell(3000)->addText('Tổng số cán bộ tham gia', ['bold' => true], 'center');
+            $table->addCell(1250)->addText($tong[1], ['bold' => true]);
+            $table->addCell(1250)->addText($tong[2], ['bold' => true]);
+            $table->addCell(1250)->addText($tong[3], ['bold' => true]);
+            $table->addCell(1250)->addText($tong[4], ['bold' => true]);
             $this->section->addTextBreak(1);
         }
 
@@ -1813,15 +1825,15 @@ class ExportHelper
         $table = $this->section->addTable('defaultTable');
 
         $table->addRow(500);
-        $table->addCell(500, $cellRowSpan)->addText('TT', ['bold' => true]);
-        $table->addCell(3000, $cellRowSpan)->addText('Phân loại sách', ['bold' => true]);
-        $table->addCell(6000, $cellColSpan)->addText('Số lượng', ['bold' => true]);
+        $table->addCell(500, $cellRowSpan)->addText('TT', ['bold' => true], 'center');
+        $table->addCell(3000, $cellRowSpan)->addText('Phân loại sách', ['bold' => true], 'center');
+        $table->addCell(6000, $cellColSpan)->addText('Số lượng', ['bold' => true], 'center');
 
         $table->addRow(500);
         $table->addCell(500, $cellRowContinue);
         $table->addCell(3000, $cellRowContinue);
         for ($i = 4; $i >= 0; $i--) {
-            $table->addCell(1000)->addText($year - $i, ['bold' => true]);
+            $table->addCell(1000)->addText($year - $i, ['bold' => true], 'center');
             $tongNam[$year - $i] = 0;
         }
         $table->addCell(1000)->addText('Tổng số', ['bold' => true]);
@@ -1881,10 +1893,12 @@ class ExportHelper
         $table->addRow(500);
         $table->addCell(500)->addText('');
         $table->addCell(3000)->addText('Tổng cộng', ['bold' => true]);
+        $sum = 0;
         for ($i = 4; $i >= 0; $i--) {
-            $table->addCell(1000)->addText($tongNam[$year - $i]);
+            $table->addCell(1000)->addText($tongNam[$year - $i], ['bold' => true]);
+            $sum += $tongNam[$year - $i];
         }
-        $table->addCell(1000)->addText('');
+        $table->addCell(1000)->addText($sum, ['bold' => true]);
 
         $tiSo = TomTat::tiSoBaiDangTapChi($universityId, $year);
         $tiSo = $tiSo > 0 ? $tiSo : 1;
@@ -1923,13 +1937,13 @@ class ExportHelper
 
             $table = $this->section->addTable('defaultTable');
             $table->addRow(500);
-            $table->addCell(3000, $cellRowSpan)->addText('Số lượng cán bộ cơ hữu có bài báo đăng trên tạp chí', ['bold' => true]);
-            $table->addCell(6000, $cellColSpan)->addText('Nơi đăng', ['bold' => true]);
+            $table->addCell(3000, $cellRowSpan)->addText('Số lượng cán bộ cơ hữu có bài báo đăng trên tạp chí', ['bold' => true], 'center');
+            $table->addCell(6000, $cellColSpan)->addText('Nơi đăng', ['bold' => true], 'center');
             $table->addRow(500);
             $table->addCell(3000, $cellRowContinue);
-            $table->addCell(2000)->addText('Tạp chí KH quốc tế', ['bold' => true]);
-            $table->addCell(2000)->addText('Tạp chí KH cấp Ngành trong nước', ['bold' => true]);
-            $table->addCell(2000)->addText('Tạp chí / tập san của cấp trường', ['bold' => true]);
+            $table->addCell(2000)->addText('Tạp chí KH quốc tế', ['bold' => true], 'center');
+            $table->addCell(2000)->addText('Tạp chí KH cấp Ngành trong nước', ['bold' => true], 'center');
+            $table->addCell(2000)->addText('Tạp chí / tập san của cấp trường', ['bold' => true], 'center');
             $tong = [];
             foreach ($soLuongBaiBao as $key => $item) {
                 $table->addRow(500);
@@ -1949,10 +1963,10 @@ class ExportHelper
                 }
             }
             $table->addRow(500);
-            $table->addCell(3000)->addText('Tổng số cán bộ tham gia');
-            $table->addCell(2000)->addText($tong[1]);
-            $table->addCell(2000)->addText($tong[2]);
-            $table->addCell(2000)->addText($tong[3]);
+            $table->addCell(3000)->addText('Tổng số cán bộ tham gia', ['bold' => true]);
+            $table->addCell(2000)->addText($tong[1], ['bold' => true]);
+            $table->addCell(2000)->addText($tong[2], ['bold' => true]);
+            $table->addCell(2000)->addText($tong[3], ['bold' => true]);
             $this->section->addTextBreak(1);
         }
 
@@ -1960,7 +1974,7 @@ class ExportHelper
 
     public function report35($hoiThao, $year, $universityId = 0)
     {
-        $line1 = '31. Số lượng sách của CSGD được xuất bản trong 5 năm gần đây:';
+        $line1 = '35. Số lượng sách của CSGD được xuất bản trong 5 năm gần đây:';
         $this->section->addText($line1);
 
         $phanLoaiHoiThao = [
@@ -1976,15 +1990,15 @@ class ExportHelper
         $table = $this->section->addTable('defaultTable');
 
         $table->addRow(500);
-        $table->addCell(500, $cellRowSpan)->addText('TT', ['bold' => true]);
-        $table->addCell(3000, $cellRowSpan)->addText('Phân loại hội thảo', ['bold' => true]);
-        $table->addCell(6000, $cellColSpan)->addText('Số lượng', ['bold' => true]);
+        $table->addCell(500, $cellRowSpan)->addText('TT', ['bold' => true], 'center');
+        $table->addCell(3000, $cellRowSpan)->addText('Phân loại hội thảo', ['bold' => true], 'center');
+        $table->addCell(6000, $cellColSpan)->addText('Số lượng', ['bold' => true], 'center');
 
         $table->addRow(500);
         $table->addCell(500, $cellRowContinue);
         $table->addCell(3000, $cellRowContinue);
         for ($i = 4; $i >= 0; $i--) {
-            $table->addCell(1000)->addText($year - $i, ['bold' => true]);
+            $table->addCell(1000)->addText($year - $i, ['bold' => true], 'center');
             $tongNam[$year - $i] = 0;
         }
         $table->addCell(1000)->addText('Tổng số', ['bold' => true]);
@@ -2010,10 +2024,12 @@ class ExportHelper
         $table->addRow(500);
         $table->addCell(500)->addText('');
         $table->addCell(3000)->addText('Tổng cộng', ['bold' => true]);
+        $sum = 0;
         for ($i = 4; $i >= 0; $i--) {
-            $table->addCell(1000)->addText($tongNam[$year - $i]);
+            $table->addCell(1000)->addText($tongNam[$year - $i], ['bold' => true]);
+            $sum += $tongNam[$year - $i];
         }
-        $table->addCell(1000)->addText('');
+        $table->addCell(1000)->addText($sum, ['bold' => true]);
 
         $tiSo = TomTat::tiSoBaoCaoHoiThao($universityId, $year);
         $tiSo = $tiSo > 0 ? $tiSo : 1;
@@ -2023,8 +2039,7 @@ class ExportHelper
 
     public function report36($canBoHoiThao, $year)
     {
-        $line1 = '36. Số lượng cán bộ cơ hữu của CSGD có báo cáo khoa học tại các hội nghị, hội thảo được đăng toàn văn
-        trong tuyển tập công trình hay kỷ yếu trong 5 năm gần đây:';
+        $line1 = '36. Số lượng cán bộ cơ hữu của CSGD có báo cáo khoa học tại các hội nghị, hội thảo được đăng toàn văn trong tuyển tập công trình hay kỷ yếu trong 5 năm gần đây:';
         $this->section->addText($line1);
 
         $phanLoaiHoiThao = [
@@ -2050,10 +2065,10 @@ class ExportHelper
             $table = $this->section->addTable('defaultTable');
 
             $table->addRow(500);
-            $table->addCell(3000)->addText('Số lượng cán bộ cơ hữu có báo cáo khoa học tại các hội nghị, hội thảo', ['bold' => true]);
-            $table->addCell(2000)->addText('Hội thảo quốc tế', ['bold' => true]);
-            $table->addCell(2000)->addText('Hội thảo trong nước', ['bold' => true]);
-            $table->addCell(2000)->addText('Hội thảo của trường', ['bold' => true]);
+            $table->addCell(3000)->addText('Số lượng cán bộ cơ hữu có báo cáo khoa học tại các hội nghị, hội thảo', ['bold' => true], 'center');
+            $table->addCell(2000)->addText('Hội thảo quốc tế', ['bold' => true], 'center');
+            $table->addCell(2000)->addText('Hội thảo trong nước', ['bold' => true], 'center');
+            $table->addCell(2000)->addText('Hội thảo của trường', ['bold' => true], 'center');
             $tong = [];
             foreach ($soLuongBaiBao as $key => $item) {
                 $table->addRow(500);
@@ -2073,10 +2088,10 @@ class ExportHelper
                 }
             }
             $table->addRow(500);
-            $table->addCell(3000)->addText('Tổng số cán bộ tham gia');
-            $table->addCell(2000)->addText($tong[1]);
-            $table->addCell(2000)->addText($tong[2]);
-            $table->addCell(2000)->addText($tong[3]);
+            $table->addCell(3000)->addText('Tổng số cán bộ tham gia', ['bold' => true]);
+            $table->addCell(2000)->addText($tong[1], ['bold' => true]);
+            $table->addCell(2000)->addText($tong[2], ['bold' => true]);
+            $table->addCell(2000)->addText($tong[3], ['bold' => true]);
             $this->section->addTextBreak(1);
         }
 
@@ -2090,10 +2105,10 @@ class ExportHelper
         $table = $this->section->addTable('defaultTable');
 
         $table->addRow(500);
-        $table->addCell(2000)->addText('Năm', ['bold' => true]);
+        $table->addCell(2000)->addText('Năm', ['bold' => true], 'center');
         $cell = $table->addCell(8000);
-        $cell->addText('Số bằng phát minh, sáng chế được cấp', ['bold' => true]);
-        $cell->addText('(ghi rõ nơi cấp, thời gian cấp, người được cấp)', ['bold' => true]);
+        $cell->addText('Số bằng phát minh, sáng chế được cấp', ['bold' => true], 'center');
+        $cell->addText('(ghi rõ nơi cấp, thời gian cấp, người được cấp)', ['bold' => true], 'center');
 
         for ($i = 4; $i >= 0; $i--) {
             $currentYear = $year - $i;
@@ -2125,15 +2140,15 @@ class ExportHelper
             $table = $this->section->addTable('defaultTable');
 
             $table->addRow(500);
-            $table->addCell(3000, $cellRowSpan)->addText('Số lượng đề tài', ['bold' => true]);
-            $table->addCell(4500, $cellColSpan)->addText('Số lượng sinh viên tham gia', ['bold' => true]);
-            $table->addCell(2500, $cellRowSpan)->addText('Ghi chú', ['bold' => true]);
+            $table->addCell(3000, $cellRowSpan)->addText('Số lượng đề tài', ['bold' => true], 'center');
+            $table->addCell(4500, $cellColSpan)->addText('Số lượng sinh viên tham gia', ['bold' => true], 'center');
+            $table->addCell(2500, $cellRowSpan)->addText('Ghi chú', ['bold' => true], 'center');
 
             $table->addRow(500);
             $table->addCell(3000, $cellRowContinue);
-            $table->addCell(1500)->addText('Đề tài cấp Nhà nước', ['bold' => true]);
-            $table->addCell(1500)->addText('Đề tài cấp Bộ*', ['bold' => true]);
-            $table->addCell(1500)->addText('Đề tài cấp trường', ['bold' => true]);
+            $table->addCell(1500)->addText('Đề tài cấp Nhà nước', ['bold' => true], 'center');
+            $table->addCell(1500)->addText('Đề tài cấp Bộ*', ['bold' => true], 'center');
+            $table->addCell(1500)->addText('Đề tài cấp trường', ['bold' => true], 'center');
             $table->addCell(2500, $cellRowContinue);
 
             $currentData = $svNCKH->where('year', $currentYear);
@@ -2183,10 +2198,10 @@ class ExportHelper
             $table->addCell(2500)->addText('');
 
             $table->addRow(500);
-            $table->addCell(3000)->addText('Tổng số sinh viên tham gia');
-            $table->addCell(1500)->addText($dataNhaNuoc->tu_1_3 + $dataNhaNuoc->tu_4_6 + $dataNhaNuoc->tren_6);
-            $table->addCell(1500)->addText($dataCapBo->tu_4_6 + $dataCapBo->tu_1_3 + $dataCapBo->tren_6);
-            $table->addCell(1500)->addText($dataCapTruong->tu_4_6 + $dataCapTruong->tu_1_3 + $dataCapTruong->tren_6);
+            $table->addCell(3000)->addText('Tổng số sinh viên tham gia', ['bold' => true]);
+            $table->addCell(1500)->addText($dataNhaNuoc->tu_1_3 + $dataNhaNuoc->tu_4_6 + $dataNhaNuoc->tren_6, ['bold' => true]);
+            $table->addCell(1500)->addText($dataCapBo->tu_4_6 + $dataCapBo->tu_1_3 + $dataCapBo->tren_6, ['bold' => true]);
+            $table->addCell(1500)->addText($dataCapTruong->tu_4_6 + $dataCapTruong->tu_1_3 + $dataCapTruong->tren_6, ['bold' => true]);
             $table->addCell(2500)->addText('');
             $this->section->addTextBreak(1);
         }
@@ -2206,15 +2221,15 @@ class ExportHelper
         $table = $this->section->addTable('defaultTable');
 
         $row = $table->addRow(500);
-        $row->addCell(500, $cellRowSpan)->addText('TT', ['bold' => true]);
-        $row->addCell(2500, $cellRowSpan)->addText('Thành tích nghiên cứu khoa học', ['bold' => true]);
-        $row->addCell(6250, $cellColSpan)->addText('Số lượng', ['bold' => true]);
+        $row->addCell(500, $cellRowSpan)->addText('TT', ['bold' => true], 'center');
+        $row->addCell(2500, $cellRowSpan)->addText('Thành tích nghiên cứu khoa học', ['bold' => true], 'center');
+        $row->addCell(6250, $cellColSpan)->addText('Số lượng', ['bold' => true], 'center');
 
         $table->addRow(500);
         $table->addCell(500, $cellRowContinue);
         $table->addCell(2500, $cellRowContinue);
         for ($i = 4; $i >= 0; $i--) {
-            $table->addCell(1400)->addText($year - $i, ['bold' => true]);
+            $table->addCell(1400)->addText($year - $i, ['bold' => true], 'center');
         }
 
         $rowGiaiThuong = $table->addRow(500);
@@ -2250,18 +2265,18 @@ class ExportHelper
         $table = $this->section->addTable('defaultTable');
 
         $table->addRow(500);
-        $table->addCell(500, $cellRowSpan)->addText('TT', $bold);
-        $table->addCell(4500, $cellRowSpan)->addText('Nội dung', $bold);
-        $table->addCell(2000, $cellRowSpan)->addText('Diện tích (m2)', $bold);
-        $table->addCell(3000, $cellColSpan)->addText('Hình thức sử dụng', $bold);
+        $table->addCell(500, $cellRowSpan)->addText('TT', $bold, 'center');
+        $table->addCell(4500, $cellRowSpan)->addText('Nội dung', $bold, 'center');
+        $table->addCell(2000, $cellRowSpan)->addText('Diện tích (m2)', $bold, 'center');
+        $table->addCell(3000, $cellColSpan)->addText('Hình thức sử dụng', $bold, 'center');
 
         $table->addRow(500);
         $table->addCell(500, $cellRowContinue);
         $table->addCell(4500, $cellRowContinue);
         $table->addCell(2000, $cellRowContinue);
-        $table->addCell(1000)->addText('Sở hữu', $bold);
-        $table->addCell(1000)->addText('Liên kết', $bold);
-        $table->addCell(1000)->addText('Thuê', $bold);
+        $table->addCell(1000)->addText('Sở hữu', $bold, 'center');
+        $table->addCell(1000)->addText('Liên kết', $bold, 'center');
+        $table->addCell(1000)->addText('Thuê', $bold, 'center');
 
         $data = $dienTich->where('noi_dung', 1)->first();
         if (!$data) {
@@ -2339,16 +2354,15 @@ class ExportHelper
 
     public function report39($thuVien, $nhomNganh)
     {
-        $line1 = '39. Tổng số đầu sách trong thư viện của nhà trường (bao gồm giáo trình, học liệu, tài liệu,
-         sách tham khảo… sách, tạp chí, kể cả e-book, cơ sở dữ liệu điện tử):';
+        $line1 = '39. Tổng số đầu sách trong thư viện của nhà trường (bao gồm giáo trình, học liệu, tài liệu, sách tham khảo… sách, tạp chí, kể cả e-book, cơ sở dữ liệu điện tử):';
         $this->section->addText($line1);
 
         $table = $this->section->addTable('defaultTable');
 
         $table->addRow(500);
-        $table->addCell(4000)->addText('Khối ngành/ Nhóm ngành', ['bold' => true]);
-        $table->addCell(3000)->addText('Đầu sách', ['bold' => true]);
-        $table->addCell(3000)->addText('Bản sách', ['bold' => true]);
+        $table->addCell(4000)->addText('Khối ngành/ Nhóm ngành', ['bold' => true], 'center');
+        $table->addCell(3000)->addText('Đầu sách', ['bold' => true], 'center');
+        $table->addCell(3000)->addText('Bản sách', ['bold' => true], 'center');
 
         foreach ($nhomNganh as $item) {
             $table->addRow(500);
@@ -2376,13 +2390,13 @@ class ExportHelper
         $table = $this->section->addTable('defaultTable');
 
         $table->addRow(500);
-        $table->addCell(500, $cellRowSpan)->addText('STT', $bold);
-        $table->addCell(2250, $cellRowSpan)->addText('Tên phòng/giảng đường/lab', $bold);
-        $table->addCell(500, $cellRowSpan)->addText('Số lượng', $bold);
-        $table->addCell(2250, $cellRowSpan)->addText('Danh mục trang thiết bị chính', $bold);
-        $table->addCell(1500, $cellRowSpan)->addText('Đối tượng sử dụng', $bold);
-        $table->addCell(1500, $cellRowSpan)->addText('Diện tích sàn xây dựng (m2)', $bold);
-        $table->addCell(1500, $cellColSpan)->addText('Hình thức sử dụng', $bold);
+        $table->addCell(500, $cellRowSpan)->addText('STT', $bold, 'center');
+        $table->addCell(2250, $cellRowSpan)->addText('Tên phòng/giảng đường/lab', $bold, 'center');
+        $table->addCell(500, $cellRowSpan)->addText('Số lượng', $bold, 'center');
+        $table->addCell(2250, $cellRowSpan)->addText('Danh mục trang thiết bị chính', $bold, 'center');
+        $table->addCell(1500, $cellRowSpan)->addText('Đối tượng sử dụng', $bold, 'center');
+        $table->addCell(1500, $cellRowSpan)->addText('Diện tích sàn xây dựng (m2)', $bold, 'center');
+        $table->addCell(1500, $cellColSpan)->addText('Hình thức sử dụng', $bold, 'center');
 
         $table->addRow(500);
         $table->addCell(500, $cellRowContinue);
@@ -2391,9 +2405,9 @@ class ExportHelper
         $table->addCell(2250, $cellRowContinue);
         $table->addCell(1500, $cellRowContinue);
         $table->addCell(1500, $cellRowContinue);
-        $table->addCell(500)->addText('Sở hữu', $bold);
-        $table->addCell(500)->addText('Liên kết', $bold);
-        $table->addCell(500)->addText('Thuê', $bold);
+        $table->addCell(500)->addText('Sở hữu', $bold, 'center');
+        $table->addCell(500)->addText('Liên kết', $bold, 'center');
+        $table->addCell(500)->addText('Thuê', $bold, 'center');
 
         $index = 1;
         foreach ($thietBi as $item) {
@@ -2433,7 +2447,8 @@ class ExportHelper
                 $data = new \stdClass();
                 $data->tong_nguon_thu = 0;
             }
-            $text = "Năm {$currentYear}: {$data->tong_nguon_thu}";
+            $number = new NumberFormatter('vi_VI', NumberFormatter::CURRENCY);
+            $text = "Năm {$currentYear}: {$number->formatCurrency($data->tong_nguon_thu,'VND')}";
             $this->section->addListItem($text);
         }
     }
@@ -2450,7 +2465,8 @@ class ExportHelper
                 $data = new \stdClass();
                 $data->tong_hoc_phi = 0;
             }
-            $text = "Năm {$currentYear}: {$data->tong_hoc_phi}";
+            $number = new NumberFormatter('vi_VI', NumberFormatter::CURRENCY);
+            $text = "Năm {$currentYear}: {$number->formatCurrency($data->tong_hoc_phi,'VND')}";
             $this->section->addListItem($text);
         }
     }
@@ -2467,7 +2483,8 @@ class ExportHelper
                 $data = new \stdClass();
                 $data->chi_nckh = 0;
             }
-            $text = "Năm {$currentYear}: {$data->chi_nckh}";
+            $number = new NumberFormatter('vi_VI', NumberFormatter::CURRENCY);
+            $text = "Năm {$currentYear}: {$number->formatCurrency($data->chi_nckh,'VND')}";
             $this->section->addListItem($text);
         }
     }
@@ -2484,7 +2501,8 @@ class ExportHelper
                 $data = new \stdClass();
                 $data->thu_nckh = 0;
             }
-            $text = "Năm {$currentYear}: {$data->thu_nckh}";
+            $number = new NumberFormatter('vi_VI', NumberFormatter::CURRENCY);
+            $text = "Năm {$currentYear}: {$number->formatCurrency($data->thu_nckh,'VND')}";
             $this->section->addListItem($text);
         }
     }
@@ -2501,7 +2519,8 @@ class ExportHelper
                 $data = new \stdClass();
                 $data->chi_dao_tao = 0;
             }
-            $text = "Năm {$currentYear}: {$data->chi_dao_tao}";
+            $number = new NumberFormatter('vi_VI', NumberFormatter::CURRENCY);
+            $text = "Năm {$currentYear}: {$number->formatCurrency($data->chi_dao_tao,'VND')}";
             $this->section->addListItem($text);
         }
     }
@@ -2518,8 +2537,8 @@ class ExportHelper
                 $data = new \stdClass();
                 $data->chi_doi_ngu = 0;
             }
-            $number = number_format($data->chi_doi_ngu);
-            $text = "Năm {$currentYear}: {$number}";
+            $number = new NumberFormatter('vi_VI', NumberFormatter::CURRENCY);
+            $text = "Năm {$currentYear}: {$number->formatCurrency($data->chi_doi_ngu,'VND')}";
             $this->section->addListItem($text);
         }
     }
@@ -2536,7 +2555,8 @@ class ExportHelper
                 $data = new \stdClass();
                 $data->chi_ket_noi = 0;
             }
-            $text = "Năm {$currentYear}: {$data->chi_ket_noi}";
+            $number = new NumberFormatter('vi_VI', NumberFormatter::CURRENCY);
+            $text = "Năm {$currentYear}: {$number->formatCurrency($data->chi_ket_noi,'VND')}";
             $this->section->addListItem($text);
         }
     }
@@ -2556,7 +2576,7 @@ class ExportHelper
         $table->addCell(1000, $cellRowSpan)->addText('Bộ tiêu chuẩn đánh giá', $bold);
         $table->addCell(2000, $cellColSpan)->addText('Tự đánh giá', $bold);
         $table->addCell(2000, $cellColSpan)->addText('Đánh giá ngoài', $bold);
-        $table->addCell(2000, $cellColSpan3)->addText('Thẩm định và công nhận', $bold);
+        $table->addCell(3000, $cellColSpan3)->addText('Thẩm định và công nhận', $bold);
 
         $table->addRow(500);
         $table->addCell(500, $cellRowContinue);
@@ -2567,7 +2587,7 @@ class ExportHelper
         $table->addCell(1000, $cellRowSpan)->addText('Tên tổ chức đánh giá', $bold);
         $table->addCell(1000, $cellRowSpan)->addText('Tháng/năm đánh giá ngoài', $bold);
         $table->addCell(1000, $cellRowSpan)->addText('Kết quả đánh giá của Hội đồng KĐCLGD', $bold);
-        $table->addCell(1000, $cellColSpan)->addText('Giấy chứng nhận', $bold);
+        $table->addCell(2000, $cellColSpan)->addText('Giấy chứng nhận', $bold);
 
         $table->addRow(500);
         $table->addCell(500, $cellRowContinue);
@@ -2578,8 +2598,8 @@ class ExportHelper
         $table->addCell(1000, $cellRowContinue);
         $table->addCell(1000, $cellRowContinue);
         $table->addCell(1000, $cellRowContinue);
-        $table->addCell(500)->addText('Ngày cấp ', $bold);
-        $table->addCell(500)->addText('Giá trị đến ', $bold);
+        $table->addCell(1000)->addText('Ngày cấp ', $bold);
+        $table->addCell(1000)->addText('Giá trị đến ', $bold);
 
         $index = 1;
         foreach ($kiemDinh as $item) {
@@ -2600,7 +2620,7 @@ class ExportHelper
 
     public function tomTatChiSo($tomTat)
     {
-        $indent = ['intent' => true];
+        $indent = ['indent' => true];
         $line1 = 'Từ kết quả khảo sát ở trên, tổng hợp thành một số chỉ số quan trọng dưới đây (số liệu năm cuối kỳ đánh giá):';
         $this->section->addText($line1, [], $indent);
         $this->section->addText("1. Giảng viên:");
@@ -2666,13 +2686,13 @@ class ExportHelper
         $value = json_decode($value, true);
         $this->section->addText("Cấp cơ sở giáo dục:", [], $indent);
         foreach ($value as $item) {
-            $this->section->addText($item, [], $indent);
+            $this->section->addText('+ ' . $item, [], $indent);
         }
         $value = $tomTat->cap_ctdt ?? '[]';
         $value = json_decode($value, true);
         $this->section->addText("Cấp chương trình đào tạo:", [], $indent);
         foreach ($value as $item) {
-            $this->section->addText($item, [], $indent);
+            $this->section->addText('+ ' . $item, [], $indent);
         }
 
     }

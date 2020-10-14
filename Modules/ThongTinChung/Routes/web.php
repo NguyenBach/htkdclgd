@@ -12,5 +12,8 @@
 */
 
 Route::prefix('thongtinchung')->group(function() {
-    Route::get('/', 'ThongTinChungController@index');
+    Route::get('/', function (){
+        $number = new NumberFormatter('vi_VI',  NumberFormatter::CURRENCY);
+        dd($number->formatCurrency(10000000,'VND'));
+    });
 });

@@ -92,11 +92,12 @@ class TuDanhGiaController extends Controller
         $draft = TuDanhGiaDraft::where('university_id', $universityId)->get();
         TuDanhGia::where('university_id', $universityId)->delete();
         foreach ($draft as $item) {
-            TuDanhGia::create([
+            TuDanhGia::updateOrCreate([
                 'university_id' => $universityId,
                 'role' => $user->role_id,
                 'tieu_chuan' => $item->tieu_chuan,
-                'tieu_chi' => $item->tieu_chi,
+                'tieu_chi' => $item->tieu_chi
+            ], [
                 'diem' => $item->diem_thong_nhat,
                 'submit_at' => date('Y-m-d H:i:s')
             ]);

@@ -43,10 +43,39 @@ class KeyOfficerController extends Controller
         $keyOfficers = KeyOfficer::where('university_id', $universityId)
             ->where('year', $year)
             ->get();
+
         $result = [
             'success' => true,
             'message' => 'Lấy danh sách cán bộ thành công',
             'data' => $keyOfficers
+        ];
+        return response()->json($result, 200);
+    }
+
+    public function copy($year)
+    {
+        $copyYear = Input::get('copy_year');
+        $this->authorize('index', KeyOfficer::class);
+        $user = Auth::user();
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = Input::get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+        $keyOfficers = KeyOfficer::where('university_id', $universityId)
+            ->where('year', $copyYear)
+            ->get();
+
+        $keyOfficers->map(function ($item) use ($year) {
+            $newData = $item->replicate();
+            $newData->year = $year;
+            $newData->save();
+        });
+        $result = [
+            'success' => true,
+            'message' => 'Sao chép danh sách cán bộ thành công',
         ];
         return response()->json($result, 200);
     }

@@ -55,6 +55,13 @@ class UniversityController extends Controller
         }
         $fillable = (new UniversityData)->getFillable();
         $data = $model->data()->where('year', $year)->first();
+        if (!$data) {
+            $oldData = $model->data()->first();
+            $data = $oldData->replicate();
+            $data->year = $year;
+            $data->save();
+            $data->refresh();
+        }
         foreach ($fillable as $key) {
             if (in_array($key, $model->getFillable())) {
                 continue;
