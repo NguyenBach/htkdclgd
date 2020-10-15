@@ -2340,8 +2340,10 @@ class ExportHelper
         $data = $dienTich->where('noi_dung', 4)->first();
         if (!$data) {
             $data = new \stdClass();
-            $data->dien_tich = '0';
-            $data->hinh_thuc = 0;
+            $data->dien_tich = 0;
+            $data->so_huu = 0;
+            $data->lien_ket = 0;
+            $data->thue = 0;
         }
         $table->addRow(500);
         $table->addCell(500)->addText(2.5);

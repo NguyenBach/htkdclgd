@@ -6,8 +6,10 @@ namespace Modules\ThongTinChung\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Storage;
 use Modules\ThongTinChung\Entities\BaoCaoBaCongKhai;
 use Modules\ThongTinChung\Helpers\ExportHelper;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -39,6 +41,31 @@ class BaCongKhaiController extends Controller
         $result = [
             'success' => true,
             'message' => 'Nộp thành công',
+        ];
+        return response()->json($result, 200);
+    }
+
+    public function export($year)
+    {
+        $user = Auth::user();
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = Input::get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+
+        $export = new ExportHelper();
+        $fileName = $export->export($universityId, $year);
+        $name = basename($fileName);
+        $result = [
+            'success' => true,
+            'message' => 'Xuất thành công',
+            'data' => [
+                'file_url' => url('storage/'.$fileName),
+                'file_name' => $name
+            ]
         ];
         return response()->json($result, 200);
     }

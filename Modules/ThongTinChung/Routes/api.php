@@ -103,6 +103,7 @@ Route::group([
     'middleware' => 'jwt.auth'
 ], function () {
     Route::post('{year}', 'BaCongKhaiController@submit')->name('ba-cong-khai.submit');
+    Route::post('/export/{year}', 'BaCongKhaiController@export')->name('ba-cong-khai.export');
     Route::get('history/{year}', 'BaCongKhaiController@submitHistory')->name('ba-cong-khai.submit-history');
 });
 
