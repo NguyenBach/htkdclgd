@@ -139,6 +139,13 @@ class TinhTrangSvTotNghiepController extends Controller
             }
         }
 
+        if (!$universityId) {
+            $universityId = Input::get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+
         $insertData = [];
         $insertData['university_id'] = $universityId;
         $insertData['year'] = $year;
@@ -157,7 +164,7 @@ class TinhTrangSvTotNghiepController extends Controller
                         'he_hoc' => $heHoc,
                         'cau_hoi_id' => $item->id
                     ],
-                    $data);
+                    $insertData);
             }
 
         }
