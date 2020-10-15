@@ -74,7 +74,7 @@ class ExportHelper
     public function setupTableStyle($phpWord)
     {
         $whiteTableBorder = [
-            'borderColor' => 'ffffff',
+            'borderColor' => '000000',
             'borderSize' => 0,
             'cellMargin' => 50,
             'valign' => 'center'
@@ -90,8 +90,8 @@ class ExportHelper
         ];
         $defaultTableFirstRow = [
             'borderBottomSize' => 18,
-            'borderBottomColor' => '000000',
-            'bgColor' => '000000',
+            'borderBottomColor' => 'ffffff',
+            'bgColor' => 'ffffff',
             'alignment' => Jc::CENTER,
             'textAlignment' => TextAlignment::CENTER
         ];
