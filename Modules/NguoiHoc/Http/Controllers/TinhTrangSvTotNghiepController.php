@@ -165,6 +165,17 @@ class TinhTrangSvTotNghiepController extends Controller
                         'cau_hoi_id' => $item->id
                     ],
                     $insertData);
+            }else{
+                $insertData['cau_hoi_id'] = $item->id;
+                $insertData['tra_loi'] = 0;
+                TinhTrangSvTotNghiep::updateOrCreate(
+                    [
+                        'year' => $year,
+                        'university_id' => $universityId,
+                        'he_hoc' => $heHoc,
+                        'cau_hoi_id' => $item->id
+                    ],
+                    $insertData);
             }
 
         }
