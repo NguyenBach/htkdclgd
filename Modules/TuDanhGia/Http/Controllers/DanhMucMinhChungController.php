@@ -41,11 +41,16 @@ class DanhMucMinhChungController extends Controller
         $fileMimeType = $file->getClientMimeType();
         if (!in_array($fileMimeType, [
             'application/msword',
-            'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'application/pdf',
+            'application/vnd.ms-excel',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'application/vnd.oasis.opendocument.spreadsheet',
+            'application/vnd.oasis.opendocument.text'
         ])) {
             $data = [
                 'success' => false,
-                'message' => 'File phải là file doc hoặc docx'
+                'message' => 'File phải là file doc,docx,xlsx,xls,pdf'
             ];
             return \response()->json($data, 400);
         }
