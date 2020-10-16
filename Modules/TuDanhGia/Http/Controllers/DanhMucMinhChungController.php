@@ -6,9 +6,11 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Storage;
 use Modules\TuDanhGia\Entities\DanhMucMinhChung;
 use Modules\TuDanhGia\Http\Requests\DanhMucMinhChungRequest;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class DanhMucMinhChungController extends Controller
 {
@@ -17,7 +19,16 @@ class DanhMucMinhChungController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $danhMuc = DanhMucMinhChung::where('university_id', $user->university_id)
+
+        $universityId = $user->university_id;
+        if (!$universityId) {
+            $universityId = Input::get('university_id');
+            if (!$universityId) {
+                throw new NotFoundHttpException('Không có trường đại học');
+            }
+        }
+
+        $danhMuc = DanhMucMinhChung::where('university_id', $universityId)
             ->orderBy('created_at', 'desc')
             ->with('updatedBy')
             ->paginate(20);
