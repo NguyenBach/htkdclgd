@@ -65,6 +65,7 @@ class DanhMucMinhChungController extends Controller
             ];
             return \response()->json($data, 400);
         }
+        echo 1;
         $filename = time() . '_' . $file->getClientOriginalName();
         $path = "danh-muc-minh-chung/{$user->university->short_name_vi}";
         $filePath = $file->storeAs($path, $this->clean($filename), ['disk']);

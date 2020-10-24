@@ -332,6 +332,8 @@ class SVNhapHocController extends Controller
             ],
             $insertData);
 
+        TomTat::save($universityId, $year, 'tong_sv', $data['tong_sv']);
+
         $result = [
             'success' => true,
             'message' => 'Update người học thành công',

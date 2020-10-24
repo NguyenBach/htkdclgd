@@ -21,6 +21,7 @@ class SvNhapHocRequest extends APIRequest
             'cd' => 'required|json',
             'tc' => 'required|json',
             'khac' => 'required|json',
+            'tong_sv' => 'numeric'
         ];
     }
 

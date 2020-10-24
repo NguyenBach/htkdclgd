@@ -16,7 +16,7 @@ class DanhMucMinhChungRequest extends APIRequest
         return [
             //
             'file' => 'required|file',
-            'link' => 'required'
+            'link' => ''
         ];
     }
 

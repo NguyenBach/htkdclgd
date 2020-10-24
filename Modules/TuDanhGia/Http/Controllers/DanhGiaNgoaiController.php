@@ -128,7 +128,9 @@ class DanhGiaNgoaiController extends Controller
                 throw new NotFoundHttpException('Không có trường đại học');
             }
         }
-        $history = SubmitHistory::where('university_id', $universityId)->orderBy('submit_at', 'desc')->with('user')->get();
+        $history = SubmitHistory::where('university_id', $universityId)
+            ->orderBy('submit_at', 'desc')
+            ->with('user')->get();
         $result = [
             'success' => true,
             'message' => "Lấy dữ liệu thành công",
