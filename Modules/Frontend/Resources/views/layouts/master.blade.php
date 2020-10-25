@@ -83,10 +83,10 @@
     <link href=/js/chunk-d1d7cdc2.f8c3a6c9.js rel=prefetch>
     <link href=/js/chunk-da4f4cd0.103a07f9.js rel=prefetch>
     <link href=/js/chunk-f2835446.74b6b1fc.js rel=prefetch>
-    <link href=/css/app.9b729132.css rel=preload as=style>
-    <link href=/js/app.1418483e.js rel=preload as=script>
+    <link href=/css/app.761be2ef.css rel=preload as=style>
+    <link href=/js/app.11eee894.js rel=preload as=script>
     <link href=/js/chunk-vendors.6ebc3b8a.js rel=preload as=script>
-    <link href=/css/app.9b729132.css rel=stylesheet>
+    <link href=/css/app.761be2ef.css rel=stylesheet>
     <link rel=icon type=image/png sizes=32x32 href=/img/icons/favicon-32x32.png>
     <link rel=icon type=image/png sizes=16x16 href=/img/icons/favicon-16x16.png>
     <link rel=manifest href=/manifest.json>
@@ -104,6 +104,6 @@
         continue.</strong></noscript>
 <div id=app></div>
 <script src=/js/chunk-vendors.6ebc3b8a.js></script>
-<script src=/js/app.1418483e.js></script>
+<script src=/js/app.11eee894.js></script>
 </body>
 </html>

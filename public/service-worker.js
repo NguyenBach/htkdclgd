@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "/precache-manifest.80710abd7e492bc6efcc2982909d5489.js"
+  "/precache-manifest.f795f30e24c3e69dc53b89667d204a5f.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "bacongkhai"});
