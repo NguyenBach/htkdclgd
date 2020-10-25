@@ -11,6 +11,12 @@
 |
 */
 
+use Illuminate\Support\Facades\Route;
+
+Route::get('{any}/', function() {
+    return view('frontend::index');
+})->where('any', '^((?!api).)*$');
+
 Route::get('/', function () {
     return view('frontend::index');
 });

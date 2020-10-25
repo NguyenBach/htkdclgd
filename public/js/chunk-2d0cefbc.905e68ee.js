@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0cefbc"],{"627a":function(n,e,a){"use strict";a.r(e);var c=function(){var n=this,e=n.$createElement,a=n._self._c||e;return a("div",[n._v("\n    admin\n")])},t=[],r={name:"ExpertDashboard"},s=r,u=a("2877"),d=Object(u["a"])(s,c,t,!1,null,"7bb10cd6",null);e["default"]=d.exports}}]);
+//# sourceMappingURL=chunk-2d0cefbc.905e68ee.js.map
