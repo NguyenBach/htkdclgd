@@ -27,7 +27,8 @@
     "phpoffice/phpword": "^0.17.0",
     "spatie/laravel-activitylog": "1",
     "tymon/jwt-auth": "dev-develop",
-    "ext-intl": "*"
+    "ext-intl": "*",
+    "ext-curl": "*"
   },
   "require-dev": {
     "beyondcode/laravel-dump-server": "^1.0",

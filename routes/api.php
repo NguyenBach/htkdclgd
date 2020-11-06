@@ -22,7 +22,28 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     \Illuminate\Support\Facades\Log::info($request->method());
     \Illuminate\Support\Facades\Log::info(json_encode($request->all()));
     \Illuminate\Support\Facades\Log::info(json_encode($request->header()));
-    $response =  \Illuminate\Support\Facades\Http::post('https://api.dev.gobysend.com/api/payment/invoice/notify',$request->all());
-   \Illuminate\Support\Facades\Log::info(json_encode($response));
+
+    $curl = curl_init();
+    $jsonEncodedData = json_encode($request->all());
+    $url = 'https://api.dev.gobysend.com/api/payment/invoice/notify';
+
+    $opts = [
+        CURLOPT_URL => $url,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_CUSTOMREQUEST => 'POST',
+        CURLOPT_POST => 1,
+        CURLOPT_POSTFIELDS => $jsonEncodedData,
+        CURLOPT_HTTPHEADER => ['Content-Type: application/json', 'Content-Length: '.strlen($jsonEncodedData)],
+    ];
+
+    curl_setopt_array($curl, $opts);
+
+    $result = curl_exec($curl);
+    $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+
+    curl_close($curl);
+
+   \Illuminate\Support\Facades\Log::info(json_encode($result));
+   \Illuminate\Support\Facades\Log::info($status);
 });
 
