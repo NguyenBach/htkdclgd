@@ -18,6 +18,11 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::get('/test',function() {
+    return view('test');
+});
+
+
 \Illuminate\Support\Facades\Route::any('/webhook', function (\Illuminate\Http\Request $request) {
     \Illuminate\Support\Facades\Log::info($request->method());
     \Illuminate\Support\Facades\Log::info(json_encode($request->all()));
