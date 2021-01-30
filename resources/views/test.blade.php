@@ -160,7 +160,7 @@
             </div>
         </div>
     </div>
-    <div class="open-by-location">
+    <div style="page-break-before:always;" class="open-by-location">
         <div class="header">
             <h1 class="h1-header">Opens by location</h1>
         </div>
@@ -215,7 +215,7 @@
             </table>
         </div>
     </div>
-    <div class="subscriber-activity">
+    <div style="page-break-before:always;" class="subscriber-activity">
         <div class="header">
             <h1 class="h1-header">Subscriber activity</h1>
         </div>
@@ -277,7 +277,7 @@
             </table>
         </div>
 
-        <div class="most-link">
+        <div style="page-break-before:always;" class="most-link">
             <h1>Top links clicked</h1>
             <table class="table table-striped open-table">
                 <thead>
