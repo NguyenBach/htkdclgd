@@ -54,6 +54,7 @@ Route::get('/test', function () {
 
 \Illuminate\Support\Facades\Route::any('/image', function (\Illuminate\Http\Request $request) {
     \Illuminate\Support\Facades\Log::info(json_encode($request));
+    \Illuminate\Support\Facades\Log::info(json_encode($request->headers));
     $imagePath = public_path('images/opens.gif');
 
     return response()
