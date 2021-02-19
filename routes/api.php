@@ -18,7 +18,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/test',function() {
+Route::get('/test', function () {
     return view('test');
 });
 
@@ -38,7 +38,7 @@ Route::get('/test',function() {
         CURLOPT_CUSTOMREQUEST => 'POST',
         CURLOPT_POST => 1,
         CURLOPT_POSTFIELDS => $jsonEncodedData,
-        CURLOPT_HTTPHEADER => ['Content-Type: application/json', 'Content-Length: '.strlen($jsonEncodedData)],
+        CURLOPT_HTTPHEADER => ['Content-Type: application/json', 'Content-Length: ' . strlen($jsonEncodedData)],
     ];
 
     curl_setopt_array($curl, $opts);
@@ -48,11 +48,12 @@ Route::get('/test',function() {
 
     curl_close($curl);
 
-   \Illuminate\Support\Facades\Log::info(json_encode($result));
-   \Illuminate\Support\Facades\Log::info($status);
+    \Illuminate\Support\Facades\Log::info(json_encode($result));
+    \Illuminate\Support\Facades\Log::info($status);
 });
 
 \Illuminate\Support\Facades\Route::any('/image', function (\Illuminate\Http\Request $request) {
+    \Illuminate\Support\Facades\Log::info(json_encode($request));
     $imagePath = public_path('images/opens.gif');
 
     return response()
