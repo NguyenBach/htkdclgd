@@ -52,3 +52,15 @@ Route::get('/test',function() {
    \Illuminate\Support\Facades\Log::info($status);
 });
 
+\Illuminate\Support\Facades\Route::any('/image', function (\Illuminate\Http\Request $request) {
+    $imagePath = public_path('images/opens.gif');
+
+    return response()
+        ->file($imagePath, [
+            'Content-Type' => 'image/gif',
+            'Content-Length' => 0,
+            'Cache-Control' => 'no-cache, no-store, must-revalidate, post-check=0, pre-check=0, max-age=0',
+            'Pragma' => 'no-cache',
+            'Expires' => 0,
+        ]);
+});
